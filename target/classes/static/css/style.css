@@ -73,7 +73,7 @@ img {
 #project_container{
 	width: 960px;
 	margin: 0 auto;
-	padding: 0 10px;
+	padding-left: 10px;
 	background: #1c1c1b url(../images/bg.jpg) repeat-y;
 }
 
@@ -105,6 +105,9 @@ img {
 	text-align: center;
 	text-decoration: none;
 	color: #969547;
+}
+#project_menu .nav_right{
+	float: right;
 }
 
 #project_menu li a:hover, #project_menu li .current{
@@ -178,14 +181,14 @@ img {
 	float: left;
 	width: 188px;
 	padding: 10px;
+	margin-top: 5px;
 	background-color: #171716;
 	border: 1px solid #212120;
 }
 #book_list_right{
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
-	
+
 }
 
 #project_content #project_content_right {
@@ -234,10 +237,12 @@ img {
 
 
 #project_content_right .project_product_box {
+
 	float: left;
 	width: 303px;
 	height: 210px;
 	padding: 10px;
+	margin: 5px;
 	border: 1px solid #333;
 }
 

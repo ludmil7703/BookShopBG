@@ -1,13 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Book Shop BG</title>
-    <meta name="keywords" content="" />
-    <meta name="description" content="" />
-    <link rel="stylesheet" href="/css/style.css"/>
-</head><body>
+<head th:replace="fragments/commons::head"></head>
+<body>
 <div id="project_container">
 <nav th:replace="fragments/commons::nav"></nav>
 <header th:replace="fragments/commons::header"></header>
@@ -29,7 +24,7 @@
                 <div class="cleaner">&nbsp;</div>
             </div>
             
-            <div class="cleaner_with_width">&nbsp;</div>
+
             
             <div class="project_product_box">
             	<h1>Cooking  <span>(by New Author)</span></h1>
@@ -42,8 +37,7 @@
                 </div>
                 <div class="cleaner">&nbsp;</div>
             </div>
-            
-            <div class="cleaner_with_height">&nbsp;</div>
+
             
             <div class="project_product_box">
             	<h1>Gardening <span>(by Famous Author)</span></h1>
@@ -57,7 +51,7 @@
                 <div class="cleaner">&nbsp;</div>
             </div>
             
-            <div class="cleaner_with_width">&nbsp;</div>
+
             
             <div class="project_product_box">
             	<h1>Sushi Book  <span>(by Japanese Name)</span></h1>
@@ -71,7 +65,7 @@
                 <div class="cleaner">&nbsp;</div>
             </div>
             
-            <div class="cleaner_with_height">&nbsp;</div>
+
             <div class="project_product_box">
                 <h1>Photography  <span>(by Best Author)</span></h1>
                 <img src="/images/image_01.jpg" alt="image" />
@@ -84,7 +78,7 @@
                 <div class="cleaner">&nbsp;</div>
             </div>
 
-            <div class="cleaner_with_width">&nbsp;</div>
+
 
             <div class="project_product_box">
                 <h1>Cooking  <span>(by New Author)</span></h1>
@@ -98,7 +92,20 @@
                 <div class="cleaner"> </div>
             </div>
 
-            <div class="cleaner_with_width">&nbsp;</div>
+
+
+            <div class="project_product_box">
+                <h1>Cooking  <span>(by New Author)</span></h1>
+                <img src="/images/image_02.jpg" alt="image" />
+                <div class="product_info">
+                    <p>Aliquam a dui, ac magna quis est eleifend dictum.</p>
+                    <h3>$35</h3>
+                    <div class="buy_now_button"><a href="subpage.html">Buy Now</a></div>
+                    <div class="detail_button"><a href="subpage.html">Detail</a></div>
+                </div>
+                <div class="cleaner"> </div>
+            </div>
+
 
 
 
