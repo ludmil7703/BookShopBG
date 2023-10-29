@@ -19,7 +19,7 @@ public class Address extends BaseEntity{
 
     private String country;
     private String city;
-    
+
     private String street;
 
     @Column(name = "phone_number")
