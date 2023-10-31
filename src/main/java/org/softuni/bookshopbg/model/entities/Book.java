@@ -46,10 +46,10 @@ public class Book extends BaseEntity {
     @ManyToOne
     private Author author;
 
-    @ManyToMany(mappedBy = "books", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Category> categories;
+    @ManyToMany(mappedBy = "books",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Category> categories;
 
-    @ManyToMany(mappedBy = "books", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany
     private List<Order> orders;
 
 

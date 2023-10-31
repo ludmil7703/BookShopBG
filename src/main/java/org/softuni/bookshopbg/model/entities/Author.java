@@ -21,10 +21,7 @@ public class Author extends BaseEntity {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @OneToMany
-    @JoinTable(name = "authors_books",
-            joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id"))
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     public List<Book> books;
 
     public String getAuthorFullName() {

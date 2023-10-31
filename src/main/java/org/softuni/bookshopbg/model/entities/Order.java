@@ -20,7 +20,7 @@ public class Order extends BaseEntity{
     @ManyToOne
     private User user;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "orders",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Book> books;
 
     @DateTimeFormat(pattern = "dd-MM-yyyy' 'HH:mm")

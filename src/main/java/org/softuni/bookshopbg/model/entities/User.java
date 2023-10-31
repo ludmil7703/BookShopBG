@@ -17,6 +17,10 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity{
+    private String firstName;
+
+    private String lastName;
+
     @Column(name = "username", nullable = false, unique = true)
     @Length(min = 3, max = 20)
     private String username;
@@ -32,6 +36,9 @@ public class User extends BaseEntity{
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Address address;
 
-    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name = "users_orders",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "order_id"))
     private Set<Order> orders;
 }
