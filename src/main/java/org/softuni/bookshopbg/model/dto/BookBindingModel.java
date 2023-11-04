@@ -1,169 +1,84 @@
 package org.softuni.bookshopbg.model.dto;
 
+import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.Base64;
 
+
+@Getter
+@Setter
 public class BookBindingModel {
     private Long id;
-    private String title;
-    private String author;
-    private String publisher;
-    private String publicationDate;
-    private String language;
-    private CategoryName category;
-    private int numberOfPages;
-    private String format;
-    private int isbn;
-    private double shippingWeight;
-    private BigDecimal listPrice;
-    private BigDecimal ourPrice;
-    private boolean active=true;
 
+    @NotBlank(message = "Title cannot be null")
+    private String title;
+
+    @NotBlank(message = "Author cannot be null")
+    private String author;
+
+    private String publisher;
+
+    @NotNull(message = "Publication date cannot be null")
+    @PastOrPresent(message = "Publication date cannot be in the future")
+    private String publicationDate;
+
+    @NotNull(message = "Language cannot be null")
+    private String language;
+
+    @NotNull(message = "Category cannot be null")
+    private CategoryName category;
+
+    @NotNull(message = "Number of pages cannot be null")
+    @Positive(message = "Number of pages must be positive")
+    private int numberOfPages;
+
+    @NotNull(message = "Format cannot be null")
+    private String format;
+
+    @NotNull(message = "ISBN cannot be null")
+    @Positive(message = "ISBN must be positive")
+    @UniqueElements(message = "ISBN must be unique")
+    private int isbn;
+
+    @NotNull(message = "Shipping weight cannot be null")
+    @Positive(message = "Shipping weight must be positive")
+    private double shippingWeight;
+
+    @NotNull(message = "List price cannot be null")
+    @Positive(message = "List price must be positive")
+    private BigDecimal listPrice;
+
+    @NotNull(message = "Our price cannot be null")
+    @Positive(message = "Our price must be positive")
+    private BigDecimal ourPrice;
+
+    @NotNull(message = "Description cannot be null")
+    @Size(min = 10, message = "Description must be at least 10 characters long")
     private String description;
+
+    @NotNull(message = "In stock number cannot be null")
+    @Positive(message = "In stock number must be positive")
     private int inStockNumber;
 
+    private boolean isActive;
+
+
     private MultipartFile bookImage;
+
 
     public BookBindingModel() {
 
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
-    public String getPublicationDate() {
-        return publicationDate;
-    }
-
-    public void setPublicationDate(String publicationDate) {
-        this.publicationDate = publicationDate;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public CategoryName getCategory() {
-        return category;
-    }
-
-    public void setCategory(CategoryName category) {
-        this.category = category;
-    }
-
-    public int getNumberOfPages() {
-        return numberOfPages;
-    }
-
-    public void setNumberOfPages(int numberOfPages) {
-        this.numberOfPages = numberOfPages;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public int getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(int isbn) {
-        this.isbn = isbn;
-    }
-
-    public double getShippingWeight() {
-        return shippingWeight;
-    }
-
-    public void setShippingWeight(double shippingWeight) {
-        this.shippingWeight = shippingWeight;
-    }
-
-    public BigDecimal getListPrice() {
-        return listPrice;
-    }
-
-    public void setListPrice(BigDecimal listPrice) {
-        this.listPrice = listPrice;
-    }
-
-    public BigDecimal getOurPrice() {
-        return ourPrice;
-    }
-
-    public void setOurPrice(BigDecimal ourPrice) {
-        this.ourPrice = ourPrice;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getInStockNumber() {
-        return inStockNumber;
-    }
-
-    public void setInStockNumber(int inStockNumber) {
-        this.inStockNumber = inStockNumber;
-    }
-
-    public MultipartFile getBookImage() {
-        return bookImage;
-    }
-
-    public void setBookImage(MultipartFile bookImage) {
-        this.bookImage = bookImage;
-    }
 }

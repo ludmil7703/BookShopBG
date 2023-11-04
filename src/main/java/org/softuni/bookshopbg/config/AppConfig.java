@@ -1,7 +1,7 @@
 package org.softuni.bookshopbg.config;
 
 import org.modelmapper.ModelMapper;
-import org.softuni.bookshopbg.utils.ImageUtil;
+import org.softuni.bookshopbg.utils.CloudinaryConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,5 +19,6 @@ public class AppConfig {
     public ModelMapper modelMapper(){
         return new ModelMapper();
     }
+
 
 }

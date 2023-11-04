@@ -12,7 +12,7 @@ public interface BookService {
 	
 	Book save(BookBindingModel book) throws IOException, ParseException;
 
-	List<Book> findAll();
+	List<Book> findAll() throws IOException;
 	
 	Book findById(Long id);
 

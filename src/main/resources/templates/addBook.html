@@ -185,7 +185,7 @@
 					<div class="form-group">
 						<label class="col-md-2 control-label" >Status</label>
 						<div class="col-md-8">
-							<label><input value="true" type="radio" name="active"
+							<label><input th:value="${book.isActive()}" type="radio" name="active"
 								checked="checked" /> Active </label> <label><input
 								value="false" type="radio" name="active" />
 								Inactive </label> <span class="help-block">Whether the book is

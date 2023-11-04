@@ -17,6 +17,7 @@
 						<th>Category</th>
 						<th>List Price</th>
 						<th>Our Price</th>
+						<th>Image</th>
 						<th>Active?</th>
 						<th>Operation</th>
 					</tr>
@@ -30,8 +31,9 @@
 						<td><a th:href="@{/book/bookInfo(id=${book.getId()})}"><span th:text="${book.title}"></span></a></td>
 						<td th:text="${book.author.firstName}"></td>
 						<td th:text="${book.category.categoryName}"></td>
-						<td th:text="${book.listPrice}"></td>
+						<td th:text="${book.getListPrice()}"></td>
 						<td th:text="${book.ourPrice}"> </td>
+						<td><img th:src="${book.imageUrl}" width="50" height="80"/></td>
 						<td th:text="${book.active}"></td>
 						<td>
 							<input hidden="hidden" name="id" th:value="${book.id}" />

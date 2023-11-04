@@ -73,7 +73,6 @@ img {
 #project_container{
 	width: 960px;
 	margin: 0 auto;
-	padding-left: 10px;
 	background: #1c1c1b url(../images/bg.jpg) repeat-y;
 }
 
@@ -174,7 +173,6 @@ img {
 #project_content {
 	clear: both;
 	width: 920px;
-	padding: 0 20px;
 }
 
 #project_content #project_content_left {

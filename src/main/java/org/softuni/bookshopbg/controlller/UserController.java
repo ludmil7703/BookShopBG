@@ -27,9 +27,6 @@ public class UserController {
 
     @GetMapping("/login")
     public ModelAndView login(Model model){
-        if (userService.isLogged()){
-            return new ModelAndView("redirect:/home");
-        }
 
         if (!model.containsAttribute("userLoginBindingModel")){
             model.addAttribute("userLoginBindingModel", new UserLoginBindingModel());
@@ -42,9 +39,7 @@ public class UserController {
     public String login(@Valid @ModelAttribute("userLoginBindingModel") UserLoginBindingModel userLoginBindingModel
             , BindingResult bindingResult,
                         RedirectAttributes rAtt){
-        if (userService.isLogged()){
-            return "redirect:/home";
-        }
+
         if (bindingResult.hasErrors()){
             rAtt.addFlashAttribute("userLoginBindingModel", userLoginBindingModel);
             rAtt.addFlashAttribute("org.springframework.validation.BindingResult.userLoginBindingModel", bindingResult);
@@ -62,15 +57,12 @@ public class UserController {
 
         userService.login(userLoginBindingModel);
 
-        return "redirect:/home";
+        return "redirect:/admin";
 
     }
 
     @GetMapping("/register")
     public ModelAndView register(Model model){
-        if (userService.isLogged()){
-            return new ModelAndView("redirect:/home");
-        }
 
         if (!model.containsAttribute("userRegisterBindingModel")){
             model.addAttribute("userRegisterBindingModel", new UserRegisterBindingModel());
@@ -82,10 +74,8 @@ public class UserController {
     public String register(@Valid @ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel
             ,BindingResult bindingResult,
                            RedirectAttributes rAtt){
-        if (userService.isLogged()){
-            return "redirect:/home";
-        }
-        if (!userRegisterBindingModel.getPassword().equals(userRegisterBindingModel.getConfirmPassword())){
+
+        if (!UserRegisterBindingModel.getPassword().equals(userRegisterBindingModel.getConfirmPassword())){
             bindingResult.rejectValue("confirmPassword",
                     "error.userRegisterBindingModel",
                     "Passwords must be the same.");
