@@ -26,6 +26,6 @@ public class Address extends BaseEntity{
     private String phoneNumber;
 
     @OneToOne
-    private User user;
+    private UserEntity user;
 
 }

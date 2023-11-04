@@ -11,4 +11,9 @@ public class HomeController {
     public String index() {
         return "index";
     }
+
+    @GetMapping("/admin")
+    public String home() {
+        return "bookList";
+    }
 }

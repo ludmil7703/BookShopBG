@@ -1,26 +1,52 @@
 <!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Shop BG</title>
     <meta name="keywords" content="" />
     <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/css/style.css"/>
 </head>
 <body>
 <div id="project_container">
     <nav id="project_menu">
         <ul>
-            <li><a th:href="@{index.html}" class="current">Home</a></li>
-            <li><a href="/templates/subpage.html">Search</a></li>
-            <li><a href="/templates/subpage.html">Books</a></li>
-            <li><a href="/templates/subpage.html">New Releases</a></li>
-            <li><a href="#">Company</a></li>
-            <li><a href="/templates/contact.html">Contact</a></li>
-            <li><a class="nav_right" href="/templates/contact.html">Register</a></li>
-            <li><a class="nav_right" href="/templates/contact.html">Login</a></li>
+            <li><a th:href="@{/}" class="current">Home</a></li>
+            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/subpage.html">Search</a></li>
+            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/subpage.html">Books</a></li>
+            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/subpage.html">New Releases</a></li>
+            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="#">Company</a></li>
+            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/contact.html">Contact</a></li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/add}">Add Book</a></li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/bookList}">Book List</a></li>
+
+            <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}">Admin</a></li>
+            <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/register}">Register</a></li>
+            <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/login}">Login</a></li>
+            <li>
+            <a sec:authorize="isAuthenticated()" class="nav_right" >Welcome, <th:block sec:authentication="name"></th:block></a>
+
+            </li>
+            <li class="nav_right" sec:authorize="isAuthenticated()">
+
+                <a href="javascript: signOut();">Logout</a>
+                <div style="display: none;">
+                    <form name="formSignout" th:action="@{/users/logout}" method="post">
+                    </form>
+                </div>
+                <script>
+                    function signOut() {
+                        document.formSignout.submit();
+                    }
+                </script>
+            </li>
+
+
+
         </ul>
+
     </nav> <!-- end of menu -->
     <header id="project_header">
         <div id="project_special_offers">

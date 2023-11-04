@@ -18,7 +18,7 @@ import java.util.List;
 public class Order extends BaseEntity{
 
     @ManyToOne
-    private User user;
+    private UserEntity user;
 
     @ManyToMany(mappedBy = "orders",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Book> books;

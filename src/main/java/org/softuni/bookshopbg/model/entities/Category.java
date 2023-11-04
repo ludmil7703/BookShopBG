@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.softuni.bookshopbg.model.enums.CategoryName;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -16,10 +18,11 @@ import java.util.Set;
 @Table(name = "categories")
 public class Category extends BaseEntity {
 
-    @Column(nullable = false)
-    private String name;
 
-    @ManyToMany
-    private Set<Book> books;
+    @Enumerated(EnumType.STRING)
+    private CategoryName categoryName;
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    List<Book> books;
 
 }
