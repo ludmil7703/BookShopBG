@@ -11,11 +11,9 @@ public class BookToCartItem extends BaseEntity {
 
 	
 	@ManyToOne
-	@JoinColumn(name="book_id")
 	private Book book;
 	
 	@ManyToOne
-	@JoinColumn(name="cart_item_id")
 	private CartItem cartItem;
 
 

@@ -3,6 +3,8 @@ package org.softuni.bookshopbg.service.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 
+import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.Author;
 import org.softuni.bookshopbg.model.entities.Category;
@@ -19,11 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class BookServiceImpl implements BookService {
 	
 
@@ -68,28 +72,17 @@ public class BookServiceImpl implements BookService {
 					.get("url")
 					.toString();
 
-
-			book.setImageUrl(imageUrl);
+			bookBindingModel.setImageUrl(imageUrl);
 
 
 		Category category = categoryRepository.findCategoryByCategoryName(bookBindingModel.getCategory());
 
+		ModelMapper modelMapper = new ModelMapper();
 
-		book.setTitle(bookBindingModel.getTitle());
 		book.setAuthor(author);
-		book.setDescription(bookBindingModel.getDescription());
-		book.setListPrice(bookBindingModel.getListPrice());
-		book.setOurPrice(bookBindingModel.getOurPrice());
-		book.setInStockNumber(bookBindingModel.getInStockNumber());
-		book.setActive(bookBindingModel.isActive());
 		book.setCategory(category);
-		book.setShippingWeight(bookBindingModel.getShippingWeight());
-		book.setFormat(bookBindingModel.getFormat());
-		book.setIsbn(bookBindingModel.getIsbn());
-		book.setLanguage(bookBindingModel.getLanguage());
-		book.setNumberOfPages(bookBindingModel.getNumberOfPages());
-		book.setReleaseDate(new SimpleDateFormat("yyyy-MM-dd").parse((bookBindingModel.getPublicationDate().toString())));
-		book.setPublisher(bookBindingModel.getPublisher());
+		modelMapper.map(bookBindingModel, book);
+
 
 		return bookRepository.save(book);
 	}
@@ -97,9 +90,14 @@ public class BookServiceImpl implements BookService {
 
 
 	
-	public List<Book> findAll() {
+	public List<BookBindingModel> findAll() {
+		List<BookBindingModel> bookBindingModelList = new ArrayList<>();
+		ModelMapper modelMapper = new ModelMapper();
+		for (Book book : (List<Book>) bookRepository.findAll()) {
+			bookBindingModelList.add(modelMapper.map(book, BookBindingModel.class));
+		}
 
-        return (List<Book>) bookRepository.findAll();
+		return bookBindingModelList;
 
 	}
 	
@@ -108,8 +106,15 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public void deleteById(long l) {
-		bookRepository.deleteById(l);
+	public void deleteBookById(Long id) {
+		Optional<Book> byId = bookRepository.findById(id);
+		if (byId.isPresent()){
+			Book book = byId.get();
+			book.getAuthor().getBooks().remove(book);
+			book.getCategory().getBooks().remove(book);
+		}
+
+		bookRepository.deleteBookById(id);
 	}
 
 

@@ -1,10 +1,13 @@
 package org.softuni.bookshopbg.model.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.softuni.bookshopbg.model.enums.CategoryName;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
@@ -14,10 +17,12 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Base64;
+import java.util.Date;
 
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class BookBindingModel {
     private Long id;
 
@@ -31,7 +36,8 @@ public class BookBindingModel {
 
     @NotNull(message = "Publication date cannot be null")
     @PastOrPresent(message = "Publication date cannot be in the future")
-    private String publicationDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date releaseDate;
 
     @NotNull(message = "Language cannot be null")
     private String language;
@@ -48,7 +54,6 @@ public class BookBindingModel {
 
     @NotNull(message = "ISBN cannot be null")
     @Positive(message = "ISBN must be positive")
-    @UniqueElements(message = "ISBN must be unique")
     private int isbn;
 
     @NotNull(message = "Shipping weight cannot be null")
@@ -71,10 +76,14 @@ public class BookBindingModel {
     @Positive(message = "In stock number must be positive")
     private int inStockNumber;
 
-    private boolean isActive;
+    private boolean isActive = true;
+
+    private boolean isSelectedForDelete = false;
 
 
     private MultipartFile bookImage;
+
+    private String imageUrl;
 
 
     public BookBindingModel() {
