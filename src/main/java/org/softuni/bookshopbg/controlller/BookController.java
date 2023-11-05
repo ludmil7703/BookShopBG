@@ -20,8 +20,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.*;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/books")
@@ -60,8 +60,8 @@ public class BookController {
 		return "redirect:/books/bookList";
 	}
 	
-	@RequestMapping("/bookInfo")
-	public String bookInfo(@RequestParam("id") Long id, Model model) {
+	@GetMapping("/bookInfo/{id}")
+	public String bookInfo(@PathVariable Long id, Model model) {
 		Book book = bookService.findById(id);
 		model.addAttribute("book", book);
 		
@@ -69,27 +69,40 @@ public class BookController {
 	}
 	
 	
-	@RequestMapping("/updateBook")
-	public String updateBook(@RequestParam("id") Long id, Model model) {
+	@RequestMapping("/updateBook/{id}")
+	public String updateBook(@PathVariable Long id, Model model) {
 		Book book = bookService.findById(id);
-		model.addAttribute("book", book);
+		BookBindingModel bookBindingModel = bookService.mapBookToBookBindingModel(book);
+		model.addAttribute("book", bookBindingModel);
+		List<Category> categoryList = categoryRepository.findAll();
+		model.addAttribute("categoryList", categoryList);
 		
 		return "updateBook";
 	}
 	
 	
 	@RequestMapping(value="/updateBook", method=RequestMethod.POST)
-	public String updateBookPost(@ModelAttribute("book") BookBindingModel book, HttpServletRequest request) throws IOException, ParseException {
+	public String updateBook(@Valid @ModelAttribute("book") BookBindingModel book, BindingResult bindingResult,
+							  RedirectAttributes rAtt) throws IOException, ParseException {
+		if (bindingResult.hasErrors()){
+			rAtt.addFlashAttribute("book", book);
+			rAtt.addFlashAttribute("org.springframework.validation.BindingResult.book", bindingResult);
+			return "redirect:/books/add";
+		}
 		bookService.save(book);
 
 
 		
-		return "redirect:/book/bookInfo?id="+book.getId();
+		return "redirect:/books/bookInfo/"+book.getId();
 	}
 	
 	@RequestMapping("/bookList")
 	public String bookList(Model model) throws IOException {
-		List<BookBindingModel> bookList = bookService.findAll();
+		List<Book> list = bookService.findAll();
+		List<BookBindingModel> bookList = new ArrayList<>();
+		for (Book book : list) {
+			bookList.add(bookService.mapBookToBookBindingModel(book));
+		}
 		model.addAttribute("bookList", bookList);
 		return "bookList";
 		
@@ -103,12 +116,11 @@ public class BookController {
 	}
 
 	@DeleteMapping("/removeSelected")
-	public String removeSelected(@RequestParam ("selectedBooks") Map<String, List<BookBindingModel>> params) {
-
-		List<BookBindingModel> bookBindingModelList = params.get("selectedBooks");
-		for (BookBindingModel bookBindingModel : bookBindingModelList) {
-			System.out.println(bookBindingModel.getAuthor());;
+	public String removeSelected(Model model, @RequestParam(value = "selected") List<Long> selected) {
+		for (Long id : selected) {
+			bookService.deleteBookById(id);
 		}
+
 		return "redirect:/books/bookList";
 	}
 

@@ -12,10 +12,12 @@ public interface BookService {
 	
 	Book save(BookBindingModel book) throws IOException, ParseException;
 
-	List<BookBindingModel> findAll() throws IOException;
+	List<Book> findAll() throws IOException;
 	
 	Book findById(Long id);
 
 
     void deleteBookById(Long id);
+
+	BookBindingModel mapBookToBookBindingModel(Book book);
 }

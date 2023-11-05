@@ -28,7 +28,7 @@
 						<input hidden="hidden" name="id"  />
 						<input th:id="selected" th:name="selected" th:value="${book.id}" class="checkboxBook" type="checkbox" />
 						</td>
-						<td><a th:href="@{/book/bookInfo(id=${book.getId()})}"><span th:text="${book.title}"></span></a></td>
+						<td><a th:href="@{/books/bookInfo/{id}(id=${book.getId()})}"><span th:text="${book.title}"></span></a></td>
 						<td th:text="${book.author}"></td>
 						<td th:text="${book.category.name()}"></td>
 						<td th:text="${book.listPrice}"></td>

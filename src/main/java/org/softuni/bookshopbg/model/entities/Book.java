@@ -25,9 +25,8 @@ public class Book extends BaseEntity {
 	@NotBlank(message = "Title cannot be null")
 	private String title;
 
-	@ManyToOne
-	@NotNull(message = "Author cannot be null")
-	private Author author;
+	@NotBlank(message = "Author cannot be null")
+	private String author;
 
 	@Column(length = 50)
 	private String publisher;
@@ -93,5 +92,9 @@ public class Book extends BaseEntity {
 	@JsonIgnore
 	private List<BookToCartItem> bookToCartItemList;
 
+	public String getDateFromReleaseDate() {
+
+		return this.releaseDate.toString().substring(0, 10);
+	}
 
 }
