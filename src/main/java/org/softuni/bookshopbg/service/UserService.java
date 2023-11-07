@@ -23,6 +23,5 @@ public interface UserService {
     Optional<UserEntity> findUserByUsername(String username);
 
     boolean checkCredentials(String username, String password);
-    
 
 }

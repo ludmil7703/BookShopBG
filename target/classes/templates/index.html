@@ -7,9 +7,9 @@
 <nav th:replace="fragments/commons::nav"></nav>
 <header th:replace="fragments/commons::header"></header>
 
-    <main id="project_content">
+    <main id="project_content" class="container-fluid">
 
-        <section id="project_content_left" >
+        <section id="project_content_left" class="col-sm-3">
             <div class="project_content_left_section">
                 <h1>Categories</h1>
                 <ul>
@@ -37,110 +37,29 @@
                 <a href="http://jigsaw.w3.org/css-validator/check/referer"><img style="border:0;width:88px;height:31px"  src="http://jigsaw.w3.org/css-validator/images/vcss-blue" alt="Valid CSS!" vspace="8" border="0" /></a>
             </div>
         </section> <!-- end of content left -->
-        <div id="book_list_right">
-        <ul id="project_content_right list-group">
-        	<div class="project_product_box" th:each="book : ${bookShelf}">
-            	<h4 th:text="${book.title}">Photography<span th:text="'  (' + ${book.author} + ')'">(by Best Author)</span></h4>
-   	      <img th:src="${book.imageUrl}" alt="image" />
-                <div class="product_info">
+        <div id="book_list_right" class="col-sm-9">
+        <div role="listbox" class="embed-responsive">
+
+        	<div class="col card-body" th:each="book : ${bookShelf}">
+            	<h5 class="row card-title" th:text="${book.title} + '  (by ' + ${book.author} + ')'">Photography<span th:text="">(by Best Author)</span></h5>
+
+                <div class="card-group">
+   	             <img th:src="${book.imageUrl}" alt="image" class="image_panel card-img"/>
+                  <div class="card-column">
                 	<p th:text="${book.description}">Etiam luctus. Quisque facilisis suscipit elit. Curabitur...</p>
-                  <h3 th:text="${book.listPrice}">$55</h3>
+                  <h4 th:text="'$' + ${book.listPrice}">$55</h4>
                     <div class="buy_now_button"><a href="subpage.html">Buy Now</a></div>
-                    <div class="detail_button"><a href="subpage.html">Detail</a></div>
+                    <div class="detail_button"><a th:href="@{/bookDetail/{id}(id=${book.id})}">Detail</a></div>
+                  </div>
                 </div>
                 <div class="cleaner border border-dark" style="margin: 10px">&nbsp;</div>
             </div>
-            
-
-            
-            <div class="project_product_box">
-            	<h4>Cooking  <span>(by New Author)</span></h4>
-       	    <img src="/images/image_02.jpg" alt="image" />
-                <div class="product_info">
-                	<p>Aliquam a dui, ac magna quis est eleifend dictum.</p>
-                    <h3>$35</h3>
-                    <div class="buy_now_button"><a href="subpage.html">Buy Now</a></div>
-                    <div class="detail_button"><a href="subpage.html">Detail</a></div>
-                </div>
-                <div class="cleaner">&nbsp;</div>
-            </div>
-
-            
-            <div class="project_product_box">
-            	<h4>Gardening <span>(by Famous Author)</span></h4>
-   	      <img src="/images/image_03.jpg" alt="image" />
-                <div class="product_info">
-                	<p>Ut fringilla enim sed turpis. Sed justo dolor, convallis at.</p>
-                    <h3>$65</h3>
-                    <div class="buy_now_button"><a href="subpage.html">Buy Now</a></div>
-                    <div class="detail_button"><a href="subpage.html">Detail</a></div>
-                </div>
-                <div class="cleaner">&nbsp;</div>
-            </div>
-            
-
-            
-            <div class="project_product_box">
-            	<h4>Sushi Book  <span>(by Japanese Name)</span></h4>
-            	<img src="/images/image_04.jpg" alt="image" />
-                <div class="product_info">
-                	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
-                    <h3>$45</h3>
-                    <div class="buy_now_button"><a href="subpage.html">Buy Now</a></div>
-                    <div class="detail_button"><a href="subpage.html">Detail</a></div>
-                </div>
-                <div class="cleaner">&nbsp;</div>
-            </div>
-            
-
-            <div class="project_product_box">
-                <h4>Photography  <span>(by Best Author)</span></h4>
-                <img src="/images/image_01.jpg" alt="image" />
-                <div class="product_info">
-                    <p>Etiam luctus. Quisque facilisis suscipit elit. Curabitur...</p>
-                    <h3>$55</h3>
-                    <div class="buy_now_button"><a href="subpage.html">Buy Now</a></div>
-                    <div class="detail_button"><a href="subpage.html">Detail</a></div>
-                </div>
-                <div class="cleaner">&nbsp;</div>
-            </div>
-
-
-
-            <div class="project_product_box">
-                <h4>Cooking  <span>(by New Author)</span></h4>
-                <img src="/images/image_02.jpg" alt="image" />
-                <div class="product_info">
-                    <p>Aliquam a dui, ac magna quis est eleifend dictum.</p>
-                    <h3>$35</h3>
-                    <div class="buy_now_button"><a href="subpage.html">Buy Now</a></div>
-                    <div class="detail_button"><a href="subpage.html">Detail</a></div>
-                </div>
-                <div class="cleaner"> </div>
-            </div>
-
-
-
-            <div class="project_product_box">
-                <h4>Cooking  <span>(by New Author)</span></h4>
-                <img src="/images/image_02.jpg" alt="image" />
-                <div class="product_info">
-                    <p>Aliquam a dui, ac magna quis est eleifend dictum.</p>
-                    <h3>$35</h3>
-                    <div class="buy_now_button"><a href="subpage.html">Buy Now</a></div>
-                    <div class="detail_button"><a href="subpage.html">Detail</a></div>
-                </div>
-                <div class="cleaner"> </div>
-            </div>
-
-
-
-
-        </ul>
+        </div>
         <a href="subpage.html"><img src="/images/ads.jpg" alt="ads" /></a>
         <!-- end of content right -->
         </div>
     	<div class="cleaner_with_height">&nbsp;</div>
+
 
 
     </main> <!-- end of content -->

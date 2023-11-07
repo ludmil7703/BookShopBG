@@ -234,17 +234,17 @@ img {
 
 
 
-#project_content_right .project_product_box {
+/*#project_content_right .project_product_box {*/
 
-	float: left;
-	width: 670px;
-	height: 210px;
-	padding: 10px;
-	margin: 5px;
-	border: 1px solid #333;
-}
+/*	float: left;*/
+/*	width: 670px;*/
+/*	height: 210px;*/
+/*	padding: 10px;*/
+/*	margin: 5px;*/
+/*	border: 1px solid #333;*/
+/*}*/
 
-#project_content_right h1 {
+#book_list_right h5 {
 	padding: 10px;
 	margin: 0 0 20px 0;
 	font-size: 15px;
@@ -252,37 +252,29 @@ img {
 	background: url(../images/h1_bg.jpg);
 }
 
-#project_content_right h2 {
+#book_list_right h2 {
 	padding: 0 0 0 0;
 	margin: 0 0 20px 0;
 	font-size: 12px;
 	color: #e6e154;
 }
 
-#project_content_right h3 {
+#book_list_right h4 {
 	padding: 0;
 	margin: 0 0 20px 0;
 	font-size: 18px;
 	color: #85391f;
 }
 
-#project_content_right ul {
-	margin: 0 0 20px 0;
-	padding: 0 0 0 20px;
-	list-style: none;
-}
 
-#project_content_right li {
-	padding: 0 0 3px 0;
-}
 
-#project_content_right .image_panel {
+#book_list_right .image_panel {
 	float: left;
 	width: 100px;
 	margin-right: 20px;
 }
 
-#project_content_right p {
+#book_list_right p {
 	text-align: justify;
 	padding: 0 0 8px 0;
 }
@@ -303,6 +295,12 @@ img {
 
 .product_info p {
 	margin-bottom: 15px;
+}
+.list-group-item-mine {
+	background-color: #f1f9fb;
+	border-top: 1px solid #0091b5;
+	border-left-color: #fff;
+	border-right-color: #fff;
 }
 
 /* end of content */

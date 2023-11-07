@@ -10,6 +10,8 @@
     <script th:src="@{/js/scripts.js}"></script>
     <script th:src="@{/js/bootbox.min.js}"></script>
 
+    <link rel="stylesheet" href="/css/bootstrap.css/">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
     <link rel="stylesheet" href="/css/style.css"/>
 </head>
 <body>
@@ -18,7 +20,43 @@
         <ul>
             <li><a th:href="@{/}" class="current">Home</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/subpage.html">Search</a></li>
-            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/subpage.html">Books</a></li>
+<!--            <form class="navbar-form" th:action="@{/searchBook}" method="post">-->
+<!--                <div class="form-group">-->
+<!--                    <input type="text" name="keyword" class="form-control"-->
+<!--                           placeholder="Book title" />-->
+<!--                </div>-->
+
+<!--                <button type="submit" class="btn btn-info btn-sm"><span-->
+<!--                        class="glyphicon glyphicon-search"></span> Search</button>-->
+
+<!--            </form>-->
+            <li class="dropdown"><a th:href="@{/bookList}"
+                                    class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    aria-haspopup="true" aria-expanded="false"><span
+                    class="glyphicon glyphicon-list-alt"></span> BOOKS <span
+                    class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/bookList}"><span class="glyphicon glyphicon-th-list"></span> Browse All Books</a></li>
+                    <li><a th:href="@{/searchByCategory(category='Programming')}"
+                           class="list-group-item"><span class="glyphicon glyphicon-book"></span> Programming</a></li>
+
+                    <li><a th:href="@{/searchByCategory(category='Engineering')}"
+                           class="list-group-item"><span class="glyphicon glyphicon-book"></span> Engineering</a></li>
+
+
+                    <li><a th:href="@{/searchByCategory(category='Fiction')}"
+                           class="list-group-item"><span class="glyphicon glyphicon-book"></span> Fiction</a></li>
+
+                    <li><a th:href="@{/searchByCategory(category='Management')}"
+                           class="list-group-item"><span class="glyphicon glyphicon-book"></span> Management</a></li>
+
+                    <li><a th:href="@{/searchByCategory(category='Arts &amp; Literature')}"
+                           class="list-group-item"><span class="glyphicon glyphicon-book"></span> Arts &amp; Literature</a></li>
+
+                    <li><a th:href="@{/faq}"><span class="glyphicon glyphicon-question-sign"></span> FAQ</a></li>
+
+                </ul>
+            </li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/subpage.html">New Releases</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="#">Company</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/contact.html">Contact</a></li>
@@ -27,7 +65,8 @@
 
             <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}">Admin</a></li>
             <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/register}">Register</a></li>
-            <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/login}">Login</a></li>
+            <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/login}">
+                <span class="glyphicon glyphicon-log-in"></span>Login</a></li>
             <li>
             <a sec:authorize="isAuthenticated()" class="nav_right" >Welcome, <th:block sec:authentication="name"></th:block></a>
 
@@ -74,7 +113,7 @@
 
     <footer id="project_footer">
 
-        <a href="/templates/subpage.html">Home</a> | <a href="/templates/subpage.html">Search</a> | <a href="/templates/subpage.html">Books</a> | <a href="#">New Releases</a> | <a href="#">FAQs</a> | <a href="#">Contact Us</a><br />
+        <a href="/templates/subpage.html">Home</a> | <a href="/templates/subpage.html">Search</a> | <a href="/templates/subpage.html">Books</a> | <a href="#">New Releases</a> | <a href="/templates/faq.html">FAQs</a> | <a href="#">Contact Us</a><br />
         Copyright © 2024 <a href="#"><strong>Book Shop BG</strong></a>
     </footer>
 </div> <!-- end of container -->
