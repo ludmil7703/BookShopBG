@@ -22,7 +22,5 @@ public class Category extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CategoryName categoryName;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
-    List<Book> books;
 
 }

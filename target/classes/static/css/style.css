@@ -269,15 +269,10 @@ img {
 
 
 #book_list_right .image_panel {
-	float: left;
-	width: 100px;
+	width: 80px;
 	margin-right: 20px;
 }
 
-#book_list_right p {
-	text-align: justify;
-	padding: 0 0 8px 0;
-}
 
 .project_product_box h1 span {
 	font-weight: normal;

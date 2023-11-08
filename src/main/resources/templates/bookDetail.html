@@ -26,7 +26,7 @@
     	<input hidden="hidden" th:field="*{book.id}" />
 		<div class="card-body" >
     		<div class="col">
-    			<h5><a th:href="@{/bookList}" class="fa fa-long-arrow-left" aria-hidden="true" style="color: green"> Back to book list</a></h5><br/>
+    			<h5><a th:href="@{/}" class="fa fa-long-arrow-left" aria-hidden="true" style="color: green"><< Back</a></h5><br/>
     			<img class="card-img image_panel" th:src="${book.imageUrl}" />
     		</div>
 
@@ -61,7 +61,7 @@
     									<h4 th:if="*{book.inStockNumber&lt;10 and book.inStockNumber&gt;0}" style="color: green">Only <span th:text="${book.inStockNumber}"> </span> In Stock</h4>
     									<h4 th:if="*{book.inStockNumber==0}" style="color:darkred;">Unavailable</h4>
 																			<br/>
-    									<button type="submit" class="btn btn-warning" style="color:black;border:1px solid black; padding: 10px 40px 10px 40px;">Add to Cart</button>
+
     						</div>
     					</div>
 
@@ -70,6 +70,7 @@
     			<h3>Description:</h3>
     			<p th:utext="${book.description}"></p>
     			<br/><hr/>
+					<button type="submit" class="btn btn-warning" style="color:black;border:1px solid black; padding: 10px 40px 10px 40px;">Add to Cart</button>
 				</div>
     		</div>
 

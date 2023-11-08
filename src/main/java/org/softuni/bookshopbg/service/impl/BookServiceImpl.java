@@ -90,11 +90,6 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public void deleteBookById(Long id) {
-		Optional<Book> byId = bookRepository.findById(id);
-		if (byId.isPresent()){
-			Book book = byId.get();
-			book.getCategory().getBooks().remove(book);
-		}
 
 		bookRepository.deleteBookById(id);
 	}

@@ -67,10 +67,7 @@
             <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/register}">Register</a></li>
             <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/login}">
                 <span class="glyphicon glyphicon-log-in"></span>Login</a></li>
-            <li>
-            <a sec:authorize="isAuthenticated()" class="nav_right" >Welcome, <th:block sec:authentication="name"></th:block></a>
 
-            </li>
             <li class="nav_right" sec:authorize="isAuthenticated()">
 
                 <a href="javascript: signOut();">Logout</a>
@@ -84,6 +81,13 @@
                     }
                 </script>
             </li>
+            <li sec:authorize="isAuthenticated()" class="nav_right"><a th:href="@{/shoppingCart/cart}">Cart</a></li>
+            <li>
+            <a sec:authorize="isAuthenticated()" class="nav_right" >Welcome, <th:block sec:authentication="name"></th:block></a>
+
+            </li>
+
+
 
 
 

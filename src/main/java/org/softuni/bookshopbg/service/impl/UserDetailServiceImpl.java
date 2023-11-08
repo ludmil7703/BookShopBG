@@ -10,11 +10,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-public class BookStoreUserDetailsService implements UserDetailsService {
+public class UserDetailServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public BookStoreUserDetailsService(UserRepository userRepository){
+    public UserDetailServiceImpl(UserRepository userRepository){
         this.userRepository = userRepository;
     }
 
@@ -22,7 +22,7 @@ public class BookStoreUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository
                 .findByUsername(username)
-                .map(BookStoreUserDetailsService::map)
+                .map(UserDetailServiceImpl::map)
                 .orElseThrow(() -> new UsernameNotFoundException("User "+ username + " not found!"));
     }
 
@@ -30,7 +30,7 @@ public class BookStoreUserDetailsService implements UserDetailsService {
         return User
                 .withUsername(userEntity.getUsername())
                 .password(userEntity.getPassword())
-                .authorities(userEntity.getRoles().stream().map(BookStoreUserDetailsService::map).toList())
+                .authorities(userEntity.getRoles().stream().map(UserDetailServiceImpl::map).toList())
                 .build();
     }
 

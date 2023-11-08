@@ -1,16 +1,13 @@
 package org.softuni.bookshopbg.config;
 
-import lombok.Value;
 import org.softuni.bookshopbg.model.enums.UserRoleEnum;
 import org.softuni.bookshopbg.repositories.UserRepository;
-import org.softuni.bookshopbg.service.impl.BookStoreUserDetailsService;
-import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
+import org.softuni.bookshopbg.service.impl.UserDetailServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -31,6 +28,7 @@ public class SecurityConfiguration {
             // All static resources which are situated in js, images, css are available for anyone
             .requestMatchers("/css/**").permitAll()
             .requestMatchers("/images/**").permitAll()
+            .requestMatchers("/webfonts/**").permitAll()
             .requestMatchers("/js/**").permitAll()
             // Allow anyone to see the home page, the registration page and the login form
             .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
@@ -76,7 +74,7 @@ public class SecurityConfiguration {
   public UserDetailsService userDetailsService(UserRepository userRepository) {
     // This service translates the mobilele users and roles
     // to representation which spring security understands.
-    return new BookStoreUserDetailsService(userRepository);
+    return new UserDetailServiceImpl(userRepository);
   }
 
 }

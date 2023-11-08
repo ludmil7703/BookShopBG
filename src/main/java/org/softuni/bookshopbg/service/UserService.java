@@ -14,14 +14,11 @@ public interface UserService {
     void login(UserLoginBindingModel userLoginBindingModel);
 
 
-    void logout();
-
-    boolean isLogged();
-
     UserEntity findUserByEmail(String username);
 
     Optional<UserEntity> findUserByUsername(String username);
 
     boolean checkCredentials(String username, String password);
 
+    void save(UserEntity userEntity);
 }

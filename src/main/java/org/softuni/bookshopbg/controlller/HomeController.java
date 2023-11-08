@@ -51,7 +51,7 @@ public class HomeController {
             Optional<UserEntity> user = userService.findUserByUsername(username);
             model.addAttribute("user", user);
         }
-        Book book = bookRepository.findById(id).get();
+        Book book = bookRepository.findById(id).orElse(null);
         model.addAttribute("book", book);
         List<Integer> qtyList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
 

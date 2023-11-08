@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Repository
 public interface BookToCartItemRepository extends JpaRepository<BookToCartItem, Long> {
-	
-	void deleteByCartItem(CartItem cartItem);
+
+    void deleteByCartItem(CartItem cartItem);
 
 }

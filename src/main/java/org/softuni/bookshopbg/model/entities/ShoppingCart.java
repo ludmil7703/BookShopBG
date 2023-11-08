@@ -1,48 +1,41 @@
 package org.softuni.bookshopbg.model.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class ShoppingCart extends BaseEntity{
 
-	private BigDecimal GrandTotal;
-	
-	@OneToMany(mappedBy="shoppingCart", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-	@JsonIgnore
-	private List<CartItem> cartItemList;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-	private UserEntity user;
+    private BigDecimal GrandTotal;
+
+    @OneToMany(mappedBy="shoppingCart", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<CartItem> cartItemList;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "shoppingCart")
+    private UserEntity user;
 
 
+    public void setGrandTotal(BigDecimal grandTotal) {
+        GrandTotal = grandTotal;
+    }
 
-	public BigDecimal getGrandTotal() {
-		return GrandTotal;
-	}
+    public void setCartItemList(List<CartItem> cartItemList) {
+        this.cartItemList = cartItemList;
+    }
 
-	public void setGrandTotal(BigDecimal grandTotal) {
-		GrandTotal = grandTotal;
-	}
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
 
-	public List<CartItem> getCartItemList() {
-		return cartItemList;
-	}
 
-	public void setCartItemList(List<CartItem> cartItemList) {
-		this.cartItemList = cartItemList;
-	}
-
-	public UserEntity getUser() {
-		return user;
-	}
-
-	public void setUser(UserEntity user) {
-		this.user = user;
-	}
-	
-	
 }

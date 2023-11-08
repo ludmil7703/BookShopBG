@@ -22,79 +22,76 @@ import java.util.List;
 public class Book extends BaseEntity {
 
 
-	@NotBlank(message = "Title cannot be null")
-	private String title;
+    @NotBlank(message = "Title cannot be null")
+    private String title;
 
-	@NotBlank(message = "Author cannot be null")
-	private String author;
+    @NotBlank(message = "Author cannot be null")
+    private String author;
 
-	@Column(length = 50)
-	private String publisher;
+    @Column(length = 50)
+    private String publisher;
 
-	@Column(name = "release_date")
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
-	@PastOrPresent(message = "Release date cannot be in the future")
-	@NotNull(message = "Release date cannot be null")
-	private Date releaseDate;
-
-
-	private String language;
-
-	@ManyToOne
-	@NotNull(message = "Category cannot be null")
-	private Category category;
-
-	@Column(name = "number_of_pages")
-	@NotNull(message = "Number of pages cannot be null")
-	@Positive(message = "Number of pages must be positive")
-	private int numberOfPages;
+    @Column(name = "release_date")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @PastOrPresent(message = "Release date cannot be in the future")
+    @NotNull(message = "Release date cannot be null")
+    private Date releaseDate;
 
 
-	private String format;
+    private String language;
 
-	@Column(nullable = false)
-	@NotNull(message = "ISBN cannot be null")
-	@Positive(message = "ISBN must be positive")
-	private int isbn;
+    @ManyToOne
+    @NotNull(message = "Category cannot be null")
+    private Category category;
 
-	@Column(name = "shipping_weight")
-	@NotNull(message = "Shipping weight cannot be null")
-	@Positive(message = "Shipping weight must be positive")
-	private double shippingWeight;
-
-	@Column(name = "list_price")
-	@NotNull
-	private BigDecimal listPrice;
-
-	@Column(name = "our_price")
-	@NotNull(message = "Our price cannot be null")
-	@Positive(message = "Our price must be positive")
-	private BigDecimal ourPrice;
-
-	private boolean active;
-
-	@Column(name = "in_stock_number")
-	@PositiveOrZero(message = "In stock number must be positive or zero")
-	private int inStockNumber;
-
-	@Column
-	@NotBlank(message = "Description cannot be null")
-	private String description;
-
-	@Column(name = "image_url")
-	private String imageUrl;
-
-	@ManyToMany
-	private List<Order> orders;
+    @Column(name = "number_of_pages")
+    @NotNull(message = "Number of pages cannot be null")
+    @Positive(message = "Number of pages must be positive")
+    private int numberOfPages;
 
 
-	@OneToMany
-	@JsonIgnore
-	private List<BookToCartItem> bookToCartItemList;
+    private String format;
 
-	public String getDateFromReleaseDate() {
+    @Column(nullable = false)
+    @NotNull(message = "ISBN cannot be null")
+    @Positive(message = "ISBN must be positive")
+    private int isbn;
 
-		return this.releaseDate.toString().substring(0, 10);
-	}
+    @Column(name = "shipping_weight")
+    @NotNull(message = "Shipping weight cannot be null")
+    @Positive(message = "Shipping weight must be positive")
+    private double shippingWeight;
+
+    @Column(name = "list_price")
+    @NotNull
+    private BigDecimal listPrice;
+
+    @Column(name = "our_price")
+    @NotNull(message = "Our price cannot be null")
+    @Positive(message = "Our price must be positive")
+    private BigDecimal ourPrice;
+
+    private boolean active;
+
+    @Column(name = "in_stock_number")
+    @PositiveOrZero(message = "In stock number must be positive or zero")
+    private int inStockNumber;
+
+    @Column
+    @NotBlank(message = "Description cannot be null")
+    private String description;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @ManyToMany
+    private List<Order> orders;
+
+
+
+    public String getDateFromReleaseDate() {
+
+        return this.releaseDate.toString().substring(0, 10);
+    }
 
 }

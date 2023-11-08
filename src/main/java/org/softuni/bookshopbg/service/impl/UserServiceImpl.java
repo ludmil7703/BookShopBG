@@ -3,15 +3,17 @@ package org.softuni.bookshopbg.service.impl;
 
 import org.softuni.bookshopbg.model.dto.UserLoginBindingModel;
 import org.softuni.bookshopbg.model.dto.UserRegisterBindingModel;
+import org.softuni.bookshopbg.model.entities.ShoppingCart;
 import org.softuni.bookshopbg.model.entities.UserEntity;
 import org.softuni.bookshopbg.model.enums.UserRoleEnum;
 import org.softuni.bookshopbg.repositories.RoleRepository;
+import org.softuni.bookshopbg.repositories.ShoppingCartRepository;
 import org.softuni.bookshopbg.repositories.UserRepository;
 import org.softuni.bookshopbg.service.UserService;
-import org.softuni.bookshopbg.utils.LoggedUser;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -19,14 +21,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    private final LoggedUser loggedUser;
-
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, LoggedUser loggedUser, PasswordEncoder passwordEncoder) {
+
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.loggedUser = loggedUser;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -57,25 +57,10 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userRegisterBindingModel.getLastName());
         user.setEmail(userRegisterBindingModel.getEmail());
         user.setUsername(userRegisterBindingModel.getUsername());
-        user.setPassword(passwordEncoder.encode(userRegisterBindingModel.getPassword()));
+        user.setShoppingCart(new ShoppingCart());
+        user.setUserShippingList(new ArrayList<>());
+        user.setPassword(passwordEncoder.encode(UserRegisterBindingModel.getPassword()));
         return user;
-    }
-
-
-
-
-    @Override
-    public void logout() {
-        loggedUser.setUsername(null);
-        loggedUser.setLogged(false);
-    }
-
-    @Override
-    public boolean isLogged() {
-        if (loggedUser.isLogged()) {
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -100,5 +85,10 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> user = this.userRepository.findByUsername(username);
 
         return user.isPresent() && passwordEncoder.matches(password, user.get().getPassword());
+    }
+
+    @Override
+    public void save(UserEntity userEntity) {
+        this.userRepository.save(userEntity);
     }
 }
