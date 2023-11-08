@@ -38,6 +38,18 @@ public class UserEntity extends BaseEntity{
 
     private boolean active;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    private ShoppingCart shoppingCart;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<UserShipping> userShippingList;
+
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+//    private List<UserPayment> userPaymentList;
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orderList;
+
     public String getEmail() {
         return email;
     }
@@ -99,5 +111,6 @@ public class UserEntity extends BaseEntity{
         this.roles = roles;
         return this;
     }
+
 
 }

@@ -74,7 +74,7 @@ public class Book extends BaseEntity {
 	private boolean active;
 
 	@Column(name = "in_stock_number")
-	@Positive(message = "In stock number must be positive")
+	@PositiveOrZero(message = "In stock number must be positive or zero")
 	private int inStockNumber;
 
 	@Column

@@ -8,9 +8,7 @@ import org.softuni.bookshopbg.repositories.CategoryRepository;
 import org.softuni.bookshopbg.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Arrays;
@@ -46,7 +44,7 @@ public class HomeController {
         return "bookList";
     }
 
-    @GetMapping("/bookDetail/{id}")
+    @RequestMapping("/bookDetail/{id}")
     public String bookDetails(@PathVariable Long id, Model model, Principal principal) {
         if (principal != null) {
             String username = principal.getName();

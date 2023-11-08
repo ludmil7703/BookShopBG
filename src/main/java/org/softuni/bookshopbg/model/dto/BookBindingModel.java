@@ -73,7 +73,7 @@ public class BookBindingModel {
     private String description;
 
     @NotNull(message = "In stock number cannot be null")
-    @Positive(message = "In stock number must be positive")
+    @PositiveOrZero(message = "In stock number must be positive or zero")
     private int inStockNumber;
 
     private boolean isActive = true;
