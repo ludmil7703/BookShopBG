@@ -2,13 +2,13 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/commons::head"></head>
+
 <body>
-<nav th:replace="fragments/commons::nav"></nav>
-<header th:replace="fragments/commons::header"></header>
 
 <div id="project_container">
-
-    <main id="project_content" class="container-fluid">
+    <nav th:replace="fragments/commons::nav"></nav>
+    <header th:replace="fragments/commons::header"></header>
+    <main id="project_content" class="container">
 
         <section id="project_content_left" class="col-sm-3">
             <div class="project_content_left_section">
@@ -70,50 +70,10 @@
         <!-- end of content right -->
         </div>
     	<div class="cleaner_with_height">&nbsp;</div>
-<!--            <table border="0" id="bookList">-->
-<!--                <thead>-->
-<!--                <tr>-->
-<!--                    <th></th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr class="book-item" data-th-each="book : ${bookShelf}">-->
-<!--                    <td>-->
-<!--                        <div th:if="${book != null}">-->
-<!--                            <div class="row" style="margin-bottom: 50px;">-->
-<!--                                <div class="col-xs-3">-->
-<!--                                    <a th:href="@{/bookDetail/{id}(id=${book.id})}"><img-->
-<!--                                            class="img-responsive shelf-book"-->
-<!--                                            th:src="${book.imageUrl}" /></a>-->
-<!--                                </div>-->
-<!--                                <div class="col-xs-9">-->
-<!--                                    <a th:href="@{/bookDetail/{id}(id=${book.id})}"><h4-->
-<!--                                            th:text="${book.title}"></h4></a> <span-->
-<!--                                        th:text="${book.releaseDate}"></span>-->
-<!--                                    <p th:text="${book.author}"></p>-->
-<!--                                    <a th:href="@{/bookDetail/{id}(id=${book.id})}"><span th:text="${#strings.capitalize(book.format)}"></span></a> <span-->
-<!--                                        th:text="${book.numberOfPages}"><span> pages</span></span><br />-->
-
-<!--                                    <a th:href="@{/bookDetail/{id}(id=${book.id})}"><span style="font-size: x-large; color: #db3208;">$<span
-                                         th:text="${#numbers.formatDecimal(book.ourPrice, 0 , 'COMMA', 2, 'POINT')}"></span></span></a>-->
-
-<!--                                    <span style="text-decoration: line-through;">$<span th:text="${#numbers.formatDecimal(book.listPrice, 0 , 'COMMA', 2, 'POINT')}"></span></span>-->
-
-<!--                                    <p th:utext="${#strings.abbreviate(book.description,1000)}"></p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <hr/>-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-
-
 
     </main> <!-- end of content -->
-    
-<footer th:replace="fragments/commons::footer"></footer>
+
 </div>
+<footer th:replace="fragments/commons::footer"></footer>
 </body>
 </html>

@@ -41,13 +41,13 @@ public class UserEntity extends BaseEntity{
     @JoinColumn(name = "shopping_cart_id")
     private ShoppingCart shoppingCart;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
     private List<UserShipping> userShippingList;
 
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-//    private List<UserPayment> userPaymentList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
+    private List<UserPayment> userPaymentList;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Order> orderList;
 
 
@@ -55,6 +55,7 @@ public UserEntity(){
     this.shoppingCart = new ShoppingCart();
     this.orderList = new ArrayList<>();
     this.userShippingList = new ArrayList<>();
+    this.userPaymentList = new ArrayList<>();
 }
 
 }

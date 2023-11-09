@@ -18,10 +18,10 @@ public class ShoppingCart extends BaseEntity{
 
     private BigDecimal GrandTotal;
 
-    @OneToMany(mappedBy="shoppingCart", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    @OneToMany(mappedBy="shoppingCart", cascade= CascadeType.ALL, fetch= FetchType.EAGER)
     private List<CartItem> cartItemList;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "shoppingCart")
+    @OneToOne
     private UserEntity user;
 
 

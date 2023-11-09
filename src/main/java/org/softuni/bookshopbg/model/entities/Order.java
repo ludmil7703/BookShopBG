@@ -1,32 +1,44 @@
 package org.softuni.bookshopbg.model.entities;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "orders")
+@Table(name="user_order")
 public class Order extends BaseEntity{
 
-    @ManyToOne
-    private UserEntity user;
+	private Date orderDate;
+	private Date shippingDate;
+	private String shippingMethod;
+	private String orderStatus;
+	private BigDecimal orderTotal;
+	
+	@OneToMany(mappedBy = "order")
+	private List<CartItem> cartItemList;
+	
+	@OneToOne(mappedBy = "order", cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	private ShippingAddress shippingAddress;
+	
+	@OneToOne(mappedBy = "order", cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	private BillingAddress billingAddress;
+	
+	@OneToOne(mappedBy = "order", cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	private Payment payment;
+	
+	@ManyToOne
+	private UserEntity user;
 
-    @ManyToMany(mappedBy = "orders",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Book> books;
-
-    @DateTimeFormat(pattern = "dd-MM-yyyy' 'HH:mm")
-    private Date orderDate;
-
-    @Column(name = "order_status",nullable = false)
-    private String orderStatus;
-
+	
 }

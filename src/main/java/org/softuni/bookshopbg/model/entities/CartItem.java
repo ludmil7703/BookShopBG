@@ -2,11 +2,18 @@ package org.softuni.bookshopbg.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 import java.math.BigDecimal;
 import java.util.List;
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table
 public class CartItem extends BaseEntity{
@@ -18,7 +25,7 @@ public class CartItem extends BaseEntity{
     @OneToOne
     private Book book;
 
-    @OneToMany(mappedBy = "cartItem")
+    @OneToMany(mappedBy = "cartItem", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<BookToCartItem> bookToCartItemList;
 
@@ -30,54 +37,6 @@ public class CartItem extends BaseEntity{
     @JoinColumn(name="order_id")
     private Order order;
 
-
-    public int getQty() {
-        return qty;
-    }
-
-    public void setQty(int qty) {
-        this.qty = qty;
-    }
-
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(BigDecimal subtotal) {
-        this.subtotal = subtotal;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
-    public List<BookToCartItem> getBookToCartItemList() {
-        return bookToCartItemList;
-    }
-
-    public void setBookToCartItemList(List<BookToCartItem> bookToCartItemList) {
-        this.bookToCartItemList = bookToCartItemList;
-    }
-
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
-    }
-
-    public void setShoppingCart(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 
 
 }

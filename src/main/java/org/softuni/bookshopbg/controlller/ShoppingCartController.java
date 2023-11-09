@@ -15,11 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @Controller
@@ -53,6 +50,8 @@ public class ShoppingCartController {
 
 		shoppingCartService.updateShoppingCart(shoppingCart);
 
+		model.addAttribute("user", user);
+
 		model.addAttribute("cartItemList", cartItemList);
 		model.addAttribute("shoppingCart", shoppingCart);
 
@@ -79,7 +78,7 @@ public class ShoppingCartController {
 		return "forward:/bookDetail/"+book.getId();
 	}
 
-	@RequestMapping("/updateCartItem/{id}")
+	@RequestMapping("/updateCartItem")
 	public String updateShoppingCart(
 			@ModelAttribute("id") Long cartItemId,
 			@ModelAttribute("qty") int qty
@@ -91,8 +90,8 @@ public class ShoppingCartController {
 		return "forward:/shoppingCart/cart";
 	}
 
-	@RequestMapping("/removeItem/{id}")
-	public String removeItem(@PathVariable Long id) {
+	@RequestMapping("/removeItem")
+	public String removeItem(@ModelAttribute("id") Long id) {
 		cartItemService.removeCartItem(cartItemService.findById(id));
 
 		return "forward:/shoppingCart/cart";
