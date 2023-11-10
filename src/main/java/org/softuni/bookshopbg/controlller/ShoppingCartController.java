@@ -45,8 +45,12 @@ public class ShoppingCartController {
 		UserEntity user = userService.findUserByUsername(principal.getName()).orElse(null);
         assert user != null;
         ShoppingCart shoppingCart = user.getShoppingCart();
+		shoppingCart.setUser(user);
 
 		List<CartItem> cartItemList = cartItemService.findByShoppingCart(shoppingCart);
+		if (cartItemList.isEmpty()){
+			return "forward:/";
+		}
 
 		shoppingCartService.updateShoppingCart(shoppingCart);
 

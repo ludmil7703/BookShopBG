@@ -39,9 +39,15 @@ public class HomeController {
         return "/index";
     }
 
+    @GetMapping("/subpage")
+    public String subpage(Model model) {
+        List<Category> categoryList = categoryRepository.findAll();
+        model.addAttribute("categoryList", categoryList);
+        return "/subpage";
+    }
     @GetMapping("/admin")
     public String home() {
-        return "bookList";
+        return "admin";
     }
 
     @RequestMapping("/bookDetail/{id}")
@@ -58,5 +64,10 @@ public class HomeController {
         model.addAttribute("qtyList", qtyList);
         model.addAttribute("qty", 1);
         return "bookDetail";
+    }
+
+    @GetMapping("/faq")
+    public String faq(){
+        return "faq";
     }
 }

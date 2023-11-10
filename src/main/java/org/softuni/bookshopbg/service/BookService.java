@@ -3,6 +3,8 @@ package org.softuni.bookshopbg.service;
 
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.Book;
+import org.softuni.bookshopbg.model.entities.Category;
+import org.softuni.bookshopbg.model.enums.CategoryName;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -20,4 +22,11 @@ public interface BookService {
     void deleteBookById(Long id);
 
 	BookBindingModel mapBookToBookBindingModel(Book book);
+
+
+	List<Book> blurrySearch(String keyword);
+
+	List<Book> findByCategory(CategoryName category);
+
+	Book saveBook(Book book);
 }

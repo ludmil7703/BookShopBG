@@ -25,7 +25,7 @@ public class Order extends BaseEntity{
 	private String orderStatus;
 	private BigDecimal orderTotal;
 	
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order", cascade=CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<CartItem> cartItemList;
 	
 	@OneToOne(mappedBy = "order", cascade=CascadeType.ALL,fetch = FetchType.EAGER)

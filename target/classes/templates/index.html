@@ -14,7 +14,9 @@
             <div class="project_content_left_section">
                 <h1>Categories</h1>
                 <ul>
-                    <li th:each="category : ${categoryList}"><a th:href="subpage.html" th:text="${category.categoryName}"></a></li>
+                    <li th:each="category : ${categoryList}">
+                        <a th:href="@{/searchByCategory(category=${category.categoryName})}" th:text="${category.categoryName}"
+                        th:value="${category.categoryName}"></a></li>
                 </ul>
             </div>
             <div class="project_content_left_section">
@@ -39,7 +41,6 @@
             </div>
         </section> <!-- end of content left -->
         <div id="book_list_right" class="col-sm-9">
-        <div role="listbox" class="embed-responsive">
 
             <div th:if="${bookShelf.isEmpty()}">
                 <h5 style="font-style: italic;">Oops, no result is found. Try
@@ -66,14 +67,14 @@
                 <div class="cleaner border border-dark" style="margin: 10px">&nbsp;</div>
             </div>
         </div>
-        <a href="subpage.html"><img src="/images/ads.jpg" alt="ads" /></a>
+        <a th:href="@{/subpage}"><img src="/images/ads.jpg" alt="ads" /></a>
         <!-- end of content right -->
-        </div>
+
     	<div class="cleaner_with_height">&nbsp;</div>
 
     </main> <!-- end of content -->
-
+    <footer th:replace="fragments/commons::footer"></footer>
 </div>
-<footer th:replace="fragments/commons::footer"></footer>
+
 </body>
 </html>

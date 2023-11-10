@@ -108,9 +108,8 @@
         </dependency>
         <dependency> <groupId>com.cloudinary</groupId>
             <artifactId>cloudinary-taglib</artifactId>
-            <version>1.0.14</version> </dependency>
-
-
+            <version>1.0.14</version>
+        </dependency>
 
     </dependencies>
 

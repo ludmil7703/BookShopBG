@@ -2,10 +2,8 @@ package org.softuni.bookshopbg.service.impl;
 
 
 import org.softuni.bookshopbg.model.entities.*;
-import org.softuni.bookshopbg.repositories.BookToCartItemRepository;
 import org.softuni.bookshopbg.repositories.CartItemRepository;
 import org.softuni.bookshopbg.service.CartItemService;
-import org.softuni.bookshopbg.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -18,9 +16,6 @@ public class CartItemServiceImpl implements CartItemService {
 
 	@Autowired
 	private CartItemRepository cartItemRepository;
-
-	@Autowired
-	private BookToCartItemRepository bookToCartItemRepository;
 
 
 	public List<CartItem> findByShoppingCart(ShoppingCart shoppingCart) {
@@ -55,15 +50,11 @@ public class CartItemServiceImpl implements CartItemService {
 		CartItem cartItem = new CartItem();
 		cartItem.setShoppingCart(user.getShoppingCart());
 		cartItem.setBook(book);
-
+        cartItem.getShoppingCart().setUser(user);
 		cartItem.setQty(qty);
 		cartItem.setSubtotal(new BigDecimal(String.valueOf(book.getOurPrice())).multiply(new BigDecimal(qty)));
 		cartItem = cartItemRepository.save(cartItem);
 
-		BookToCartItem bookToCartItem = new BookToCartItem();
-		bookToCartItem.setBook(book);
-		bookToCartItem.setCartItem(cartItem);
-		bookToCartItemRepository.save(bookToCartItem);
 
 		return cartItem;
 	}
@@ -73,7 +64,6 @@ public class CartItemServiceImpl implements CartItemService {
 	}
 
 	public void removeCartItem(CartItem cartItem) {
-		bookToCartItemRepository.deleteByCartItem(cartItem);
 		cartItemRepository.delete(cartItem);
 	}
 
@@ -83,6 +73,11 @@ public class CartItemServiceImpl implements CartItemService {
 
 	public List<CartItem> findByOrder(Order order) {
 		return cartItemRepository.findByOrder(order);
+	}
+
+	@Override
+	public void deleteCartItemById(Long id) {
+		cartItemRepository.deleteCartItemById(id);
 	}
 
 }

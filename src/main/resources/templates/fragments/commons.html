@@ -12,64 +12,29 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css/">
 <!--    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>-->
     <link rel="stylesheet" href="/css/style.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet" type="text/css">
+
 </head>
 <body>
 <div id="project_container">
     <nav id="project_menu">
         <ul>
-            <li><a th:href="@{/}" class="current">Home</a></li>
-            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/subpage.html">Search</a></li>
-            <!--            <form class="navbar-form" th:action="@{/searchBook}" method="post">-->
-            <!--                <div class="form-group">-->
-            <!--                    <input type="text" name="keyword" class="form-control"-->
-            <!--                           placeholder="Book title" />-->
-            <!--                </div>-->
-
-            <!--                <button type="submit" class="btn btn-info btn-sm"><span-->
-            <!--                        class="glyphicon glyphicon-search"></span> Search</button>-->
-
-            <!--            </form>-->
-            <li class="dropdown"><a th:href="@{/bookList}"
-                                    class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                    aria-haspopup="true" aria-expanded="false"><span
-                    class="glyphicon glyphicon-list-alt"></span> BOOKS <span
-                    class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a th:href="@{/bookList}"><span class="glyphicon glyphicon-th-list"></span> Browse All Books</a></li>
-                    <li><a th:href="@{/searchByCategory(category='Programming')}"
-                           class="list-group-item"><span class="glyphicon glyphicon-book"></span> Programming</a></li>
-
-                    <li><a th:href="@{/searchByCategory(category='Engineering')}"
-                           class="list-group-item"><span class="glyphicon glyphicon-book"></span> Engineering</a></li>
-
-
-                    <li><a th:href="@{/searchByCategory(category='Fiction')}"
-                           class="list-group-item"><span class="glyphicon glyphicon-book"></span> Fiction</a></li>
-
-                    <li><a th:href="@{/searchByCategory(category='Management')}"
-                           class="list-group-item"><span class="glyphicon glyphicon-book"></span> Management</a></li>
-
-                    <li><a th:href="@{/searchByCategory(category='Arts &amp; Literature')}"
-                           class="list-group-item"><span class="glyphicon glyphicon-book"></span> Arts &amp; Literature</a></li>
-
-                    <li><a th:href="@{/faq}"><span class="glyphicon glyphicon-question-sign"></span> FAQ</a></li>
-
-                </ul>
-            </li>
+            <li><a th:href="@{/}" class="current"><i class="fa fa-home" aria-hidden="true"></i>Home</a></li>
+            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a th:href="@{/search}"><i class="fa fa-search" aria-hidden="true"></i>Search</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/subpage.html">New Releases</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="#">Company</a></li>
-            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/contact.html">Contact</a></li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/add}">Add Book</a></li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/bookList}">Book List</a></li>
+            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/contact.html"><i class="fa fa-id-badge" aria-hidden="true"></i>Contact</a></li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/add}"><i class="fa fa-plus" aria-hidden="true"></i>Add Book</a></li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/bookList}"><i class="fa fa-list-alt" aria-hidden="true"></i>Book List</a></li>
 
-            <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}">Admin</a></li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}"><i class="fa fa-user" aria-hidden="true"></i>Admin</a></li>
             <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/register}">Register</a></li>
             <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/login}">
-                <span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+                <span class="glyphicon glyphicon-log-in"></span><i class="fa fa-sign-in" aria-hidden="true"></i>Login</a></li>
 
             <li class="nav_right" sec:authorize="isAuthenticated()">
 
-                <a href="javascript: signOut();">Logout</a>
+                <a href="javascript: signOut();"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
                 <div style="display: none;">
                     <form name="formSignout" th:action="@{/users/logout}" method="post">
                     </form>
@@ -80,7 +45,7 @@
                     }
                 </script>
             </li>
-            <li sec:authorize="isAuthenticated()" class="nav_right"><a th:href="@{/shoppingCart/cart}">Cart</a></li>
+            <li sec:authorize="isAuthenticated()" class="nav_right"><a th:href="@{/shoppingCart/cart}"><i class="fa fa-cart-plus" aria-hidden="true"></i>Cart</a></li>
             <li>
                 <a sec:authorize="isAuthenticated()" class="nav_right" >Welcome, <th:block sec:authentication="name"></th:block></a>
 
@@ -99,7 +64,7 @@
                 <span>25%</span> discounts for
                 purchase over $80
             </p>
-            <a href="/templates/subpage.html" style="margin-left: 50px;">Read more...</a>
+            <a th:href="@{/subpage}" style="margin-left: 50px;">Read more...</a>
         </div>
 
 
@@ -109,14 +74,14 @@
                 <li>Maece nas metus</li>
                 <li>In sed risus ac feli</li>
             </ul>
-            <a href="/templates/subpage.html" style="margin-left: 50px;">Read more...</a>
+            <a th:href="@{/subpage}" style="margin-left: 50px;">Read more...</a>
         </div>
     </header> <!-- end of header -->
 
 
     <footer id="project_footer">
 
-        <a href="/templates/subpage.html">Home</a> | <a href="/templates/subpage.html">Search</a> | <a href="/templates/subpage.html">Books</a> | <a href="#">New Releases</a> | <a href="/templates/faq.html">FAQs</a> | <a href="#">Contact Us</a><br />
+        <a th:href="@{/}">Home</a> | <a href="/templates/subpage.html">Search</a> | <a th:href="@{/}">Books</a> | <a href="#">New Releases</a> | <a th:href="@{/faq}">FAQs</a> | <a href="#">Contact Us</a><br />
         Copyright © 2024 <a href="#"><strong>Book Shop BG</strong></a>
     </footer>
 </div> <!-- end of container -->

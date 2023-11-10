@@ -57,7 +57,7 @@ public class UserController {
 
         userService.login(userLoginBindingModel);
 
-        return "redirect:/admin";
+        return "redirect:/";
 
     }
 

@@ -85,8 +85,7 @@ public class Book extends BaseEntity {
     private String imageUrl;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnore
-    private List<BookToCartItem> bookToCartItemList;
+    private List<CartItem> cartItems;
 
 
 

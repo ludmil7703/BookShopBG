@@ -22,12 +22,10 @@ public class CartItem extends BaseEntity{
     private int qty;
     private BigDecimal subtotal;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name="book_id", referencedColumnName = "id")
     private Book book;
 
-    @OneToMany(mappedBy = "cartItem", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnore
-    private List<BookToCartItem> bookToCartItemList;
 
     @ManyToOne
     @JoinColumn(name="shopping_cart_id")

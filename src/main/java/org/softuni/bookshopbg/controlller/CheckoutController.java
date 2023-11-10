@@ -16,6 +16,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 
@@ -26,11 +27,6 @@ public class CheckoutController {
 	private BillingAddress billingAddress = new BillingAddress();
 	private Payment payment = new Payment();
 
-//	@Autowired
-//	private JavaMailSender mailSender;
-	
-//	@Autowired
-//	private MailConstructor mailConstructor;
 	
 	@Autowired
 	private UserService userService;
@@ -74,7 +70,7 @@ public class CheckoutController {
 		
 		List<CartItem> cartItemList = cartItemService.findByShoppingCart(user.getShoppingCart());
 		
-		if(cartItemList.size() == 0) {
+		if(cartItemList.isEmpty()) {
 			model.addAttribute("emptyCart", true);
 			return "forward:/shoppintCart/cart";
 		}
@@ -92,13 +88,13 @@ public class CheckoutController {
 		model.addAttribute("userShippingList", userShippingList);
 		model.addAttribute("userPaymentList", userPaymentList);
 		
-		if (userPaymentList.size() == 0) {
+		if (userPaymentList.isEmpty()) {
 			model.addAttribute("emptyPaymentList", true);
 		} else {
 			model.addAttribute("emptyPaymentList", false);
 		}
 		
-		if (userShippingList.size() == 0) {
+		if (userShippingList.isEmpty()) {
 			model.addAttribute("emptyShippingList", true);
 		} else {
 			model.addAttribute("emptyShippingList", false);
@@ -172,10 +168,9 @@ public class CheckoutController {
 		UserEntity user = userService.findUserByUsername(principal.getName()).orElse(null);
 		
 		Order order = orderService.createOrder(shoppingCart, shippingAddress, billingAddress, payment, shippingMethod, user);
+
 		
-//		mailSender.send(mailConstructor.constructOrderConfirmationEmail(user, order, Locale.ENGLISH));
-		
-		shoppingCartService.clearShoppingCart(shoppingCart);
+		shoppingCartService.clearShoppingCart(shoppingCart, principal);
 		
 		LocalDate today = LocalDate.now();
 		LocalDate estimatedDeliveryDate;

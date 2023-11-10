@@ -10,5 +10,5 @@ public interface ShoppingCartService {
 
 	void save(ShoppingCart shoppingCart);
 	
-	void clearShoppingCart(ShoppingCart shoppingCart);
+	void clearShoppingCart(ShoppingCart shoppingCart, Principal principal);
 }

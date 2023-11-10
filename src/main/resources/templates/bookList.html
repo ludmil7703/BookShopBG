@@ -51,19 +51,8 @@
 			<input hidden="hidden" name="selectedBooks" th:value="${bookList}"/>
 			<button  type="submit" th:id="deleteSelected" class="btn btn-danger ">Delete Selected</button>
 		</form>
+		<footer th:replace="fragments/commons::footer"></footer>
 	</div>
 
-
-	<footer th:replace="fragments/commons::footer"></footer>
-	
-	<script>
-		$(document).ready(function() {
-			$("#bookListTable").DataTable({
-				"lengthMenu": [ [5,10,15,20,-1],[5,10,15,20,"All"] ],
-				"ordering": false,
-				stateSave: true
-			});
-		});
-	</script>
 </body>
 </html>

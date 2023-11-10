@@ -30,6 +30,10 @@ public class SecurityConfiguration {
             .requestMatchers("/images/**").permitAll()
             .requestMatchers("/webfonts/**").permitAll()
             .requestMatchers("/js/**").permitAll()
+                .requestMatchers("/searchBook","/searchByCategory","/search").permitAll()
+                .requestMatchers("/bookshelf").permitAll()
+                .requestMatchers("/bookDetail").permitAll()
+                .requestMatchers("/faq").permitAll()
             // Allow anyone to see the home page, the registration page and the login form
             .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
             .requestMatchers("/offers/all").permitAll()

@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.Category;
+import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.softuni.bookshopbg.repositories.CategoryRepository;
 import org.softuni.bookshopbg.service.BookService;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -76,6 +78,10 @@ public class BookServiceImpl implements BookService {
 		return bookRepository.save(book);
 	}
 
+	public Book saveBook(Book book) {
+		return bookRepository.save(book);
+	}
+
 
 
 	
@@ -101,6 +107,25 @@ public class BookServiceImpl implements BookService {
 		return bookBindingModel;
 	}
 
+
+	public List<Book> blurrySearch(String title) {
+		List<Book> bookList = bookRepository.findByTitleContaining(title);
+		List<Book> activeBookList = new ArrayList<>();
+
+		for (Book book: bookList) {
+			if(book.isActive()) {
+				activeBookList.add(book);
+			}
+		}
+
+		return activeBookList;
+	}
+
+	@Override
+	public List<Book> findByCategory(CategoryName category) {
+
+		return bookRepository.findAllByCategoryCategoryName(category);
+	}
 
 
 }

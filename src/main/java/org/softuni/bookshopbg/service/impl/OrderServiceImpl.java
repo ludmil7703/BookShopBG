@@ -2,6 +2,7 @@ package org.softuni.bookshopbg.service.impl;
 
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.repositories.OrderRepository;
+import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.service.CartItemService;
 import org.softuni.bookshopbg.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Autowired
 	private CartItemService cartItemService;
+
+	@Autowired
+	private BookService bookService;
 	
 	public synchronized Order createOrder(ShoppingCart shoppingCart,
 										  ShippingAddress shippingAddress,
@@ -38,8 +42,11 @@ public class OrderServiceImpl implements OrderService {
 		
 		for(CartItem cartItem : cartItemList) {
 			Book book = cartItem.getBook();
+			orderRepository.save(order);
 			cartItem.setOrder(order);
 			book.setInStockNumber(book.getInStockNumber() - cartItem.getQty());
+			bookService.saveBook(book);
+			cartItemService.save(cartItem);
 		}
 		
 		order.setCartItemList(cartItemList);
