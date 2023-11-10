@@ -22,16 +22,16 @@ public class CartItem extends BaseEntity{
     private int qty;
     private BigDecimal subtotal;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="book_id", referencedColumnName = "id")
     private Book book;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="shopping_cart_id")
     private ShoppingCart shoppingCart;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="order_id")
     private Order order;
 

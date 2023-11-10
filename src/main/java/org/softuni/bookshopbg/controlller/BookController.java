@@ -107,23 +107,17 @@ public class BookController {
 		return "bookList";
 		
 	}
-	
-	@DeleteMapping(value="/remove/{id}")
-	public String remove(@PathVariable Long id){
-		bookService.deleteBookById(id);
 
-		return "redirect:/books/bookList";
-	}
+@RequestMapping(value="/remove", method=RequestMethod.POST)
+public String remove(
+		@ModelAttribute("id") String id, Model model
+) throws IOException {
+	bookService.deleteBookById(Long.parseLong(id.substring(8)));
+	List<Book> bookList = bookService.findAll();
+	model.addAttribute("bookList", bookList);
 
-	@DeleteMapping("/removeSelected")
-	public String removeSelected(Model model, @RequestParam(value = "selected") List<Long> selected) {
-		for (Long id : selected) {
-			bookService.deleteBookById(id);
-		}
-
-		return "redirect:/books/bookList";
-	}
-
+	return "redirect:/book/bookList";
+}
 
 
 }

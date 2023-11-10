@@ -371,7 +371,7 @@
 									<div class="row" th:each="cartItem : ${cartItemList}">
 											<hr />
 											<div class="col">
-												<a th:href="@{/bookDetail(id=${cartItem.book.id})}"> <img
+												<a th:href="@{/bookDetail/{id}(id=${cartItem.book.id})}"> <img
 													class="img-responsive shelf-book"
 													th:src="${cartItem.getBook().imageUrl}"
 													style="width: 70px;" />
@@ -379,7 +379,7 @@
 											</div>
 											<div class="col-xs-6">
 												<div style="margin-left: 50px;">
-													<a th:href="@{/bookDetail(id=${cartItem.book.id})}"><h4
+													<a th:href="@{/bookDetail/{id}(id=${cartItem.book.id})}"><h4
 															th:text="${cartItem.book.title}"></h4></a>
 													<p th:if="${cartItem.book.inStockNumber&gt;10}"
 														style="color: green;">In Stock</p>

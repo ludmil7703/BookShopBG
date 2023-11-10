@@ -9,6 +9,7 @@ import org.softuni.bookshopbg.model.enums.CategoryName;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookService {
 	
@@ -29,4 +30,8 @@ public interface BookService {
 	List<Book> findByCategory(CategoryName category);
 
 	Book saveBook(Book book);
+
+	List<BookBindingModel> getAllBooks() throws IOException;
+
+	Optional<BookBindingModel> findBookById(Long id);
 }

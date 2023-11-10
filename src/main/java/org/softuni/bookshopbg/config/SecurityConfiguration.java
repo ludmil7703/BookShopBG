@@ -7,8 +7,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
 
 @Configuration
 public class SecurityConfiguration {
@@ -23,12 +25,13 @@ public class SecurityConfiguration {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
     return httpSecurity.authorizeHttpRequests(
-        // Define which urls are visible by which users
+
+      // Define which urls are visible by which users
         authorizeRequests -> authorizeRequests
             // All static resources which are situated in js, images, css are available for anyone
             .requestMatchers("/css/**").permitAll()
             .requestMatchers("/images/**").permitAll()
-            .requestMatchers("/webfonts/**").permitAll()
+            .requestMatchers("/fonts/**").permitAll()
             .requestMatchers("/js/**").permitAll()
                 .requestMatchers("/searchBook","/searchByCategory","/search").permitAll()
                 .requestMatchers("/bookshelf").permitAll()
@@ -42,7 +45,10 @@ public class SecurityConfiguration {
             .requestMatchers("/books/**").hasRole(UserRoleEnum.ADMIN.name())
             // all other requests are authenticated.
             .anyRequest().authenticated()
-    ).formLogin(
+
+    )
+            .csrf(AbstractHttpConfigurer::disable)
+            .formLogin(
         formLogin -> {
           formLogin
               // redirect here when we access something which is not allowed.
@@ -54,6 +60,7 @@ public class SecurityConfiguration {
               .defaultSuccessUrl("/")
               .failureForwardUrl("/users/login-error");
         }
+
     ).logout(
         logout -> {
           logout
@@ -64,6 +71,8 @@ public class SecurityConfiguration {
               // invalidate the HTTP session
               .invalidateHttpSession(true);
         }
+
+
 //    ).rememberMe(
 //        rememberMe -> {
 //          rememberMe
@@ -72,6 +81,7 @@ public class SecurityConfiguration {
 //              .rememberMeCookieName("rememberme");
 //        }
     ).build();
+
   }
 
   @Bean

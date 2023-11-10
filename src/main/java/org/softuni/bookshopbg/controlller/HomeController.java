@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*")
 @Controller
 public class HomeController {
     private final CategoryRepository categoryRepository;

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
-@CrossOrigin(origins = "*")
 @Controller
 @RequestMapping("/shoppingCart")
 public class ShoppingCartController {
@@ -96,7 +95,7 @@ public class ShoppingCartController {
 
 	@RequestMapping("/removeItem")
 	public String removeItem(@ModelAttribute("id") Long id) {
-		cartItemService.removeCartItem(cartItemService.findById(id));
+		cartItemService.deleteCartItemById(id);
 
 		return "forward:/shoppingCart/cart";
 	}

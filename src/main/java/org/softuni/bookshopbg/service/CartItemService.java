@@ -13,8 +13,7 @@ public interface CartItemService {
 	CartItem addBookToCartItem(Book book, UserEntity user, int qty);
 	
 	CartItem findById(Long id);
-	
-	void removeCartItem(CartItem cartItem);
+
 	
 	CartItem save(CartItem cartItem);
 	

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class CartItemServiceImpl implements CartItemService {
@@ -18,10 +20,12 @@ public class CartItemServiceImpl implements CartItemService {
 	private CartItemRepository cartItemRepository;
 
 
+	@Override
 	public List<CartItem> findByShoppingCart(ShoppingCart shoppingCart) {
 		return cartItemRepository.findByShoppingCart(shoppingCart);
 	}
 
+	@Override
 	public CartItem updateCartItem(CartItem cartItem) {
 		BigDecimal bigDecimal = new BigDecimal(String.valueOf(cartItem.getBook().getOurPrice())).multiply(new BigDecimal(cartItem.getQty()));
 
@@ -33,6 +37,7 @@ public class CartItemServiceImpl implements CartItemService {
 		return cartItem;
 	}
 
+	@Override
 	public CartItem addBookToCartItem(Book book, UserEntity user, int qty) {
 
 
@@ -59,25 +64,39 @@ public class CartItemServiceImpl implements CartItemService {
 		return cartItem;
 	}
 
+	@Override
 	public CartItem findById(Long id) {
 		return cartItemRepository.findById(id).orElse(null);
 	}
 
-	public void removeCartItem(CartItem cartItem) {
-		cartItemRepository.delete(cartItem);
-	}
 
+
+	@Override
 	public CartItem save(CartItem cartItem) {
 		return cartItemRepository.save(cartItem);
 	}
 
+	@Override
 	public List<CartItem> findByOrder(Order order) {
 		return cartItemRepository.findByOrder(order);
 	}
 
 	@Override
 	public void deleteCartItemById(Long id) {
-		cartItemRepository.deleteCartItemById(id);
+		Optional<CartItem> cartItem = cartItemRepository.findById(id);
+
+		if (cartItem.isPresent()) {
+			Book book = cartItem.get().getBook();
+			book.setInStockNumber(book.getInStockNumber() + cartItem.get().getQty());
+			cartItem.get().setBook(null);
+		}
+		if (cartItem.isPresent()) {
+			ShoppingCart shoppingCart = cartItem.get().getShoppingCart();
+			shoppingCart.setGrandTotal(shoppingCart.getGrandTotal().subtract(cartItem.get().getSubtotal()));
+			cartItem.get().setShoppingCart(null);
+		}
+
+		cartItemRepository.delete(cartItem.get());
 	}
 
 }

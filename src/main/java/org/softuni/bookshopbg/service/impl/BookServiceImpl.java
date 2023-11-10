@@ -44,7 +44,8 @@ public class BookServiceImpl implements BookService {
 
 		this.modelMapper = modelMapper;
 	}
-	
+
+	@Override
 	public Book save(BookBindingModel bookBindingModel) throws IOException {
 		Book book = new Book();
 
@@ -78,20 +79,35 @@ public class BookServiceImpl implements BookService {
 		return bookRepository.save(book);
 	}
 
+	@Override
 	public Book saveBook(Book book) {
 		return bookRepository.save(book);
 	}
 
 
 
-	
+	@Override
 	public List<Book> findAll() {
 		return bookRepository.findAll();
 
 	}
-	
+    @Override
+	public List<BookBindingModel> getAllBooks(){
+		return bookRepository.findAll()
+				.stream()
+				.map(this::mapBookToBookBindingModel)
+				.toList();
+	}
+
+	@Override
 	public Book findById(Long id) {
 		return bookRepository.findById(id).orElse(null);
+	}
+
+	@Override
+	public Optional<BookBindingModel> findBookById(Long id) {
+		return bookRepository.findById(id)
+				.map(this::mapBookToBookBindingModel);
 	}
 
 	@Override
