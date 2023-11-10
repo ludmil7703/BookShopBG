@@ -4,7 +4,6 @@ package org.softuni.bookshopbg.controlller;
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.service.*;
 import org.softuni.bookshopbg.utils.BGConstants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,7 +15,6 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 
@@ -27,33 +25,41 @@ public class CheckoutController {
 	private BillingAddress billingAddress = new BillingAddress();
 	private Payment payment = new Payment();
 
+	private final UserService userService;
 	
-	@Autowired
-	private UserService userService;
+	private final CartItemService cartItemService;
 	
-	@Autowired
-	private CartItemService cartItemService;
+	private final ShoppingCartService shoppingCartService;
 	
-	@Autowired
-	private ShoppingCartService shoppingCartService;
-	
-	@Autowired
-	private ShippingAddressService shippingAddressService;
+	private final ShippingAddressService shippingAddressService;
 
-	@Autowired
-	private BillingAddressService billingAddressService;
+	private final BillingAddressService billingAddressService;
 
-	@Autowired
-	private PaymentService paymentService;
+	private final PaymentService paymentService;
 	
-	@Autowired
-	private UserShippingService userShippingService;
+	private final UserShippingService userShippingService;
 
-	@Autowired
-	private UserPaymentService userPaymentService;
+	private final UserPaymentService userPaymentService;
 	
-	@Autowired
-	private OrderService orderService;
+	private final OrderService orderService;
+
+	public CheckoutController(UserService userService, CartItemService cartItemService,
+							  ShoppingCartService shoppingCartService,
+							  ShippingAddressService shippingAddressService,
+							  BillingAddressService billingAddressService,
+							  PaymentService paymentService, UserShippingService userShippingService,
+							  UserPaymentService userPaymentService,
+							  OrderService orderService) {
+		this.userService = userService;
+		this.cartItemService = cartItemService;
+		this.shoppingCartService = shoppingCartService;
+		this.shippingAddressService = shippingAddressService;
+		this.billingAddressService = billingAddressService;
+		this.paymentService = paymentService;
+		this.userShippingService = userShippingService;
+		this.userPaymentService = userPaymentService;
+		this.orderService = orderService;
+	}
 
 	@RequestMapping("/checkout")
 	public String checkout(
@@ -99,8 +105,7 @@ public class CheckoutController {
 		} else {
 			model.addAttribute("emptyShippingList", false);
 		}
-		
-		ShoppingCart shoppingCart = user.getShoppingCart();
+
 		
 		for(UserShipping userShipping : userShippingList) {
 			if(userShipping.isUserShippingDefault()) {
@@ -114,17 +119,9 @@ public class CheckoutController {
 				billingAddressService.setByUserBilling(userPayment.getUserBilling(), billingAddress);
 			}
 		}
-		
-		model.addAttribute("shippingAddress", shippingAddress);
-		model.addAttribute("payment", payment);
-		model.addAttribute("billingAddress", billingAddress);
-		model.addAttribute("cartItemList", cartItemList);
-		model.addAttribute("shoppingCart", user.getShoppingCart());
-		
-		List<String> stateList = BGConstants.listOfBGStatesCode;
-		Collections.sort(stateList);
-		model.addAttribute("stateList", stateList);
-		
+
+		modelAddAttr(model, user, cartItemList);
+
 		model.addAttribute("classActiveShipping", true);
 		
 		if(missingRequiredField) {
@@ -134,7 +131,19 @@ public class CheckoutController {
 		return "checkout";
 		
 	}
-	
+
+	private void modelAddAttr(Model model, UserEntity user, List<CartItem> cartItemList) {
+		model.addAttribute("shippingAddress", shippingAddress);
+		model.addAttribute("payment", payment);
+		model.addAttribute("billingAddress", billingAddress);
+		model.addAttribute("cartItemList", cartItemList);
+		model.addAttribute("shoppingCart", user.getShoppingCart());
+
+		List<String> stateList = BGConstants.listOfBGStatesCode;
+		Collections.sort(stateList);
+		model.addAttribute("stateList", stateList);
+	}
+
 	@RequestMapping(value = "/checkout", method = RequestMethod.POST)
 	public String checkoutPost(@ModelAttribute("shippingAddress") ShippingAddress shippingAddress,
 			@ModelAttribute("billingAddress") BillingAddress billingAddress, @ModelAttribute("payment") Payment payment,
@@ -201,18 +210,10 @@ public class CheckoutController {
 			shippingAddressService.setByUserShipping(userShipping, shippingAddress);
 			
 			List<CartItem> cartItemList = cartItemService.findByShoppingCart(user.getShoppingCart());
-		
-			
-			model.addAttribute("shippingAddress", shippingAddress);
-			model.addAttribute("payment", payment);
-			model.addAttribute("billingAddress", billingAddress);
-			model.addAttribute("cartItemList", cartItemList);
-			model.addAttribute("shoppingCart", user.getShoppingCart());
-			
-			List<String> stateList = BGConstants.listOfBGStatesCode;
-			Collections.sort(stateList);
-			model.addAttribute("stateList", stateList);
-			
+
+
+			modelAddAttr(model, user, cartItemList);
+
 			List<UserShipping> userShippingList = user.getUserShippingList();
 			List<UserPayment> userPaymentList = user.getUserPaymentList();
 			
@@ -255,17 +256,9 @@ public class CheckoutController {
 			List<CartItem> cartItemList = cartItemService.findByShoppingCart(user.getShoppingCart());
 			
 			billingAddressService.setByUserBilling(userBilling, billingAddress);
-			
-			model.addAttribute("shippingAddress", shippingAddress);
-			model.addAttribute("payment", payment);
-			model.addAttribute("billingAddress", billingAddress);
-			model.addAttribute("cartItemList", cartItemList);
-			model.addAttribute("shoppingCart", user.getShoppingCart());
-			
-			List<String> stateList = BGConstants.listOfBGStatesCode;
-			Collections.sort(stateList);
-			model.addAttribute("stateList", stateList);
-			
+
+			modelAddAttr(model, user, cartItemList);
+
 			List<UserShipping> userShippingList = user.getUserShippingList();
 			List<UserPayment> userPaymentList = user.getUserPaymentList();
 			

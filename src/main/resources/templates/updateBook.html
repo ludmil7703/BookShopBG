@@ -4,10 +4,10 @@
 <head th:replace="fragments/commons::head"></head>
 
 <body>
-<nav th:replace="fragments/commons::nav"></nav>
 
-	<div class="container">
-		<div class="row justify-content-center">
+<div id="project_container">
+	<nav th:replace="fragments/commons::nav"></nav>
+	<div class="row justify-content-center">
 			<form th:object="${book}" class="form-horizontal" th:action="@{/books/updateBook}" method="post"
 				enctype="multipart/form-data">
 				<h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Update Book Information</span></h1>
@@ -253,10 +253,7 @@
 				</fieldset>
 			</form>
 		</div>
-	</div>
-
-
-<footer th:replace="fragments/commons::footer"></footer>
-
+	<footer th:replace="fragments/commons::footer"></footer>
+</div>
 </body>
 </html>

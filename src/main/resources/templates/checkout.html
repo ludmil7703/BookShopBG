@@ -6,16 +6,16 @@
 
 <body>
 
-	<div class="container">
+	<div id="project_container">
 		<nav th:replace="fragments/commons::nav"></nav>
 		<header th:replace="fragments/commons::header"></header>
 
 
 		<div class="col" style="margin-top: 10px;" th:object="${shoppingCart}">
-			<form th:action="@{/checkout}" method="post">
+			<form th:action="@{/checkout}" method="post" class="col">
 				<!-- Left Panel -->
 				<div class="col-xs-4">
-					<div class="row">
+					<div class="col">
 						<div class="col">
 							<button type="submit" class="btn btn-warning btn-block">Place
 								your order</button>
@@ -24,7 +24,7 @@
 								notice and <a href="">conditions</a> of use.
 							</p>
 							<hr />
-							<h3>Order Summary</h3>
+							<h3 class="text-center">Order Summary</h3>
 							<div class="row">
 								<div class="col-xs-7 text-left">Total before tax:</div>
 								<div class="col-xs-5 text-right">

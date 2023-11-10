@@ -8,20 +8,7 @@
 	<header th:replace="fragments/commons::header"></header>
 
 <div class="col card-body">
-<!--    <div class="row" style="margin-bottom: -100px;">-->
-<!--        <div class="col-xs-8">-->
-<!--            <h2 class="section-headline">-->
-<!--                <h2 class="section-headline">-->
-<!--                    <span th:text="${user.get().username}? ${#strings.toUpperCase(user.get().username)} : 'All Books'"></span>-->
-<!--                </h2>-->
-<!--            </h2>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <hr-->
-<!--            style="position: absolute; width: 100%; height: 6px; background-color: #333; z-index: -1; margin-top: -80px;"/>-->
 
-
-    
     <form  class="card-columns" method="post" th:action="@{/shoppingCart/addItem}">
     	<input hidden="hidden" th:field="*{book.id}" />
 		<div class="card-body" >
@@ -46,8 +33,6 @@
 
 				            <br>
     						<div class="panel-body">
-
-
     									<h4>Our Price: <span style="color:#db3208;">$<span th:text="${book.ourPrice}"></span></span></h4>
     									<p>List Price: <span style="text-decoration: line-through">$<span th:text="${book.listPrice}"></span></span></p>
     									<p>You save: $<span th:text="${#numbers.formatDecimal((book.listPrice - book.ourPrice), 0, 'COMMA', 2, 'POINT' )}"></span></p>
@@ -61,7 +46,6 @@
     									<h4 th:if="*{book.inStockNumber&lt;10 and book.inStockNumber&gt;0}" style="color: green">Only <span th:text="${book.inStockNumber}"> </span> In Stock</h4>
     									<h4 th:if="*{book.inStockNumber==0}" style="color:darkred;">Unavailable</h4>
 																			<br/>
-
     						</div>
     					</div>
 

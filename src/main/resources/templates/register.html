@@ -3,8 +3,9 @@
       xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/commons::head}"></head>
 <body>
-<header th:replace="~{fragments/commons::nav}"></header>
-<main>
+<div id="project_container">
+    <nav th:replace="fragments/commons::nav"></nav>
+    <header th:replace="fragments/commons::header"></header>
     <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Register</span></h1>
     <hr class="hr-3 w-25 bg-white"/>
 
@@ -68,7 +69,7 @@
         </div>
 
     </form>
-</main>
-<footer th:replace="~{fragments/commons::footer}"></footer>
+    <footer th:replace="~{fragments/commons::footer}"></footer>
+</div>
 </body>
 </html>

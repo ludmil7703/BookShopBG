@@ -1,17 +1,12 @@
 package org.softuni.bookshopbg.controlller;
 
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import jakarta.validation.Valid;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
-import org.softuni.bookshopbg.model.dto.UserLoginBindingModel;
-import org.softuni.bookshopbg.model.dto.UserRegisterBindingModel;
 import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.entities.Category;
-import org.softuni.bookshopbg.repositories.CategoryRepository;
 import org.softuni.bookshopbg.service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.softuni.bookshopbg.service.CategoryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,21 +20,23 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/books")
-public class BookController {
+public class AdminController {
 
-	@Autowired
-	private BookService bookService;
 
-	@Autowired
-	private final CategoryRepository categoryRepository;
+	private final BookService bookService;
 
-	public BookController(CategoryRepository categoryRepository) {
-		this.categoryRepository = categoryRepository;
+
+	private final CategoryService categoryService;
+
+
+	public AdminController(BookService bookService, CategoryService categoryService) {
+		this.bookService = bookService;
+		this.categoryService = categoryService;
 	}
 
 	@GetMapping(value = "/add")
 	public String addBook(Model model) {
-		List<Category> categoryList = categoryRepository.findAll();
+		List<Category> categoryList = categoryService.getAllCategories();
 		if (!model.containsAttribute("book")){
 			model.addAttribute("book", new BookBindingModel());
 		}
@@ -74,7 +71,7 @@ public class BookController {
 		Book book = bookService.findById(id);
 		BookBindingModel bookBindingModel = bookService.mapBookToBookBindingModel(book);
 		model.addAttribute("book", bookBindingModel);
-		List<Category> categoryList = categoryRepository.findAll();
+		List<Category> categoryList = categoryService.getAllCategories();
 		model.addAttribute("categoryList", categoryList);
 		
 		return "updateBook";

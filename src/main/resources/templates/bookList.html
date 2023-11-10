@@ -4,14 +4,13 @@
 <head th:replace="fragments/commons::head"></head>
 
 <body>
-<nav th:replace="fragments/commons::nav"></nav>
-	
-	<div class="container" th:object="${bookList}">
-		<div class="table-responsive">
+
+<div id="project_container" th:object="${bookList}">
+	<nav th:replace="fragments/commons::nav"></nav>
+	<div class="table-responsive">
 			<table id="bookListTable" class="table table-bordered table-hover table-striped">
 				<thead>
 					<tr>
-<!--						<th><input th:id="selectAllBooks" type="checkbox" /></th>-->
 						<th>Title</th>
 						<th>Author</th>
 						<th>Category</th>
