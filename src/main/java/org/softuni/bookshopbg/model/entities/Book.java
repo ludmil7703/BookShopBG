@@ -89,9 +89,6 @@ public class Book extends BaseEntity {
 
 
 
-    public String getDateFromReleaseDate() {
 
-        return this.releaseDate.toString().substring(0, 10);
-    }
 
 }

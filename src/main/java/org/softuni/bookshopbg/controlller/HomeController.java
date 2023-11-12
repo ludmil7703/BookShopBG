@@ -1,12 +1,11 @@
 package org.softuni.bookshopbg.controlller;
 
-import org.softuni.bookshopbg.model.entities.Book;
+import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.model.entities.UserEntity;
-import org.softuni.bookshopbg.repositories.BookRepository;
-import org.softuni.bookshopbg.repositories.CategoryRepository;
 import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.service.CategoryService;
+import org.softuni.bookshopbg.exception.ObjectNotFoundException;
 import org.softuni.bookshopbg.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +25,7 @@ public class HomeController {
 
     private final UserService userService;
 
+
     public HomeController(CategoryService categoryService,
                           BookService bookService,
                           UserService userService) {
@@ -37,11 +37,22 @@ public class HomeController {
     @GetMapping("/")
     public String index(Model model) throws IOException {
         List<Category> categoryList = categoryService.getAllCategories();
-        List<Book> bookShelf = bookService.findAll();
+        List<BookBindingModel> bookShelf = bookService.findAll();
         model.addAttribute("bookShelf", bookShelf);
         model.addAttribute("categoryList", categoryList);
         return "/index";
     }
+
+//    @GetMapping("/allBooks")
+//    public String allBooks(Model model, @PageableDefault(size = 2, sort = "id") Pageable pageable) {
+//        List<Category> categoryList = categoryService.getAllCategories();
+//
+//        Page<BookBindingModel> bookShelf = bookService.getAllBooks(pageable);
+//
+//        model.addAttribute("bookShelf", bookShelf);
+//        model.addAttribute("categoryList", categoryList);
+//        return "index";
+//    }
 
     @GetMapping("/contact")
     public String contact(Model model){
@@ -68,7 +79,8 @@ public class HomeController {
             Optional<UserEntity> user = userService.findUserByUsername(username);
             model.addAttribute("user", user);
         }
-        Book book = bookService.findById(id);
+        BookBindingModel book = bookService.findBookById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Invalid book Id:" + id));
         model.addAttribute("book", book);
         List<Integer> qtyList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
 

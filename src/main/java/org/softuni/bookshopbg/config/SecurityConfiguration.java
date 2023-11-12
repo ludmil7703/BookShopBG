@@ -5,12 +5,11 @@ import org.softuni.bookshopbg.repositories.UserRepository;
 import org.softuni.bookshopbg.service.impl.UserDetailServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
+
 
 @Configuration
 public class SecurityConfiguration {
@@ -28,6 +27,7 @@ public class SecurityConfiguration {
             "/search",
             "/bookDetail/**",
             "/faq",
+            "/allBooks",
             "/contact",
             "/error",
             "/users/register",

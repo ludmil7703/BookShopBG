@@ -26,7 +26,7 @@
     					<p><strong>Publisher: </strong><span th:text="${book.publisher}"></span></p>
     					<p><strong>Publication Date: </strong><span th:text="${book.getDateFromReleaseDate()}"></span></p>
     					<p><strong>Language: </strong><span th:text="${book.language}"></span></p>
-    					<p><strong>Category: </strong><span th:text="${book.category.categoryName}"></span></p>
+    					<p><strong>Category: </strong><span th:text="${book.category}"></span></p>
     					<p><strong><span th:text="${book.format}"></span>: </strong><span th:text="${book.numberOfPages}"></span> pages</p>
     					<p><strong>ISBN: </strong><span th:text="${book.isbn}"></span></p>
     					<p><strong>Shipping Weight: </strong><span th:text="${book.shippingWeight}"></span> kg</p>

@@ -71,7 +71,7 @@ public class CheckoutController {
 
         assert user != null;
         if(cartId != user.getShoppingCart().getId()) {
-			return "badRequestPage";
+			return "error";
 		}
 		
 		List<CartItem> cartItemList = cartItemService.findByShoppingCart(user.getShoppingCart());
@@ -205,7 +205,7 @@ public class CheckoutController {
 
         assert user != null;
         if(!Objects.equals(userShipping.getUser().getId(), user.getId())) {
-			return "badRequestPage";
+			return "error";
 		} else {
 			shippingAddressService.setByUserShipping(userShipping, shippingAddress);
 			
@@ -249,7 +249,7 @@ public class CheckoutController {
 
         assert user != null;
         if(!Objects.equals(userPayment.getUser().getId(), user.getId())){
-			return "badRequestPage";
+			return "error";
 		} else {
 			paymentService.setByUserPayment(userPayment, payment);
 			

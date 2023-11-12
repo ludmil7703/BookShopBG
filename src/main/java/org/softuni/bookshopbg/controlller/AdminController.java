@@ -3,10 +3,10 @@ package org.softuni.bookshopbg.controlller;
 
 import jakarta.validation.Valid;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
-import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.service.CategoryService;
+import org.softuni.bookshopbg.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.*;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -59,7 +58,8 @@ public class AdminController {
 	
 	@GetMapping("/bookInfo/{id}")
 	public String bookInfo(@PathVariable Long id, Model model) {
-		Book book = bookService.findById(id);
+		BookBindingModel book = bookService.findBookById(id)
+				.orElseThrow(() -> new ObjectNotFoundException("Invalid book Id:" + id));
 		model.addAttribute("book", book);
 		
 		return "bookInfo";
@@ -68,9 +68,9 @@ public class AdminController {
 	
 	@RequestMapping("/updateBook/{id}")
 	public String updateBook(@PathVariable Long id, Model model) {
-		Book book = bookService.findById(id);
-		BookBindingModel bookBindingModel = bookService.mapBookToBookBindingModel(book);
-		model.addAttribute("book", bookBindingModel);
+		BookBindingModel book = bookService.findBookById(id)
+				.orElseThrow(() -> new ObjectNotFoundException("Invalid book Id:" + id));
+		model.addAttribute("book", book);
 		List<Category> categoryList = categoryService.getAllCategories();
 		model.addAttribute("categoryList", categoryList);
 		
@@ -95,22 +95,16 @@ public class AdminController {
 	
 	@RequestMapping("/bookList")
 	public String bookList(Model model) throws IOException {
-		List<Book> list = bookService.findAll();
-		List<BookBindingModel> bookList = new ArrayList<>();
-		for (Book book : list) {
-			bookList.add(bookService.mapBookToBookBindingModel(book));
-		}
+		List<BookBindingModel> bookList = bookService.findAll();
 		model.addAttribute("bookList", bookList);
 		return "bookList";
 		
 	}
 
-@RequestMapping(value="/remove", method=RequestMethod.POST)
-public String remove(
-		@ModelAttribute("id") String id, Model model
-) throws IOException {
-	bookService.deleteBookById(Long.parseLong(id.substring(8)));
-	List<Book> bookList = bookService.findAll();
+@DeleteMapping(value="/remove/{id}")
+public String remove(@PathVariable Long id, Model model) throws IOException {
+	bookService.deleteBookById(id);
+	List<BookBindingModel> bookList = bookService.findAll();
 	model.addAttribute("bookList", bookList);
 
 	return "redirect:/book/bookList";

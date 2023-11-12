@@ -8,6 +8,8 @@
     <meta name="description" content="" />
     <script th:src="@{/js/scripts.js}"></script>
     <script th:src="@{/js/bootbox.min.js}"></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
 
     <link rel="stylesheet" href="/css/bootstrap.min.css/">
 <!--    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>-->
@@ -23,9 +25,9 @@
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a th:href="@{/search}"><i class="fa fa-search" aria-hidden="true"></i>Search</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/subpage.html">New Releases</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="#">Company</a></li>
-            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/contact.html"><i class="fa fa-id-badge" aria-hidden="true"></i>Contact</a></li>
+            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a th:href="@{/contact}"><i class="fa fa-id-badge" aria-hidden="true"></i>Contact</a></li>
             <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/add}"><i class="fa fa-plus" aria-hidden="true"></i>Add Book</a></li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/bookList}"><i class="fa fa-list-alt" aria-hidden="true"></i>Book List</a></li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/bookList}"><i class="fa fa-list-alt" id="btn-fetch" aria-hidden="true"></i>Book List</a></li>
 
             <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}"><i class="fa fa-user" aria-hidden="true"></i>Admin</a></li>
             <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/register}">Register</a></li>
@@ -81,7 +83,7 @@
 
     <footer id="project_footer">
 
-        <a th:href="@{/}">Home</a> | <a href="/templates/subpage.html">Search</a> | <a th:href="@{/}">Books</a> | <a href="#">New Releases</a> | <a th:href="@{/faq}">FAQs</a> | <a href="#">Contact Us</a><br />
+        <a th:href="@{/}">Home</a> | <a th:href="@{/search}">Search</a> | <a th:href="@{/}">Books</a> | <a href="#">New Releases</a> | <a th:href="@{/faq}">FAQs</a> | <a th:href="@{/contact}">Contact Us</a><br />
         Copyright © 2024 <a href="#"><strong>Book Shop BG</strong></a>
     </footer>
 </div> <!-- end of container -->

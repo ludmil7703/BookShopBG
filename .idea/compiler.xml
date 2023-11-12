@@ -10,10 +10,16 @@
         <module name="BookShopBG" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="BookShopBG (1)" target="17" />
+      <module name="BookShopBG (2)" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="BookShopBG" options="-parameters" />
+      <module name="BookShopBG (1)" options="-parameters" />
+      <module name="BookShopBG (2)" options="-parameters" />
     </option>
   </component>
 </project>

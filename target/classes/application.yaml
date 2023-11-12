@@ -38,5 +38,7 @@ logging:
       nodeValue: WARN
     blog: WARN
 server:
-  port: 8080
+  port: 8090
+#  when port change, need fetch url port change
+
 

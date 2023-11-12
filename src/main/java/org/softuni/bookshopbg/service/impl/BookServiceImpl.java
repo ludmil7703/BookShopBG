@@ -10,6 +10,8 @@ import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.softuni.bookshopbg.repositories.CategoryRepository;
 import org.softuni.bookshopbg.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import org.softuni.bookshopbg.model.entities.Book;
@@ -87,8 +89,8 @@ public class BookServiceImpl implements BookService {
 
 
 	@Override
-	public List<Book> findAll() {
-		return bookRepository.findAll();
+	public List<BookBindingModel> findAll() {
+		return bookRepository.findAll().stream().map(this::mapBookToBookBindingModel).toList();
 
 	}
     @Override
@@ -99,14 +101,11 @@ public class BookServiceImpl implements BookService {
 				.toList();
 	}
 
-	@Override
-	public Book findById(Long id) {
-		return bookRepository.findById(id).orElse(null);
-	}
 
 	@Override
 	public Optional<BookBindingModel> findBookById(Long id) {
-		return bookRepository.findById(id)
+		return bookRepository
+				.findById(id)
 				.map(this::mapBookToBookBindingModel);
 	}
 
@@ -115,6 +114,15 @@ public class BookServiceImpl implements BookService {
 
 		bookRepository.deleteBookById(id);
 	}
+
+	@Override
+	public Page<BookBindingModel> getAllBooks(Pageable pageable) {
+		return bookRepository
+				.findAll(pageable)
+				.map(this::mapBookToBookBindingModel);
+	}
+
+
 
 	public BookBindingModel mapBookToBookBindingModel(Book book) {
 		BookBindingModel bookBindingModel = new BookBindingModel();

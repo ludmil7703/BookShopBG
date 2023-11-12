@@ -89,6 +89,10 @@ public class BookBindingModel {
     public BookBindingModel() {
 
     }
+    public String getDateFromReleaseDate() {
+
+        return this.releaseDate.toString().substring(0, 10);
+    }
 
 
 }

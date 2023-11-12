@@ -1,12 +1,13 @@
 package org.softuni.bookshopbg.controlller;
 
 
-import org.softuni.bookshopbg.model.entities.Book;
+import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.CartItem;
 import org.softuni.bookshopbg.model.entities.ShoppingCart;
 import org.softuni.bookshopbg.model.entities.UserEntity;
 import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.service.CartItemService;
+import org.softuni.bookshopbg.exception.ObjectNotFoundException;
 import org.softuni.bookshopbg.service.ShoppingCartService;
 import org.softuni.bookshopbg.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -63,12 +64,12 @@ public class ShoppingCartController {
 
 	@PostMapping("/addItem")
 	public String addItem(
-			@ModelAttribute("book") Book book,
+			@ModelAttribute("book") BookBindingModel book,
 			@ModelAttribute("qty") String qty,
 			Model model, Principal principal
 			) {
 		UserEntity user = userService.findUserByUsername(principal.getName()).get();
-		book = bookService.findById(book.getId());
+		book = bookService.findBookById(book.getId()).orElseThrow(() -> new ObjectNotFoundException("Invalid book Id"));
 
 		if (Integer.parseInt(qty) > book.getInStockNumber()) {
 			model.addAttribute("notEnoughStock", true);

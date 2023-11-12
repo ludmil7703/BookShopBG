@@ -1,23 +1,31 @@
 package org.softuni.bookshopbg.service.impl;
 
 
+import org.modelmapper.ModelMapper;
+import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.repositories.CartItemRepository;
+import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.service.CartItemService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class CartItemServiceImpl implements CartItemService {
 
-	@Autowired
-	private CartItemRepository cartItemRepository;
+	private final CartItemRepository cartItemRepository;
+
+	private final ModelMapper modelMapper;
+
+	public CartItemServiceImpl(CartItemRepository cartItemRepository, BookService bookService, ModelMapper modelMapper) {
+		this.cartItemRepository = cartItemRepository;
+
+		this.modelMapper = modelMapper;
+	}
 
 
 	@Override
@@ -38,10 +46,12 @@ public class CartItemServiceImpl implements CartItemService {
 	}
 
 	@Override
-	public CartItem addBookToCartItem(Book book, UserEntity user, int qty) {
+	public CartItem addBookToCartItem(BookBindingModel bookBindingModel, UserEntity user, int qty) {
 
 
 		List<CartItem> cartItemList = findByShoppingCart(user.getShoppingCart());
+
+		Book book = modelMapper.map(bookBindingModel, Book.class);
 
 		for (CartItem cartItem : cartItemList) {
 			if(book.getId() == cartItem.getBook().getId()) {

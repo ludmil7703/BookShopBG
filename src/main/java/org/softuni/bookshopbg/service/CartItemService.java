@@ -1,6 +1,7 @@
 package org.softuni.bookshopbg.service;
 
 
+import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.*;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface CartItemService {
 	
 	CartItem updateCartItem(CartItem cartItem);
 	
-	CartItem addBookToCartItem(Book book, UserEntity user, int qty);
+	CartItem addBookToCartItem(BookBindingModel bookBindingModel, UserEntity user, int qty);
 	
 	CartItem findById(Long id);
 

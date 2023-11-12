@@ -1,10 +1,13 @@
 
 let reloadButton = document.getElementById("btn-fetch");
-reloadButton.addEventListener("click", reloadBooks());
+reloadButton.addEventListener("click", function (){reloadBooks()});
+
+
+
 function reloadBooks() {
     let bookContainer = document.getElementById("body");
     bookContainer.innerHTML = "";
-    fetch('http://localhost:8080/api/books')
+    fetch('http://localhost:8090/api/books')
         .then(response => response.json())
         .then(json => json.forEach( book=> {
 
@@ -45,15 +48,9 @@ function reloadBooks() {
             deleteButton.setAttribute("type", "submit");
             deleteButton.setAttribute("value", "delete");
             deleteButton.textContent = "Delete";
+            deleteButton.setAttribute("id", book.id);
             deleteButton.addEventListener("click", function () {
-                fetch('http://localhost:8080/api/books/' + book.id, {
-                    method: 'DELETE',
-                })
-                    .then(response => response.json())
-                    .then(json => {
-                        console.log(json);
-                        reloadBooks();
-                    })
+                deleteBook(book.id);
             });
             bookOperation.appendChild(deleteButton);
 

@@ -22,31 +22,117 @@
 					</tr>
 				</thead>
 				<tbody id="body">
-<!--					<tr data-th-each="book : ${bookList}">-->
-<!--						<td>-->
-<!--							<input hidden="hidden" name="id" th:value="${book.id}" />-->
-<!--							<input th:id="'selected'+${book.id}" class="checkboxBook" type="checkbox" />-->
-<!--						</td>-->
-<!--						<td><a th:href="@{/books/bookInfo/{id}(id=${book.getId()})}"><span th:text="${book.title}"></span></a></td>-->
-<!--						<td th:text="${book.author}"></td>-->
-<!--						<td th:text="${book.category.name()}"></td>-->
-<!--						<td th:text="${book.listPrice}"></td>-->
-<!--						<td th:text="${book.ourPrice}"> </td>-->
-<!--						<td><img th:src="${book.imageUrl}" width="50" height="80"/></td>-->
-<!--						<td th:text="${book.active}"></td>-->
-<!--						<td>-->
+					<tr data-th-each="book : ${bookList}">
+						<td><a th:href="@{/books/bookInfo/{id}(id=${book.getId()})}"><span th:text="${book.title}"></span></a></td>
+						<td th:text="${book.author}"></td>
+						<td th:text="${book.category.name()}"></td>
+						<td th:text="${book.listPrice}"></td>
+						<td th:text="${book.ourPrice}"> </td>
+						<td><img th:src="${book.imageUrl}" width="50" height="80"/></td>
+						<td th:text="${book.active}"></td>
+						<td>
 
-<!--							<input hidden="hidden" name="id" th:value="${book.id}" />-->
-<!--							<button th:id=" 'oneBook-'+${book.id}" class="btn btn-danger btn-xs delete-book" type="submit" value="delete" >-->
-<!--							<span class="fa fa-times"></span>Delete</button>-->
-<!--						</td>-->
+							<input hidden="hidden" name="id" th:value="${book.id}" />
+							<button th:id=" 'oneBook-'+${book.id}" class="btn btn-danger btn-xs delete-book" type="submit" value="delete" >
+							<span class="fa fa-times"></span>Delete</button>
+						</td>
 <!--					</tr>-->
-				<script th:src="@{/js/script.js}"></script>
 				</tbody>
 			</table>
 		</div>
 		<footer th:replace="fragments/commons::footer"></footer>
 	</div>
+
+
+<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			reloadBooks();
+		});
+
+		function reloadBooks() {
+			let bookContainer = document.getElementById("body");
+			bookContainer.innerHTML = "";
+			fetch('http://localhost:8090/api/books')
+					.then(response => response.json())
+					.then(json => json.forEach( book=> {
+
+						let bookRow = document.createElement("tr");
+						let bookTitle = document.createElement("td");
+						let titleLink = document.createElement("a");
+						titleLink.setAttribute("href", "/books/bookInfo/" + book.id);
+						titleLink.textContent = book.title;
+						let bookAuthor = document.createElement("td");
+						let bookCategory = document.createElement("td");
+						let bookListPrice = document.createElement("td");
+						let bookOurPrice = document.createElement("td");
+						let bookImage = document.createElement("td");
+						let operation = document.createElement("td");
+
+						let image = document.createElement("img");
+						image.setAttribute("src", book.imageUrl);
+						image.setAttribute("width", "50");
+						image.setAttribute("height", "80");
+						image.setAttribute("alt", "image");
+						let bookActive = document.createElement("td");
+						let bookOperation = document.createElement("div");
+						bookOperation.setAttribute("class", "btn-group");
+
+						let editButton = document.createElement("button");
+						editButton.setAttribute("class", "btn btn-success fa fa-pencil btn-xs update-book");
+						editButton.setAttribute("type", "submit");
+						editButton.setAttribute("value", "edit");
+						editButton.textContent = "Edit";
+						editButton.addEventListener("click", function () {
+							window.location.href = "/books/updateBook/" + book.id;
+						});
+						bookOperation.appendChild(editButton);
+
+
+						let deleteButton = document.createElement("button");
+						deleteButton.setAttribute("class", "btn btn-danger btn-xs delete-book");
+						deleteButton.setAttribute("type", "submit");
+						deleteButton.setAttribute("value", "delete");
+						deleteButton.textContent = "Delete";
+						deleteButton.setAttribute("id", book.id);
+						deleteButton.addEventListener("click", function () {
+							fetch('http://localhost:8090/books/remove/' + book.id, {
+								method: 'DELETE',
+								headers: {
+									'Content-Type': 'application/json'
+								}
+							})
+									.then(response => response.json())
+									.then(json => {
+										console.log(json);
+										reloadBooks();
+									})
+						});
+						bookOperation.appendChild(deleteButton);
+
+						bookAuthor.textContent = book.author;
+						bookCategory.textContent = book.category;
+						bookListPrice.textContent = book.listPrice + " $";
+						bookOurPrice.textContent = book.ourPrice + " $";
+						bookActive.textContent = book.active;
+
+						bookTitle.appendChild(titleLink);
+						bookRow.appendChild(bookTitle);
+						bookRow.appendChild(bookAuthor);
+						bookRow.appendChild(bookCategory);
+						bookRow.appendChild(bookListPrice);
+						bookRow.appendChild(bookOurPrice);
+						bookImage.appendChild(image);
+						bookRow.appendChild(bookImage);
+						bookRow.appendChild(bookActive);
+						operation.appendChild(bookOperation);
+						bookRow.appendChild(operation);
+
+						bookContainer.appendChild(bookRow);
+					}))
+	}
+
+
+</script>
 
 </body>
 </html>
