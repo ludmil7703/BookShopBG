@@ -3,7 +3,6 @@ package org.softuni.bookshopbg.service;
 
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.Book;
-import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,9 +31,8 @@ public interface BookService {
 
 	List<Book> findByCategory(CategoryName category);
 
-	Book saveBook(Book book);
+	void saveBook(Book book);
 
-	List<BookBindingModel> getAllBooks() throws IOException;
 
 	Optional<BookBindingModel> findBookById(Long id);
 }

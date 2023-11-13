@@ -61,9 +61,6 @@ class BookShopUserDetailServiceTest {
         when(mockUserRepository.findByUsername("pesho"))
                 .thenReturn(Optional.of(userEntity));
 
-        when(mockUserRepository.findByUsername("pesho"))
-                .thenReturn(Optional.of(userEntity));
-
         // Act
         var userDetails = serviceToTest.loadUserByUsername("pesho");
 
