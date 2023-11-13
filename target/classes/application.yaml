@@ -12,7 +12,7 @@ spring:
       filter:
         enabled: 'true'
   datasource:
-    driverClassName: com.mysql.jdbc.Driver
+    driverClassName: com.mysql.cj.jdbc.Driver
     password: 'Lty#88290'
     username: 'root'
     url: jdbc:mysql://localhost:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
@@ -27,6 +27,8 @@ spring:
       static-locations: file:src/main/resources/static/
       cache:
         period: 0
+bookShop:
+  remember.me.key: ${REMEMBER_ME_KEY:bookShop}
 
 logging:
   level:
@@ -40,5 +42,10 @@ logging:
 server:
   port: 8090
 #  when port change, need fetch url port change
-
+mail:
+  bookshop:"bookshop@example.com
+  host:localhost
+    port:1025
+    username:bookshop
+    password:bookshop
 

@@ -22,12 +22,6 @@ public class NotFoundController {
         return modelAndView;
     }
 
-    @ExceptionHandler({IllegalArgumentException.class})
-    public ModelAndView handleRestNotFound(ObjectNotFoundException e) {
-        ModelAndView modelAndView = new ModelAndView("restnotfound");
-        modelAndView.addObject("id", e.getId());
-        return modelAndView;
-    }
 
 
 }

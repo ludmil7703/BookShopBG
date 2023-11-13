@@ -2,7 +2,8 @@ package org.softuni.bookshopbg.config;
 
 import org.softuni.bookshopbg.model.enums.UserRoleEnum;
 import org.softuni.bookshopbg.repositories.UserRepository;
-import org.softuni.bookshopbg.service.impl.UserDetailServiceImpl;
+import org.softuni.bookshopbg.service.impl.BookShopUserDetailService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,12 +37,12 @@ public class SecurityConfiguration {
             "/"
 
     };
-//  private final String rememberMeKey;
-//
-//  public SecurityConfiguration(@Value("${mobilele.remember.me.key}")
-//    String rememberMeKey) {
-//    this.rememberMeKey = rememberMeKey;
-//  }
+  private final String rememberMeKey;
+
+  public SecurityConfiguration(@Value("${bookshop.remember.me.key}")
+    String rememberMeKey) {
+    this.rememberMeKey = rememberMeKey;
+  }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -69,20 +70,20 @@ public class SecurityConfiguration {
               .logoutSuccessUrl("/")
               .invalidateHttpSession(true);
         }
-//    ).rememberMe(
-//        rememberMe -> {
-//          rememberMe
-//              .key(rememberMeKey)
-//              .rememberMeParameter("rememberme")
-//              .rememberMeCookieName("rememberme");
-//        }
+    ).rememberMe(
+        rememberMe -> {
+          rememberMe
+              .key(rememberMeKey)
+              .rememberMeParameter("rememberme")
+              .rememberMeCookieName("rememberme");
+        }
     ).build();
 
   }
 
   @Bean
   public UserDetailsService userDetailsService(UserRepository userRepository) {
-    return new UserDetailServiceImpl(userRepository);
+    return new BookShopUserDetailService(userRepository);
   }
 
 }

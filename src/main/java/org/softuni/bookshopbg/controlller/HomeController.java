@@ -26,13 +26,17 @@ public class HomeController {
     private final UserService userService;
 
 
+
     public HomeController(CategoryService categoryService,
                           BookService bookService,
                           UserService userService) {
         this.categoryService = categoryService;
         this.bookService = bookService;
         this.userService = userService;
+
     }
+
+
 
     @GetMapping("/")
     public String index(Model model) throws IOException {

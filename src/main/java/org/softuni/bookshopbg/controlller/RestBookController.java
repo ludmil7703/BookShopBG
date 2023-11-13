@@ -21,6 +21,8 @@ public class RestBookController {
 
     @GetMapping
     public ResponseEntity<List<BookBindingModel>> getAllBooks() {
+
+        System.out.println("Inside Controller");
         try {
             List<BookBindingModel> books = this.bookService.findAll();
             return ResponseEntity.ok().body(books);

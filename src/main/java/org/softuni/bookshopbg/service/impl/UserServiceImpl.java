@@ -65,10 +65,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity findUserByEmail(String email) {
-        UserEntity user = this.userRepository.findUserByEmail(email);
+        Optional<UserEntity> user = this.userRepository.findByEmail(email);
 
-        if (user != null) {
-            return user;
+        if (user.isPresent()) {
+            return user.get();
         }
         return null;
     }
