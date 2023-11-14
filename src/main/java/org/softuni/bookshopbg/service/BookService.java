@@ -20,7 +20,7 @@ public interface BookService {
 
 
 
-    void deleteBookById(Long id);
+    Book deleteBookById(Long id);
 
 	Page<BookBindingModel> getAllBooks(Pageable pageable);
 
@@ -31,7 +31,7 @@ public interface BookService {
 
 	List<Book> findByCategory(CategoryName category);
 
-	void saveBook(Book book);
+	Book saveBook(Book book);
 
 
 	Optional<BookBindingModel> findBookById(Long id);

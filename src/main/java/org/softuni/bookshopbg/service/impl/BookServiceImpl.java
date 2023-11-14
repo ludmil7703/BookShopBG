@@ -82,8 +82,8 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public void saveBook(Book book) {
-		bookRepository.save(book);
+	public Book saveBook(Book book) {
+		return bookRepository.save(book);
 	}
 
 
@@ -103,11 +103,12 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public void deleteBookById(Long id) {
-
-		bookRepository.deleteBookById(id);
+	public Book deleteBookById(Long id) {
+		if (bookRepository.deleteBookById(id) == null) {
+			throw new IllegalArgumentException("Book with the given id was not found!");
+		}
+		return bookRepository.deleteBookById(id);
 	}
-
 	@Override
 	public Page<BookBindingModel> getAllBooks(Pageable pageable) {
 		return bookRepository
