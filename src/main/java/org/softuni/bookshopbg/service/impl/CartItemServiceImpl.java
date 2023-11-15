@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -21,9 +22,8 @@ public class CartItemServiceImpl implements CartItemService {
 
 	private final ModelMapper modelMapper;
 
-	public CartItemServiceImpl(CartItemRepository cartItemRepository, BookService bookService, ModelMapper modelMapper) {
+	public CartItemServiceImpl(CartItemRepository cartItemRepository, ModelMapper modelMapper) {
 		this.cartItemRepository = cartItemRepository;
-
 		this.modelMapper = modelMapper;
 	}
 
@@ -54,7 +54,7 @@ public class CartItemServiceImpl implements CartItemService {
 		Book book = modelMapper.map(bookBindingModel, Book.class);
 
 		for (CartItem cartItem : cartItemList) {
-			if(book.getId() == cartItem.getBook().getId()) {
+			if(Objects.equals(book.getId(), cartItem.getBook().getId())) {
 				cartItem.setQty(cartItem.getQty()+qty);
 				cartItem.setSubtotal(new BigDecimal(String.valueOf(book.getOurPrice())).multiply(new BigDecimal(qty)));
 				cartItemRepository.save(cartItem);

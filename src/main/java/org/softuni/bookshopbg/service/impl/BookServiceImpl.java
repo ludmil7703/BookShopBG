@@ -52,7 +52,7 @@ public class BookServiceImpl implements BookService {
 		Book book = new Book();
 
 
-		if(!bookBindingModel.getBookImage().isEmpty()){
+		if(bookBindingModel.getBookImage() !=null) {
 			MultipartFile imageToCloud = bookBindingModel.getBookImage();
 
 			Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(

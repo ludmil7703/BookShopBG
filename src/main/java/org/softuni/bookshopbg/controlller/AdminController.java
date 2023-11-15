@@ -3,6 +3,7 @@ package org.softuni.bookshopbg.controlller;
 
 import jakarta.validation.Valid;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
+import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.service.CategoryService;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.*;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/books")
@@ -66,7 +68,7 @@ public class AdminController {
 	}
 	
 	
-	@RequestMapping("/updateBook/{id}")
+	@GetMapping("/updateBook/{id}")
 	public String updateBook(@PathVariable Long id, Model model) {
 		BookBindingModel book = bookService.findBookById(id)
 				.orElseThrow(() -> new ObjectNotFoundException("Invalid book Id:" + id));
@@ -78,7 +80,7 @@ public class AdminController {
 	}
 	
 	
-	@RequestMapping(value="/updateBook", method=RequestMethod.POST)
+	@PostMapping(value="/updateBook")
 	public String updateBook(@Valid @ModelAttribute("book") BookBindingModel book, BindingResult bindingResult,
 							  RedirectAttributes rAtt) throws IOException, ParseException {
 		if (bindingResult.hasErrors()){
@@ -87,13 +89,10 @@ public class AdminController {
 			return "redirect:/books/add";
 		}
 		bookService.save(book);
-
-
-		
 		return "redirect:/books/bookInfo/"+book.getId();
 	}
 	
-	@RequestMapping("/bookList")
+	@GetMapping("/bookList")
 	public String bookList(Model model) throws IOException {
 		List<BookBindingModel> bookList = bookService.findAll();
 		model.addAttribute("bookList", bookList);
@@ -103,7 +102,10 @@ public class AdminController {
 
 @DeleteMapping(value="/remove/{id}")
 public String remove(@PathVariable Long id, Model model) throws IOException {
-	bookService.deleteBookById(id);
+	Book book= bookService.deleteBookById(id);
+	if (book == null) {
+		throw new IllegalArgumentException("Book with the given id was not found!");
+	}
 	List<BookBindingModel> bookList = bookService.findAll();
 	model.addAttribute("bookList", bookList);
 

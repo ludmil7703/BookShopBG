@@ -1,14 +1,11 @@
 package org.softuni.bookshopbg.service.impl;
 
 import lombok.With;
-import org.junit.jupiter.api.AfterEach;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
@@ -18,14 +15,9 @@ import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.softuni.bookshopbg.repositories.BookRepository;
 import org.softuni.bookshopbg.repositories.CategoryRepository;
 import org.softuni.bookshopbg.service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
-
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
