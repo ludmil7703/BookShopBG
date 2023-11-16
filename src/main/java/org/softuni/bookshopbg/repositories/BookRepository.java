@@ -13,11 +13,15 @@ import java.util.Optional;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-    Optional<Book> findById(Long id);
 
-    Book deleteBookById( Long id);
+
+    Book deleteBookById(Long id);
 
     List<Book> findByTitleContaining(String title);
 
     List<Book> findAllByCategoryCategoryName(CategoryName categoryName);
+
+    Book findBookById(Long id);
+
+    Book saveBook(Book book);
 }

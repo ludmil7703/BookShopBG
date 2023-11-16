@@ -1,6 +1,7 @@
 package org.softuni.bookshopbg.controlller;
 
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
+import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.model.entities.UserEntity;
 import org.softuni.bookshopbg.service.BookService;
@@ -69,12 +70,9 @@ public class HomeController {
     public String subpage(Model model) {
         List<Category> categoryList = categoryService.getAllCategories();
         model.addAttribute("categoryList", categoryList);
-        return "/subpage";
+        return "subpage";
     }
-    @GetMapping("/admin")
-    public String home() {
-        return "admin";
-    }
+
 
     @RequestMapping("/bookDetail/{id}")
     public String bookDetails(@PathVariable Long id, Model model, Principal principal) {
@@ -83,14 +81,17 @@ public class HomeController {
             Optional<UserEntity> user = userService.findUserByUsername(username);
             model.addAttribute("user", user);
         }
-        BookBindingModel book = bookService.findBookById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("Invalid book Id:" + id));
+        Book book = bookService.findBookById(id);
         model.addAttribute("book", book);
         List<Integer> qtyList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
 
         model.addAttribute("qtyList", qtyList);
         model.addAttribute("qty", 1);
         return "bookDetail";
+    }
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
     }
 
     @GetMapping("/faq")

@@ -1,27 +1,23 @@
 package org.softuni.bookshopbg.service.impl;
 
-import org.junit.After;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.softuni.bookshopbg.model.dto.BookBindingModel;
-import org.softuni.bookshopbg.model.entities.Book;
-import org.softuni.bookshopbg.model.entities.CartItem;
-import org.softuni.bookshopbg.model.entities.Category;
-import org.softuni.bookshopbg.model.entities.ShoppingCart;
+import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.model.enums.CategoryName;
+import org.softuni.bookshopbg.repositories.BookRepository;
 import org.softuni.bookshopbg.repositories.CartItemRepository;
 import org.softuni.bookshopbg.service.CartItemService;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.userdetails.User;
 
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -32,11 +28,14 @@ class CartItemServiceImplTest {
     @Mock
     private CartItemRepository mockCartItemRepository;
 
+    @Mock
+    private BookRepository mockBookRepository;
+
     private CartItemService cartItemServiceToTest;
 
     @BeforeEach
     void setUp() {
-        cartItemServiceToTest = new CartItemServiceImpl(mockCartItemRepository, new ModelMapper());
+        cartItemServiceToTest = new CartItemServiceImpl(mockCartItemRepository, mockBookRepository, new ModelMapper());
     }
 
     @AfterEach
@@ -83,19 +82,68 @@ class CartItemServiceImplTest {
     }
 
     @Test
-    void findById() {
+    void testFindById() {
+        CartItem cartItem = createShoppingCart().getCartItemList().get(0);
+
+        when(mockCartItemRepository.findById(cartItem.getId()))
+                .thenReturn(Optional.of(cartItem));
+
+        CartItem result = cartItemServiceToTest.findById(cartItem.getId());
+
+        assertEquals("Author", result.getBook().getAuthor());
     }
 
     @Test
-    void save() {
+    void testSaveCartItem() {
+        CartItem cartItem = createShoppingCart().getCartItemList().get(0);
+
+        when(mockCartItemRepository.save(cartItem))
+                .thenReturn(cartItem);
+
+        CartItem result = cartItemServiceToTest.save(cartItem);
+
+        assertEquals(cartItem, result);
     }
 
     @Test
-    void findByOrder() {
+    void testFindByOrder() {
+        List<CartItem> cartItemList = createShoppingCart().getCartItemList();
+
+        Order order = createOrder();
+
+        when(mockCartItemRepository.findByOrder(order))
+                .thenReturn(cartItemList);
+
+        List<CartItem> result = cartItemServiceToTest.findByOrder(order);
+
+        assertEquals(cartItemList, result);
     }
 
+
+
     @Test
-    void deleteCartItemById() {
+    void testDeleteCartItemById() {
+        CartItem cartItem = createCartItem();
+
+        when(mockCartItemRepository.findById(cartItem.getId()))
+                .thenReturn(Optional.of(cartItem));
+
+        when(mockCartItemRepository.deleteCartItemById(cartItem.getId()))
+                .thenReturn(cartItem);
+
+        cartItemServiceToTest.deleteCartItemById(cartItem.getId());
+
+        verify(mockCartItemRepository, times(1)).deleteCartItemById(cartItem.getId());
+    }
+
+    private CartItem createCartItem() {
+        CartItem cartItem = new CartItem();
+        cartItem.setId(1L);
+        cartItem.setQty(1);
+        cartItem.setSubtotal(BigDecimal.TEN);
+        cartItem.setBook(creatBook());
+        cartItem.setShoppingCart(createShoppingCart());
+        return cartItem;
     }
 
     private ShoppingCart createShoppingCart() {
@@ -112,6 +160,12 @@ class CartItemServiceImplTest {
         shoppingCart.setCartItemList(List.of(cartItem));
         shoppingCart.setUser(null);
         return shoppingCart;
+    }
+
+    private Order createOrder() {
+        Order order = new Order();
+        order.setOrderStatus("OrderStatus");
+        return order;
     }
 
     private Book creatBook() {

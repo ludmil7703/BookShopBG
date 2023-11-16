@@ -4,8 +4,8 @@ package org.softuni.bookshopbg.service.impl;
 import org.modelmapper.ModelMapper;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.*;
+import org.softuni.bookshopbg.repositories.BookRepository;
 import org.softuni.bookshopbg.repositories.CartItemRepository;
-import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.service.CartItemService;
 
 import org.springframework.stereotype.Service;
@@ -20,10 +20,13 @@ public class CartItemServiceImpl implements CartItemService {
 
 	private final CartItemRepository cartItemRepository;
 
+	private final BookRepository bookRepository;
+
 	private final ModelMapper modelMapper;
 
-	public CartItemServiceImpl(CartItemRepository cartItemRepository, ModelMapper modelMapper) {
+	public CartItemServiceImpl(CartItemRepository cartItemRepository, BookRepository bookRepository, ModelMapper modelMapper) {
 		this.cartItemRepository = cartItemRepository;
+		this.bookRepository = bookRepository;
 		this.modelMapper = modelMapper;
 	}
 
@@ -99,14 +102,16 @@ public class CartItemServiceImpl implements CartItemService {
 			Book book = cartItem.get().getBook();
 			book.setInStockNumber(book.getInStockNumber() + cartItem.get().getQty());
 			cartItem.get().setBook(null);
+		} else {
+			throw new IllegalArgumentException("CartItem with the given id was not found!");
 		}
-		if (cartItem.isPresent()) {
+		if (cartItem.get().getShoppingCart() != null && cartItem.get().getShoppingCart().getCartItemList().contains(cartItem.get())) {
 			ShoppingCart shoppingCart = cartItem.get().getShoppingCart();
 			shoppingCart.setGrandTotal(shoppingCart.getGrandTotal().subtract(cartItem.get().getSubtotal()));
 			cartItem.get().setShoppingCart(null);
 		}
 
-		cartItemRepository.delete(cartItem.get());
+		cartItemRepository.deleteCartItemById(cartItem.get().getId());
 	}
 
 }

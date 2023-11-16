@@ -12,20 +12,24 @@ import java.io.IOException;
 import java.util.Map;
 
 
+@Component
 public class CloudinaryConfig {
-//    public Cloudinary cloudinary;
+    public Cloudinary cloudinary;
+
+    @Autowired
+    public CloudinaryConfig(@Value("${cloud.key}") String key,
+                            @Value("${cloud.secret}") String secret,
+                            @Value("${cloud.name}") String cloud) {
+        cloudinary = Singleton.getCloudinary();
+        cloudinary.config.cloudName= cloud;
+        cloudinary.config.apiSecret= secret;
+        cloudinary.config.apiKey= key;
+    }
 //
-//    @Autowired
-//    public CloudinaryConfig(@Value("${cloud.key}") String key,
-//                            @Value("${cloud.secret}") String secret,
-//                            @Value("${cloud.name}") String cloud) {
-//        cloudinary = Singleton.getCloudinary();
-//        cloudinary.config.cloudName= cloud;
-//        cloudinary.config.apiSecret= secret;
-//        cloudinary.config.apiKey= key;
-//    }
-//
-//    public Map upload(Object file, Map options){
+//    public Map upload(Object file, String title){
+//        Map options = Map.of(
+//                "public_id", "bookshop/" + title
+//        );
 //        try {
 //            return cloudinary.uploader().upload(file, options);
 //        } catch    (IOException e)  {

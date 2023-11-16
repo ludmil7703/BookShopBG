@@ -28,6 +28,7 @@ public class SecurityConfiguration {
             "/search",
             "/bookDetail/**",
             "/faq",
+            "/subpage",
             "/allBooks",
             "/contact",
             "/error",

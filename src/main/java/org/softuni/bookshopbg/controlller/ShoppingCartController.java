@@ -2,6 +2,7 @@ package org.softuni.bookshopbg.controlller;
 
 
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
+import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.entities.CartItem;
 import org.softuni.bookshopbg.model.entities.ShoppingCart;
 import org.softuni.bookshopbg.model.entities.UserEntity;
@@ -69,7 +70,7 @@ public class ShoppingCartController {
 			Model model, Principal principal
 			) {
 		UserEntity user = userService.findUserByUsername(principal.getName()).get();
-		book = bookService.findBookById(book.getId()).orElseThrow(() -> new ObjectNotFoundException("Invalid book Id"));
+		Book bookById = bookService.findBookById(book.getId());
 
 		if (Integer.parseInt(qty) > book.getInStockNumber()) {
 			model.addAttribute("notEnoughStock", true);

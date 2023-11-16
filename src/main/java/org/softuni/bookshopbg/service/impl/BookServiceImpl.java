@@ -2,7 +2,6 @@ package org.softuni.bookshopbg.service.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
@@ -10,6 +9,7 @@ import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.softuni.bookshopbg.repositories.CategoryRepository;
 import org.softuni.bookshopbg.service.BookService;
+import org.softuni.bookshopbg.utils.CloudinaryConfig;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -38,37 +37,33 @@ public class BookServiceImpl implements BookService {
 
 	private ModelMapper modelMapper;
 
+	private CloudinaryConfig cloudinary;
 
 
-	public BookServiceImpl(BookRepository bookRepository, CategoryRepository categoryRepository, ModelMapper modelMapper) {
+
+	public BookServiceImpl(BookRepository bookRepository, CategoryRepository categoryRepository, ModelMapper modelMapper, CloudinaryConfig cloudinary) {
 		this.bookRepository = bookRepository;
 		this.categoryRepository = categoryRepository;
 
 		this.modelMapper = modelMapper;
+		this.cloudinary = cloudinary;
 	}
 
 	@Override
-	public Book save(BookBindingModel bookBindingModel) throws IOException {
+	public Book saveWithDTO(BookBindingModel bookBindingModel) throws IOException {
 		Book book = new Book();
 
+		MultipartFile imageToCloud = bookBindingModel.getBookImage();
 
-		if(bookBindingModel.getBookImage() !=null) {
-			MultipartFile imageToCloud = bookBindingModel.getBookImage();
 
-			Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-					"cloud_name", "de2t3mhgr",
-					"api_key", "319136679127269",
-					"api_secret", "CyqB-VhB40myASzDFaN3aIp1JgQ",
-					"secure", true));
+		if(imageToCloud != null && imageToCloud.getSize() > 0) {
+			imageToCloud = bookBindingModel.getBookImage();
 
-			String imageUrl = cloudinary.uploader().upload(imageToCloud.getBytes(),
-							Map.of("public_id", "bookshopbg/" + bookBindingModel.getTitle()))
-					.get("url")
-					.toString();
+
+			String imageUrl = getCloudUrl(bookBindingModel, imageToCloud);
+
 
 			bookBindingModel.setImageUrl(imageUrl);
-		} else {
-			bookRepository.findById(bookBindingModel.getId()).ifPresent(book1 -> bookBindingModel.setImageUrl(book1.getImageUrl()));
 		}
 
 
@@ -81,8 +76,12 @@ public class BookServiceImpl implements BookService {
 		return bookRepository.save(book);
 	}
 
+
 	@Override
 	public Book saveBook(Book book) {
+		if (book == null) {
+			throw new IllegalArgumentException("Book cannot be null!");
+		}
 		return bookRepository.save(book);
 	}
 
@@ -96,18 +95,19 @@ public class BookServiceImpl implements BookService {
 
 
 	@Override
-	public Optional<BookBindingModel> findBookById(Long id) {
-		return bookRepository
-				.findById(id)
-				.map(this::mapBookToBookBindingModel);
+	public Book findBookById(Long id) {
+		Book book = bookRepository.findBookById(id);
+		return book;
 	}
 
 	@Override
 	public Book deleteBookById(Long id) {
-		if (bookRepository.deleteBookById(id) == null) {
+		Book book = bookRepository.findBookById(id);
+		if (book == null) {
 			throw new IllegalArgumentException("Book with the given id was not found!");
 		}
-		return bookRepository.deleteBookById(id);
+		bookRepository.delete(book);
+		return book;
 	}
 	@Override
 	public Page<BookBindingModel> getAllBooks(Pageable pageable) {
@@ -143,7 +143,23 @@ public class BookServiceImpl implements BookService {
 	public List<Book> findByCategory(CategoryName category) {
 
 		return bookRepository.findAllByCategoryCategoryName(category);
+	}	private static String getCloudUrl(BookBindingModel bookBindingModel, MultipartFile imageToCloud) throws IOException {
+
+		Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+				"cloud_name", "de2t3mhgr",
+				"api_key", "319136679127269",
+				"api_secret", "CyqB-VhB40myASzDFaN3aIp1JgQ"));
+
+
+		String imageUrl = cloudinary.uploader().upload(imageToCloud.getBytes(),
+						Map.of("public_id", "bookshopbg/" + bookBindingModel.getTitle()))
+				.get("url")
+				.toString();
+
+
+		return imageUrl;
 	}
+
 
 
 }

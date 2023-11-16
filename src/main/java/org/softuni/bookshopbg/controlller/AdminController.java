@@ -30,6 +30,7 @@ public class AdminController {
 	private final CategoryService categoryService;
 
 
+
 	public AdminController(BookService bookService, CategoryService categoryService) {
 		this.bookService = bookService;
 		this.categoryService = categoryService;
@@ -46,22 +47,21 @@ public class AdminController {
 	}
 
 	@PostMapping(value = "/add")
-	public String addBookPost(@Valid @ModelAttribute("book") BookBindingModel book, BindingResult bindingResult,
+	public String addBookPost(@Valid @ModelAttribute("book") BookBindingModel bookDTO, BindingResult bindingResult,
 							  RedirectAttributes rAtt) throws IOException, ParseException {
 		if (bindingResult.hasErrors()){
-			rAtt.addFlashAttribute("book", book);
+			rAtt.addFlashAttribute("book", bookDTO);
 			rAtt.addFlashAttribute("org.springframework.validation.BindingResult.book", bindingResult);
 			return "redirect:/books/add";
 		}
-		bookService.save(book);
+		bookService.saveWithDTO(bookDTO);
 
 		return "redirect:/books/bookList";
 	}
 	
 	@GetMapping("/bookInfo/{id}")
 	public String bookInfo(@PathVariable Long id, Model model) {
-		BookBindingModel book = bookService.findBookById(id)
-				.orElseThrow(() -> new ObjectNotFoundException("Invalid book Id:" + id));
+		Book book = bookService.findBookById(id);
 		model.addAttribute("book", book);
 		
 		return "bookInfo";
@@ -70,8 +70,7 @@ public class AdminController {
 	
 	@GetMapping("/updateBook/{id}")
 	public String updateBook(@PathVariable Long id, Model model) {
-		BookBindingModel book = bookService.findBookById(id)
-				.orElseThrow(() -> new ObjectNotFoundException("Invalid book Id:" + id));
+		Book book = bookService.findBookById(id);
 		model.addAttribute("book", book);
 		List<Category> categoryList = categoryService.getAllCategories();
 		model.addAttribute("categoryList", categoryList);
@@ -81,15 +80,15 @@ public class AdminController {
 	
 	
 	@PostMapping(value="/updateBook")
-	public String updateBook(@Valid @ModelAttribute("book") BookBindingModel book, BindingResult bindingResult,
+	public String updateBook(@Valid @ModelAttribute("book") BookBindingModel bookDTO, BindingResult bindingResult,
 							  RedirectAttributes rAtt) throws IOException, ParseException {
 		if (bindingResult.hasErrors()){
-			rAtt.addFlashAttribute("book", book);
+			rAtt.addFlashAttribute("book", bookDTO);
 			rAtt.addFlashAttribute("org.springframework.validation.BindingResult.book", bindingResult);
 			return "redirect:/books/add";
 		}
-		bookService.save(book);
-		return "redirect:/books/bookInfo/"+book.getId();
+		bookService.saveWithDTO(bookDTO);
+		return "redirect:/books/bookInfo/"+bookDTO.getId();
 	}
 	
 	@GetMapping("/bookList")

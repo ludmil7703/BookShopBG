@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface BookService {
 	
-	Book save(BookBindingModel book) throws IOException, ParseException;
+	Book saveWithDTO(BookBindingModel book) throws IOException, ParseException;
 
 	List<BookBindingModel> findAll() throws IOException;
 
@@ -34,5 +34,5 @@ public interface BookService {
 	Book saveBook(Book book);
 
 
-	Optional<BookBindingModel> findBookById(Long id);
+	Book findBookById(Long id);
 }

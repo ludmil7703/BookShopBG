@@ -12,10 +12,10 @@ spring:
       filter:
         enabled: 'true'
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
-    password: 'Lty#88290'
-    username: 'root'
-    url: jdbc:mysql://localhost:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+     driverClassName: com.mysql.cj.jdbc.Driver
+     url: jdbc:mysql://localhost:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+     username: 'root'
+     password: 'Lty#88290'
 
   thymeleaf: # Thymeleaf properties
     cache: false
@@ -48,4 +48,8 @@ mail:
     port:1025
     username:bookshop
     password:bookshop
+cloud:
+  name: de2t3mhgr
+  key: 319136679127269
+  secret: CyqB-VhB40myASzDFaN3aIp1JgQ
 
