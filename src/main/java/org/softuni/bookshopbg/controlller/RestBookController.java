@@ -32,7 +32,7 @@ public class RestBookController {
 
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/remove/{id}")
     public ResponseEntity<BookBindingModel> deleteBookById(@PathVariable Long id, Model model) {
         try {
             this.bookService.deleteBookById(id);

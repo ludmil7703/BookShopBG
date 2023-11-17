@@ -12,8 +12,11 @@ import java.util.Optional;
 @Service
 public class UserShippingServiceImpl implements UserShippingService {
 	
-	@Autowired
 	private UserShippingRepository userShippingRepository;
+
+	public UserShippingServiceImpl(UserShippingRepository userShippingRepository) {
+		this.userShippingRepository = userShippingRepository;
+	}
 	
 	
 	public Optional<UserShipping> findById(Long id) {

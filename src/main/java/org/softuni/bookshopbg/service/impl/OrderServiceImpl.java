@@ -1,5 +1,6 @@
 package org.softuni.bookshopbg.service.impl;
 
+import lombok.AllArgsConstructor;
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.repositories.OrderRepository;
 import org.softuni.bookshopbg.service.BookService;
@@ -12,7 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
-
+@AllArgsConstructor
 @Service
 public class OrderServiceImpl implements OrderService {
 	

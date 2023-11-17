@@ -1,5 +1,6 @@
 package org.softuni.bookshopbg.service.impl;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,8 +45,13 @@ class BookServiceImplTest {
         bookServiceToTest = new BookServiceImpl(mockBookRepository, mockCategoryRepository, new ModelMapper(), mockCloudinary);
     }
 
+    @AfterEach
+    void tearDown() {
+        bookServiceToTest = null;
+    }
+
     @Test
-    void testSave() throws IOException {
+    void testSave() {
         Book book = createBook();
 
         when(mockBookRepository.save(book)).thenReturn(book);

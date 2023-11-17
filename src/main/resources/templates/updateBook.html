@@ -92,7 +92,7 @@
 									 class="form-control">
 								<option value="" th:selected="selected" disabled="disabled">Please
 									select an option...</option>
-								<option th:each="category : ${categoryList}" th:value="${category.categoryName}"   th:text="${category.getCategoryName()}"></option>
+<!--								<option th:each="category : ${categoryList}" th:value="${category.categoryName}"   th:text="${category.getCategoryName()}"></option>-->
 							</select>
 							<small class="invalid-feedback text-danger" th:if="${#fields.hasErrors('category')}" th:errors="*{category}">Category error message</small>
 						</div>
@@ -225,7 +225,7 @@
 							<textarea th:field="*{description}" th:errorclass="'is-invalid alert-danger'" th:name="description"
 									  rows="5" class="form-control"
 									  id="description" th:value="${book.description}"
-									  placeholder="Description" /></textarea>
+									  placeholder="Description"></textarea>
 							<small class="invalid-feedback text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description error message</small>
 							<span class="help-block">Description of the book</span>
 						</div>

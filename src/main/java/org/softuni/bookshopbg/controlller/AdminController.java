@@ -74,7 +74,6 @@ public class AdminController {
 		model.addAttribute("book", book);
 		List<Category> categoryList = categoryService.getAllCategories();
 		model.addAttribute("categoryList", categoryList);
-		
 		return "updateBook";
 	}
 	
@@ -90,13 +89,13 @@ public class AdminController {
 		bookService.saveWithDTO(bookDTO);
 		return "redirect:/books/bookInfo/"+bookDTO.getId();
 	}
-	
+
 	@GetMapping("/bookList")
 	public String bookList(Model model) throws IOException {
-		List<BookBindingModel> bookList = bookService.findAll();
-		model.addAttribute("bookList", bookList);
+		List<BookBindingModel> books = bookService.findAll();
+		model.addAttribute("bookList", books);
 		return "bookList";
-		
+
 	}
 
 @DeleteMapping(value="/remove/{id}")

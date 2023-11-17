@@ -87,7 +87,9 @@ public class Book extends BaseEntity {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<CartItem> cartItems;
 
-
+public String getDateFromReleaseDate() {
+        return this.releaseDate.toString();
+    }
 
 
 

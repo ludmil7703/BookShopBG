@@ -1,28 +1,30 @@
 package org.softuni.bookshopbg.controlller;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.softuni.bookshopbg.exception.ObjectNotFoundException;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.softuni.bookshopbg.service.BookService;
+import org.softuni.bookshopbg.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -40,7 +42,17 @@ class AdminControllerTest {
     @Mock
     private BookService mockBookService;
 
+    @Mock
+    private CategoryService mockCategoryService;
 
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new AdminController(mockBookService, mockCategoryService)).build();
+        Mockito.reset(mockBookService);
+        Mockito.reset(mockCategoryService);
+    }
 
 
     @Test
@@ -99,18 +111,24 @@ class AdminControllerTest {
 
     @Test
     void testGetBookInfo() throws Exception {
-        when(mockBookService.findBookById(1L)).thenReturn(getBook());
-
-        RequestBuilder request = MockMvcRequestBuilders.get("/books/bookInfo/{id}", 1);
+Book book = getBook();
+        when(mockBookService.findBookById(book.getId())).thenReturn(book);
+        RequestBuilder request = MockMvcRequestBuilders.get("/books/bookInfo/{id}", 1L);
         mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(view().name("bookInfo"))
                 .andExpect(model().attributeExists("book"));
+        verifyNoMoreInteractions(mockBookService);
     }
 
     @Test
     void testGetUpdateBook() throws Exception {
-        RequestBuilder request = get("/books/updateBook/{id}", 1);
+        Book book = getBook();
+        Category category = new Category(CategoryName.IT);
+        List<Category> categoryList = List.of(category);
+        when(mockBookService.findBookById(1L)).thenReturn(book);
+        when(mockCategoryService.getAllCategories()).thenReturn(categoryList);
+        RequestBuilder request = get("/books/updateBook/{id}", 1L);
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -127,7 +145,7 @@ class AdminControllerTest {
     @Test
     void testUpdateBook() throws Exception {
 
-
+//Must return a bookInfo with id 1
         RequestBuilder request = post("/books/updateBook")
                 .param("title", "Title1")
                 .param("author", "Author1")
@@ -149,7 +167,7 @@ class AdminControllerTest {
 
       mockMvc.perform(request)
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/books/bookInfo/" + getBook()));
+                .andExpect(view().name("redirect:/books/bookInfo/1"));
 
 
     }
@@ -167,6 +185,9 @@ class AdminControllerTest {
 
     @Test
     void testGetBookList() throws Exception {
+
+        BookBindingModel book = getBookBindingModel();
+        when(mockBookService.findAll()).thenReturn(List.of(book));
 
         RequestBuilder request = get("/books/bookList");
                 mockMvc.perform(request)
@@ -187,7 +208,7 @@ void testRemoveWithWrongId() {
     when(mockBookService.deleteBookById(123L)).thenThrow(NullPointerException.class);
 }
 
-    public Book getBook() {
+    private Book getBook() {
         Book book = new Book();
         book.setId(1L);
         book.setAuthor("Author");
@@ -199,6 +220,19 @@ void testRemoveWithWrongId() {
         book.setNumberOfPages(10);
         book.setInStockNumber(10);
         return book;
+    }
+
+    private BookBindingModel getBookBindingModel() {
+        BookBindingModel bookBindingModel = new BookBindingModel();
+        bookBindingModel.setAuthor("Author");
+        bookBindingModel.setCategory(CategoryName.ENGINEERING);
+        bookBindingModel.setDescription("Description");
+        bookBindingModel.setListPrice(BigDecimal.valueOf(10));
+        bookBindingModel.setReleaseDate(new Date());
+        bookBindingModel.setTitle("Title");
+        bookBindingModel.setNumberOfPages(10);
+        bookBindingModel.setInStockNumber(10);
+        return bookBindingModel;
     }
 
 }

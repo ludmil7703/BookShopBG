@@ -23,5 +23,4 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Book findBookById(Long id);
 
-    Book saveBook(Book book);
 }
