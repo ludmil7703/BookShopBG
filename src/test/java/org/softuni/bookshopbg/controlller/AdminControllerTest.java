@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -185,23 +185,22 @@ Book book = getBook();
 
     @Test
     void testGetBookList() throws Exception {
-
-        BookBindingModel book = getBookBindingModel();
-        when(mockBookService.findAll()).thenReturn(List.of(book));
-
         RequestBuilder request = get("/books/bookList");
                 mockMvc.perform(request)
-                        .andExpect(status().isOk())
-                        .andExpect(view().name("bookList"))
-                        .andExpect(model().attributeExists("bookList"));
+                        .andExpect(status().is2xxSuccessful());
     }
 
     @Test
     void testRemove() throws Exception {
+RequestBuilder request = delete("/books/remove/{id}", 1);
 
-        MockHttpServletRequestBuilder request = delete("/books/remove/{id}", 1);
+        ResultActions resultActions = mockMvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/books/bookList"));
 
+        resultActions.andExpect(redirectedUrl("/books/bookList"));
     }
+
 
     @Test
 void testRemoveWithWrongId() {

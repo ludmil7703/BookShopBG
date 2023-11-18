@@ -16,8 +16,12 @@ import java.util.List;
 @RequestMapping("/api/books")
 public class RestBookController {
 
-    @Autowired
+
     private BookService bookService;
+
+    public RestBookController(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @GetMapping
     public ResponseEntity<List<BookBindingModel>> getAllBooks() {

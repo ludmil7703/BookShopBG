@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +33,20 @@ public class CartItemServiceImplTest {
     @Mock
     private BookRepository mockBookRepository;
 
+    @Mock
+    private ModelMapper mockModelMapper;
+    private  BookBindingModel bookBindingModel = new BookBindingModel();
+    private Book book = new Book();
+
     private CartItemServiceImpl cartItemServiceToTest;
 
     @BeforeEach
     void setUp() {
-        cartItemServiceToTest = new CartItemServiceImpl(mockCartItemRepository, mockBookRepository, new ModelMapper());
+        cartItemServiceToTest = new CartItemServiceImpl(mockCartItemRepository, mockBookRepository, mockModelMapper);
+//        when(mockModelMapper.map(any(), any())).thenReturn(bookBindingModel);
+
+        bookBindingModel.setId(1L);
+        bookBindingModel.setOurPrice(BigDecimal.TEN);
     }
 
     @AfterEach
@@ -85,12 +95,20 @@ public class CartItemServiceImplTest {
         UserEntity user = new UserEntity();
         user.setShoppingCart(createShoppingCart());
 
+        List<CartItem> cartItemList = new ArrayList<>();
+        cartItemList.add(cartItem);
+        BookBindingModel bookBindingModel = creatBookDTO();
+
+
+        when(mockBookRepository.findById(bookBindingModel.getId()))
+                .thenReturn(Optional.of(cartItem.getBook()));
 
         when(mockCartItemRepository.findByShoppingCart(user.getShoppingCart()))
-                .thenReturn(List.of(cartItem));
+                .thenReturn(cartItemList);
 
         when(mockBookRepository.save(cartItem.getBook()))
                 .thenReturn(cartItem.getBook());
+
 
 //        when(mockCartItemRepository.save(cartItem))
 //                .thenReturn(cartItem);

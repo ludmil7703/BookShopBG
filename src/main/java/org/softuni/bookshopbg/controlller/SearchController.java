@@ -22,7 +22,7 @@ import java.util.List;
 @Controller
 public class SearchController {
 	private final UserService userService;
-	
+
 	private final BookService bookService;
 
 	private final CategoryService categoryService;
@@ -47,20 +47,20 @@ public class SearchController {
 	public String searchByCategory(
 			@RequestParam("category") CategoryName category,
 			Model model, Principal principal
-			){
+	){
 		searchBook(model, principal);
 
 
 		List<Book> bookShelf = bookService.findByCategory(category);
-		
+
 		if (bookShelf.isEmpty()) {
 			model.addAttribute("emptyList", true);
 			model.addAttribute("bookShelf", bookShelf);
 			return "bookshelf";
 		}
-		
+
 		model.addAttribute("bookShelf", bookShelf);
-		
+
 		return "bookshelf";
 	}
 
@@ -70,18 +70,18 @@ public class SearchController {
 	public String searchBook(
 			@ModelAttribute("keyword") String keyword,
 			Principal principal, Model model
-			) {
+	) {
 		searchBook(model, principal);
 		List<Book> bookShelf = bookService.blurrySearch(keyword);
-		
+
 		if (bookShelf.isEmpty()) {
 			model.addAttribute("emptyList", true);
 			model.addAttribute("bookShelf", bookShelf);
 			return "bookshelf";
 		}
-		
+
 		model.addAttribute("bookShelf", bookShelf);
-		
+
 		return "bookshelf";
 	}
 

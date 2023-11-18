@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -103,6 +104,13 @@ class OrderServiceImplTest {
 
     @Test
     void testFindById() {
+        Order order = new Order();
+
+        when(mockOrderRepository.findById(order.getId())).thenReturn(java.util.Optional.of(order));
+
+        Optional<Order> result = orderServiceTest.findById(order.getId());
+
+        assertEquals(java.util.Optional.of(order), result);
     }
 
     private ShoppingCart createShoppingCart() {
