@@ -2,6 +2,8 @@ package org.softuni.bookshopbg.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.softuni.bookshopbg.model.entities.*;
+import org.softuni.bookshopbg.repositories.BookRepository;
+import org.softuni.bookshopbg.repositories.CartItemRepository;
 import org.softuni.bookshopbg.repositories.OrderRepository;
 import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.service.CartItemService;
@@ -13,19 +15,24 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
 @Service
 public class OrderServiceImpl implements OrderService {
 	
-	@Autowired
+
 	private OrderRepository orderRepository;
 	
-	@Autowired
-	private CartItemService cartItemService;
 
-	@Autowired
-	private BookService bookService;
-	
+	private CartItemRepository cartItemRepository;
+
+
+	private BookRepository bookRepository;
+
+	public OrderServiceImpl(OrderRepository orderRepository, CartItemRepository cartItemRepository, BookRepository bookRepository) {
+		this.orderRepository = orderRepository;
+		this.cartItemRepository = cartItemRepository;
+		this.bookRepository = bookRepository;
+	}
+
 	public synchronized Order createOrder(ShoppingCart shoppingCart,
 										  ShippingAddress shippingAddress,
 										  BillingAddress billingAddress,
@@ -39,15 +46,15 @@ public class OrderServiceImpl implements OrderService {
 		order.setShippingAddress(shippingAddress);
 		order.setShippingMethod(shippingMethod);
 		
-		List<CartItem> cartItemList = cartItemService.findByShoppingCart(shoppingCart);
+		List<CartItem> cartItemList = cartItemRepository.findByShoppingCart(shoppingCart);
 		
 		for(CartItem cartItem : cartItemList) {
 			Book book = cartItem.getBook();
 			orderRepository.save(order);
 			cartItem.setOrder(order);
 			book.setInStockNumber(book.getInStockNumber() - cartItem.getQty());
-			bookService.saveBook(book);
-			cartItemService.save(cartItem);
+			bookRepository.save(book);
+			cartItemRepository.save(cartItem);
 		}
 		
 		order.setCartItemList(cartItemList);
@@ -57,9 +64,7 @@ public class OrderServiceImpl implements OrderService {
 		billingAddress.setOrder(order);
 		payment.setOrder(order);
 		order.setUser(user);
-		order = orderRepository.save(order);
-		
-		return order;
+		return orderRepository.save(order);
 	}
 	
 	public Optional<Order> findById(Long id) {

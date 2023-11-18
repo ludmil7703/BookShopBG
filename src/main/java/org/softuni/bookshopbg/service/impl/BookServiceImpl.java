@@ -44,7 +44,6 @@ public class BookServiceImpl implements BookService {
 	public BookServiceImpl(BookRepository bookRepository, CategoryRepository categoryRepository, ModelMapper modelMapper, CloudinaryConfig cloudinary) {
 		this.bookRepository = bookRepository;
 		this.categoryRepository = categoryRepository;
-
 		this.modelMapper = modelMapper;
 		this.cloudinary = cloudinary;
 	}
@@ -143,7 +142,9 @@ public class BookServiceImpl implements BookService {
 	public List<Book> findByCategory(CategoryName category) {
 
 		return bookRepository.findAllByCategoryCategoryName(category);
-	}	private static String getCloudUrl(BookBindingModel bookBindingModel, MultipartFile imageToCloud) throws IOException {
+	}
+
+	public String getCloudUrl(BookBindingModel bookBindingModel, MultipartFile imageToCloud) throws IOException {
 
 		Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
 				"cloud_name", "de2t3mhgr",

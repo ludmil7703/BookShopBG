@@ -6,6 +6,7 @@ import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -35,4 +36,6 @@ public interface BookService {
 
 
 	Book findBookById(Long id);
+
+	String getCloudUrl(BookBindingModel bookBindingModel, MultipartFile imageToCloud) throws IOException;
 }

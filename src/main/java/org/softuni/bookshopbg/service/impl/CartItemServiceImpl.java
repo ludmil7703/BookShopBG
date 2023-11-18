@@ -71,10 +71,7 @@ public class CartItemServiceImpl implements CartItemService {
         cartItem.getShoppingCart().setUser(user);
 		cartItem.setQty(qty);
 		cartItem.setSubtotal(new BigDecimal(String.valueOf(book.getOurPrice())).multiply(new BigDecimal(qty)));
-		cartItem = cartItemRepository.save(cartItem);
-
-
-		return cartItem;
+		return cartItemRepository.save(cartItem);
 	}
 
 	@Override

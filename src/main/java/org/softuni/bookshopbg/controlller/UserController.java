@@ -55,8 +55,6 @@ public class UserController {
             return "redirect:/users/login";
         }
 
-        userService.login(userLoginBindingModel);
-
         return "redirect:/";
 
     }

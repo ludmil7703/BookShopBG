@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.softuni.bookshopbg.model.enums.UserRoleEnum;
 
+
 @Getter
 @Setter
 @Table(name = "roles")
@@ -18,6 +19,7 @@ public class UserRoleEntity  {
 
     @Enumerated(EnumType.STRING)
     private UserRoleEnum role;
+
 
     public UserRoleEntity setId(Long id) {
         this.id = id;

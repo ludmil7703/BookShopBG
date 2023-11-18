@@ -11,9 +11,6 @@ public interface UserService {
     boolean register(UserRegisterBindingModel userRegisterBindingModel);
 
 
-    void login(UserLoginBindingModel userLoginBindingModel);
-
-
     UserEntity findUserByEmail(String username);
 
     Optional<UserEntity> findUserByUsername(String username);

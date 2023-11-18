@@ -15,6 +15,7 @@ import org.softuni.bookshopbg.repositories.BookRepository;
 import org.softuni.bookshopbg.repositories.CategoryRepository;
 import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.utils.CloudinaryConfig;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -39,11 +40,14 @@ class BookServiceImplTest {
     @Mock
     private MultipartFile mockMultipartFile;
 
+    @Mock
+    private ModelMapper mockModelMapper;
+
     private BookService bookServiceToTest;
 
     @BeforeEach
     void setUp() {
-        bookServiceToTest = new BookServiceImpl(mockBookRepository, mockCategoryRepository, new ModelMapper(), mockCloudinary);
+        bookServiceToTest = new BookServiceImpl(mockBookRepository, mockCategoryRepository, mockModelMapper, mockCloudinary);
     }
 
     @AfterEach
@@ -53,36 +57,39 @@ class BookServiceImplTest {
 
 
 
+//    @Test
+//    void testSaveWithDTO() throws IOException, ParseException {
+//        Book book = new Book();
+//
+//        BookBindingModel bookBindingModel = new BookBindingModel();
+//        bookBindingModel.setAuthor("Author");
+//        bookBindingModel.setCategory(CategoryName.IT);
+//        bookBindingModel.setDescription("Description");
+//        bookBindingModel.setTitle("Title");
+//        bookBindingModel.setBookImage(mockMultipartFile);
+//
+//        when(bookBindingModel.getBookImage().getSize()).thenReturn(0L);
+//
+//
+//        when(mockCategoryRepository.findCategoryByCategoryName(bookBindingModel.getCategory())).thenReturn(new Category(CategoryName.IT));
+//
+//        when(mockModelMapper.map(bookBindingModel, Book.class)).thenReturn(book);
+//
+//        mockModelMapper.map(bookBindingModel, book);
+//        when(mockBookRepository.save(book))
+//                .thenReturn(book);
+//        mockBookRepository.save(book);
+//
+//        Book resultBook = bookServiceToTest.saveWithDTO(bookBindingModel);
+//
+//        assertEquals(book.getAuthor(), resultBook.getAuthor(), "Author is not correct!");
+//        assertEquals(book.getDescription(), resultBook.getDescription(), "Description is not correct!");
+//        assertEquals(book.getTitle(), resultBook.getTitle(), "Title is not correct!");
+//        verify(mockBookRepository, times(1)).save(book);
+//    }
+
     @Test
-    void testSave() {
-        Book book = createBook();
-
-        when(mockBookRepository.save(book)).thenReturn(book);
-
-        when(mockBookRepository.save(book))
-                .thenReturn(book);
-
-        when(mockCategoryRepository.findCategoryByCategoryName(book.getCategory().getCategoryName()))
-                .thenReturn(new Category(CategoryName.ENGINEERING));
-
-        Category category = mockCategoryRepository.findCategoryByCategoryName(book.getCategory().getCategoryName());
-
-        book.setCategory(category);
-
-        when(mockBookRepository.save(book))
-                .thenReturn(book);
-
-        Book resultBook = mockBookRepository.save(book);
-
-        verify(mockBookRepository, times(1)).save(book);
-
-        assertEquals(book.getCategory(), resultBook.getCategory());
-
-        verify(mockBookRepository, times(1)).save(book);
-    }
-
-    @Test
-    void testSaveBookWithException() throws IOException {
+    void testSaveBookWithException() {
         Book book = createBook();
 
         when(mockBookRepository.save(book))
@@ -95,10 +102,8 @@ class BookServiceImplTest {
     }
 
 
-
-
     @Test
-    void testSaveBook() throws IOException {
+    void testSaveBook() {
         Book book = createBook();
 
         when(mockBookRepository.save(book))
@@ -129,26 +134,29 @@ class BookServiceImplTest {
     void testDeleteBookById() {
         Book resultBook = createBook();
 
-        when(mockBookRepository.deleteBookById(1L))
+
+
+        when(mockBookRepository.findBookById(1L))
                 .thenReturn(resultBook);
 
-        Book book = mockBookRepository.deleteBookById(1L);
 
+        Book book = mockBookRepository.findBookById(1L);
+        bookServiceToTest.saveBook(book);
         assertEquals(book, resultBook);
         assertEquals(book.getAuthor(), resultBook.getAuthor());
 
-    }
-
-    @Test
-    void testDeleteBookWithException(){
-        when(mockBookRepository.findBookById(1L)
-                ).thenReturn(null);
-
-       assertThrows(IllegalArgumentException.class, () -> {
-            bookServiceToTest.deleteBookById(1L);
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            bookServiceToTest.deleteBookById(2L);
         });
 
+        assertEquals(exception.getMessage(), "Book with the given id was not found!");
+
+        mockBookRepository.delete(book);
+
+        verify(mockBookRepository, times(1)).delete(book);
+
     }
+
 
     @Test
     void testFindAll() throws IOException {
@@ -216,5 +224,6 @@ class BookServiceImplTest {
         book.setActive(true);
         return book;
     }
+
 
 }

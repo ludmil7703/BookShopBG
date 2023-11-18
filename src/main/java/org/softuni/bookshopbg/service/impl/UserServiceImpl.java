@@ -38,14 +38,8 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
-    @Override
-    public void login(UserLoginBindingModel userLoginBindingModel) {
-
-    }
-
-    private UserEntity map(UserRegisterBindingModel userRegisterBindingModel) {
+    public UserEntity map(UserRegisterBindingModel userRegisterBindingModel) {
         UserEntity user = new UserEntity();
-
 
         if (userRepository.count() == 0) {
             user.getRoles().add(roleRepository.findByRole(UserRoleEnum.ADMIN));
@@ -62,7 +56,6 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(UserRegisterBindingModel.getPassword()));
         return user;
     }
-
     @Override
     public UserEntity findUserByEmail(String email) {
         Optional<UserEntity> user = this.userRepository.findByEmail(email);

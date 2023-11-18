@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.softuni.bookshopbg.repositories.BookRepository;
@@ -23,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CartItemServiceImplTest {
+public class CartItemServiceImplTest {
 
     @Mock
     private CartItemRepository mockCartItemRepository;
@@ -31,7 +32,7 @@ class CartItemServiceImplTest {
     @Mock
     private BookRepository mockBookRepository;
 
-    private CartItemService cartItemServiceToTest;
+    private CartItemServiceImpl cartItemServiceToTest;
 
     @BeforeEach
     void setUp() {
@@ -79,6 +80,25 @@ class CartItemServiceImplTest {
 
     @Test
     void testAddBookToCartItem() {
+        CartItem cartItem = createShoppingCart().getCartItemList().get(0);
+
+        UserEntity user = new UserEntity();
+        user.setShoppingCart(createShoppingCart());
+
+
+        when(mockCartItemRepository.findByShoppingCart(user.getShoppingCart()))
+                .thenReturn(List.of(cartItem));
+
+        when(mockBookRepository.save(cartItem.getBook()))
+                .thenReturn(cartItem.getBook());
+
+//        when(mockCartItemRepository.save(cartItem))
+//                .thenReturn(cartItem);
+
+        when(cartItemServiceToTest.addBookToCartItem(creatBookDTO(), user, 1))
+                .thenReturn(cartItem);
+        verify(cartItemServiceToTest, times(1)).addBookToCartItem(creatBookDTO(), user, 1);
+
     }
 
     @Test
@@ -169,7 +189,7 @@ class CartItemServiceImplTest {
     }
 
     private Book creatBook() {
-        {
+
             Book book = new Book();
             book.setId(1L);
             book.setAuthor("Author");
@@ -190,6 +210,22 @@ class CartItemServiceImplTest {
             return book;
         }
 
+        private BookBindingModel creatBookDTO() {
+            BookBindingModel book = new BookBindingModel();
+            book.setAuthor("Author");
+            book.setCategory(CategoryName.ENGINEERING);
+            book.setDescription("Description");
+            book.setInStockNumber(1);
+            book.setListPrice(BigDecimal.TEN);
+            book.setOurPrice(BigDecimal.TEN);
+            book.setReleaseDate(new Date());
+            book.setTitle("Title");
+            book.setInStockNumber(10);
+            book.setImageUrl("ImageUrl");
+            book.setLanguage("Language");
+            book.setNumberOfPages(10);
+            book.setIsbn(12345);
+            return book;
+        }
 
-    }
 }

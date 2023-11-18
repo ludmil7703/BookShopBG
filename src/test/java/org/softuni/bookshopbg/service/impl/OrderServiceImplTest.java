@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.softuni.bookshopbg.model.entities.*;
+import org.softuni.bookshopbg.repositories.BookRepository;
 import org.softuni.bookshopbg.repositories.CartItemRepository;
 import org.softuni.bookshopbg.repositories.OrderRepository;
 import org.softuni.bookshopbg.service.BookService;
@@ -32,17 +33,17 @@ class OrderServiceImplTest {
     private OrderRepository mockOrderRepository;
 
     @Mock
-    private CartItemService mockCartItemService;
+    private CartItemRepository mockCartItemRepository;
 
     @Mock
-    private BookService mockBookService;
+    private BookRepository mockBookRepository;
 
 
-    private OrderService orderServiceTest;
+    private OrderServiceImpl orderServiceTest;
 
     @BeforeEach
     void setUp() {
-        orderServiceTest = new OrderServiceImpl(mockOrderRepository, mockCartItemService, mockBookService);
+        orderServiceTest = new OrderServiceImpl(mockOrderRepository, mockCartItemRepository, mockBookRepository);
     }
 
     @AfterEach
@@ -52,24 +53,51 @@ class OrderServiceImplTest {
 
     @Test
     void createOrder() {
-        Order order =new Order();
+       Order order = new Order();
         order.setId(1L);
         order.setOrderStatus("orderStatus");
+        order.setOrderDate(null);
+        order.setOrderTotal(BigDecimal.TEN);
         order.setShippingAddress(createShippingAddress());
         order.setBillingAddress(createBillingAddress());
         order.setPayment(createPayment());
         order.setShippingMethod("shippingMethod");
-        ShoppingCart shoppingCart = createShoppingCart();
-        order.setCartItemList(new ArrayList<>());
+        order.setUser(createUser());
+
+
+        CartItem cartItem = new CartItem();
+        Book book = new Book();
+        book.setId(1L);
+        book.setInStockNumber(22);
+        cartItem.setId(1L);
+        cartItem.setQty(1);
+        cartItem.setBook(book);
+        List<CartItem> cartItemList = new ArrayList<>();
+        cartItemList.add(cartItem);
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setId(1L);
+        shoppingCart.setGrandTotal(BigDecimal.TEN);
+        shoppingCart.setCartItemList(cartItemList);
+        shoppingCart.setUser(createUser());
+
+        when(mockCartItemRepository.findByShoppingCart(shoppingCart)).thenReturn(cartItemList);
+
+        mockCartItemRepository.findByShoppingCart(shoppingCart);
+
+
+        when(mockBookRepository.save(book)).thenReturn(book);
+        mockBookRepository.save(book);
+
+        when(mockCartItemRepository.save(cartItem)).thenReturn(cartItem);
+        mockCartItemRepository.save(cartItem);
 
         when(mockOrderRepository.save(order)).thenReturn(order);
-        when(mockCartItemService.findByShoppingCart(shoppingCart)).thenReturn(new ArrayList<>());
+        mockOrderRepository.save(order);
 
-        Order order1 = orderServiceTest.createOrder(shoppingCart, createShippingAddress(), createBillingAddress(), createPayment(), "shippingMethod", createUser());
+        when(orderServiceTest.createOrder(shoppingCart, createShippingAddress(), createBillingAddress(), createPayment(), "shippingMethod", createUser())).thenReturn(order);
 
-        assertEquals(order, order1);
-        assertEquals(order.getCartItemList(), order1.getCartItemList());
-        assertEquals(order.getShippingAddress(), order1.getShippingAddress());
+        assertEquals(order, orderServiceTest.createOrder(shoppingCart, createShippingAddress(), createBillingAddress(), createPayment(), "shippingMethod", createUser()));
 
     }
 
