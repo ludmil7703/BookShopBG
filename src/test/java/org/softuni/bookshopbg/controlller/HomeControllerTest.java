@@ -1,19 +1,34 @@
 package org.softuni.bookshopbg.controlller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.softuni.bookshopbg.model.dto.BookBindingModel;
+import org.softuni.bookshopbg.model.entities.Book;
+import org.softuni.bookshopbg.model.entities.Category;
+import org.softuni.bookshopbg.model.entities.UserEntity;
+import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.service.UserService;
+import org.softuni.bookshopbg.service.impl.BookServiceImpl;
+import org.softuni.bookshopbg.service.impl.CategoryServiceImpl;
+import org.softuni.bookshopbg.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -25,16 +40,53 @@ class HomeControllerTest {
 
 
     @Mock
-    private BookService mockBookService;
+    private BookServiceImpl mockBookService;
 
     @Mock
-    private UserService mockUserService;
+    private CategoryServiceImpl mockCategoryService;
+
+    @Mock
+    private UserServiceImpl mockUserService;
     @Mock
     private Principal mockPrincipal;
+    @Mock
+    private BookBindingModel mockBookDTO;
+
+    @Mock
+    private Category mockCategory;
+
+    @Mock
+    private UserEntity mockUser;
+
+    @Mock
+    private Book mockBook;
+
+
+    @BeforeEach
+    void setup() {
+        mockMvc = MockMvcBuilders.standaloneSetup(new HomeController(mockCategoryService, mockBookService, mockUserService))
+                .build();
+        mockBookDTO = new BookBindingModel();
+        mockBookDTO.setId(1L);
+        mockBookDTO.setAuthor("test");
+
+        mockCategory = new Category();
+        mockCategory.setCategoryName(CategoryName.IT);
+
+        mockUser = new UserEntity();
+        mockUser.setUsername("test123");
+
+        mockBook = new Book();
+        mockBook.setId(1L);
+        mockBook.setAuthor("test");
+    }
 
 
     @Test
     void testHomePage() throws Exception {
+
+        when(mockBookService.findAll()).thenReturn(List.of(mockBookDTO));
+        when(mockCategoryService.getAllCategories()).thenReturn(List.of(mockCategory));
         RequestBuilder request = get("/");
 
         mockMvc.perform(request)
@@ -46,10 +98,13 @@ class HomeControllerTest {
 
     @Test
     void testContactPage() throws Exception {
+
+        when(mockCategoryService.getAllCategories()).thenReturn(List.of(mockCategory));
+
         RequestBuilder request = get("/contact");
 
         mockMvc.perform(request)
-                .andExpect(view().name("contact"))
+                .andExpect(view().name("contactInfo"))
                 .andExpect(model().attributeExists("categoryList"))
                 .andExpect(status().isOk());
 
@@ -57,10 +112,13 @@ class HomeControllerTest {
 
     @Test
     void testSubpage() throws Exception {
+
+        when(mockCategoryService.getAllCategories()).thenReturn(List.of(mockCategory));
         RequestBuilder request = get("/subpage");
 
         mockMvc.perform(request)
-                .andExpect(view().name("subpage"))
+                .andExpect(view().name("subpageInfo"))
+                .andExpect(model().attributeExists("categoryList"))
                 .andExpect(status().isOk());
 
     }
@@ -70,20 +128,50 @@ class HomeControllerTest {
         RequestBuilder request = get("/admin");
 
         mockMvc.perform(request)
-                .andExpect(view().name("admin"))
+                .andExpect(view().name("adminPage"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void testBookDetails() {
+    void testBookDetailsWithLoginUser() throws Exception {
+
+
+        when(mockBookService.findBookById(1L)).thenReturn(mockBook);
+
+        when(mockBookService.mapBookToBookBindingModel(mockBook)).thenReturn(mockBookDTO);
+
+        when(mockCategoryService.getAllCategories()).thenReturn(List.of(mockCategory));
+
+        when(mockUserService.findUserByUsername("test123")).thenReturn(Optional.ofNullable(mockUser));
+
+        when(mockUserService.findUserByUsername("test123")).thenReturn(Optional.ofNullable(mockUser));
+
+        Principal principal = mockPrincipal;
+        when(principal.getName()).thenReturn("test123");
+
+        mockMvc.perform(get("/bookDetail/{id}", 1L)
+                        .principal(principal))
+                .andExpect(status().isOk())
+                .andExpect(view().name("bookDetail"))
+                .andExpect(model().attributeExists("book"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("qty"))
+                .andExpect(model().attributeExists("qtyList"));
 
     }
 
     @Test
     void testFaqPage() throws Exception {
+        Category category = new Category();
+        category.setCategoryName(CategoryName.IT);
+
+        when(mockCategoryService.getAllCategories()).thenReturn(List.of(category));
+
         RequestBuilder request = get("/faq");
 
         mockMvc.perform(request)
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(view().name("faqInfo"))
+                .andExpect(model().attributeExists("categoryList"));
     }
 }

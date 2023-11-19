@@ -63,6 +63,9 @@ class ShoppingCartControllerTest {
     @Mock
     BookBindingModel mockBookBindingModel;
 
+    @Mock
+    CartItem mockCartItem;
+
 
     private ShoppingCartController shoppingCartControllerUnderTest;
 
@@ -79,6 +82,10 @@ class ShoppingCartControllerTest {
 
     mockBookBindingModel = new BookBindingModel();
     mockBookBindingModel.setId(1L);
+
+    mockCartItem = new CartItem();
+    mockCartItem.setId(1L);
+    mockCartItem.setQty(1);
     }
 
     @AfterEach
@@ -88,18 +95,10 @@ class ShoppingCartControllerTest {
 
     @Test
     void shoppingCartTest() throws Exception {
-
         ShoppingCart shoppingCart = new ShoppingCart();
-        CartItem cartItem = new CartItem();
-        cartItem.setQty(1);
-        cartItem.setShoppingCart(shoppingCart);
 
         List<CartItem> cartItemList = new ArrayList<>();
-        cartItemList.add(cartItem);
-
-        shoppingCart.setCartItemList(cartItemList);
-
-
+        cartItemList.add(mockCartItem);
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(mockPrincipal.getName());
         userEntity.setShoppingCart(shoppingCart);
@@ -112,13 +111,6 @@ class ShoppingCartControllerTest {
 
         when(mockShoppingCartService.updateShoppingCart(shoppingCart))
                 .thenReturn(shoppingCart);
-
-
-        String result = shoppingCartControllerUnderTest.shoppingCart(mockModel, mockPrincipal);
-
-
-        assertEquals("shoppingCart", result);
-
 
         RequestBuilder request = get("/shoppingCart/cart")
                 .principal(mockPrincipal);
@@ -127,21 +119,21 @@ class ShoppingCartControllerTest {
                 .andExpect(view().name("shoppingCart"))
                 .andExpect(model().attributeExists("cartItemList"))
                 .andExpect(model().attributeExists("shoppingCart"))
+                .andExpect(model().attributeExists("user"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void shoppingCartTestWithEmptyCart() {
+    void shoppingCartTestWithEmptyCart() throws Exception {
 
         ShoppingCart shoppingCart = new ShoppingCart();
 
         List<CartItem> cartItemList = new ArrayList<>();
 
-
-        shoppingCart.setCartItemList(cartItemList);
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(mockPrincipal.getName());
         userEntity.setShoppingCart(shoppingCart);
+
         when(mockUserService.findUserByUsername(mockPrincipal.getName()))
                 .thenReturn(Optional.of(userEntity));
 
@@ -150,10 +142,13 @@ class ShoppingCartControllerTest {
 
         when(mockShoppingCartService.updateShoppingCart(shoppingCart))
                 .thenReturn(shoppingCart);
-        String result = shoppingCartControllerUnderTest.shoppingCart(mockModel, mockPrincipal);
 
+        RequestBuilder request = get("/shoppingCart/cart")
+                .principal(mockPrincipal);
 
-        assertEquals("forward:/", result);
+        mockMvc.perform(request)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(view().name("forward:/"));
 
     }
 
@@ -171,19 +166,20 @@ class ShoppingCartControllerTest {
         when(mockBookService.findBookById(1L))
                 .thenReturn(book);
 
-//        when(mockCartItemService.addBookToCartItem(mockBookBindingModel, userEntity, 1))
-//                .getMock();
 
+        RequestBuilder request = MockMvcRequestBuilders.post("/shoppingCart/addItem")
+                .param("id", "1")
+                .param("qty", "2")
+                .principal(mockPrincipal);
 
-        String result = shoppingCartControllerUnderTest.addItem(mockBookBindingModel, "1", mockModel, mockPrincipal);
-
-        assertEquals("forward:/bookDetail/1", result);
+        mockMvc.perform(request)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(view().name("forward:/bookDetail/1"));
 
     }
 
     @Test
     void addCartItemTest() throws Exception {
-        mockBookBindingModel.setInStockNumber(2);
 
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(mockPrincipal.getName());
@@ -196,27 +192,40 @@ class ShoppingCartControllerTest {
         when(mockBookService.findBookById(1L))
                 .thenReturn(book);
 
-//        when(mockCartItemService.addBookToCartItem(mockBookBindingModel, userEntity, 1))
-//                .getMock();
+        RequestBuilder request = MockMvcRequestBuilders.post("/shoppingCart/addItem")
+                .param("id", "1")
+                .param("qty", "2")
+                .principal(mockPrincipal);
 
-        String result = shoppingCartControllerUnderTest.addItem(mockBookBindingModel, "1", mockModel, mockPrincipal);
-
-        assertEquals("forward:/bookDetail/1", result);
+        mockMvc.perform(request)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(view().name("forward:/bookDetail/1"));
 
     }
 
     @Test
     void updateShoppingCart() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.post("/shoppingCart/updateShoppingCart")
+        when(mockCartItemService.findById(1L))
+                .thenReturn(mockCartItem);
+
+        when(mockCartItemService.updateCartItem(mockCartItem))
+                .thenReturn(mockCartItem);
+        RequestBuilder request = MockMvcRequestBuilders.post("/shoppingCart/updateCartItem")
                 .param("id", "1")
                 .param("qty", "1");
 
         mockMvc.perform(request)
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/shoppingCart/cart"));
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(view().name("forward:/shoppingCart/cart"));
     }
 
     @Test
-    void removeItem() {
+    void removeItemTest() {
+        when(mockCartItemService.deleteCartItemById(1L))
+                .thenReturn(mockCartItem);
+
+        String result = shoppingCartControllerUnderTest.removeItem(1L);
+
+        assertEquals("forward:/shoppingCart/cart", result);
     }
 }

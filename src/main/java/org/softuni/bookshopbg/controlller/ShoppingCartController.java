@@ -15,9 +15,12 @@ import org.softuni.bookshopbg.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/shoppingCart")
@@ -42,7 +45,7 @@ public class ShoppingCartController {
 
 
 
-	@GetMapping("/cart")
+	@RequestMapping("/cart")
 	public String shoppingCart(Model model, Principal principal) {
 		UserEntity user = userService.findUserByUsername(principal.getName()).orElse(null);
         assert user != null;
@@ -64,6 +67,8 @@ public class ShoppingCartController {
 		return "shoppingCart";
 	}
 
+
+
 	@PostMapping("/addItem")
 	public String addItem(
 			@ModelAttribute("book") BookBindingModel bookBindingModel,
@@ -81,6 +86,7 @@ public class ShoppingCartController {
 		BookBindingModel book = modelMapper.map(bookInStock, BookBindingModel.class);
 
 		cartItemService.addBookToCartItem(book, user, Integer.parseInt(qty));
+
 		model.addAttribute("addBookSuccess", true);
 		return "forward:/bookDetail/"+book.getId();
 	}

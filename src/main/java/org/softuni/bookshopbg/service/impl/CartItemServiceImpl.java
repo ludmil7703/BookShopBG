@@ -60,6 +60,7 @@ public class CartItemServiceImpl implements CartItemService {
 		for (CartItem cartItem : cartItemList) {
 			if(Objects.equals(book.getId(), cartItem.getBook().getId())) {
 				cartItem.setQty(cartItem.getQty()+qty);
+				cartItem.getBook().setInStockNumber(cartItem.getBook().getInStockNumber()-qty);
 				cartItem.setSubtotal(new BigDecimal(String.valueOf(book.getOurPrice())).multiply(new BigDecimal(qty)));
 				cartItemRepository.save(cartItem);
 				return cartItem;

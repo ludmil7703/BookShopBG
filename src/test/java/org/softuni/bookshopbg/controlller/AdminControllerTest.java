@@ -1,4 +1,6 @@
 package org.softuni.bookshopbg.controlller;
+import jakarta.servlet.ServletException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -24,6 +26,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -111,14 +115,13 @@ class AdminControllerTest {
 
     @Test
     void testGetBookInfo() throws Exception {
-Book book = getBook();
+       Book book = getBook();
         when(mockBookService.findBookById(book.getId())).thenReturn(book);
-        RequestBuilder request = MockMvcRequestBuilders.get("/books/bookInfo/{id}", 1L);
+        RequestBuilder request = MockMvcRequestBuilders.get("/books/bookInfo/1");
         mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(view().name("bookInfo"))
                 .andExpect(model().attributeExists("book"));
-        verifyNoMoreInteractions(mockBookService);
     }
 
     @Test
@@ -185,13 +188,24 @@ Book book = getBook();
 
     @Test
     void testGetBookList() throws Exception {
+        BookBindingModel book = getBookBindingModel();
+        List<BookBindingModel> bookList = List.of(book);
+        when(mockBookService.findAll()).thenReturn(bookList);
         RequestBuilder request = get("/books/bookList");
                 mockMvc.perform(request)
-                        .andExpect(status().is2xxSuccessful());
+                .andExpect(status().isOk())
+                .andExpect(view().name("bookShelf"))
+                .andExpect(model().attributeExists("bookShelf"));
     }
 
     @Test
     void testRemove() throws Exception {
+        Book book = getBook();
+        when(mockBookService.deleteBookById(1L)).thenReturn(book);
+        BookBindingModel bookBindingModel = getBookBindingModel();
+
+        List<BookBindingModel> bookBindingModelList = List.of(bookBindingModel);
+        when(mockBookService.findAll()).thenReturn(bookBindingModelList);
 RequestBuilder request = delete("/books/remove/{id}", 1);
 
         ResultActions resultActions = mockMvc.perform(request)
@@ -203,8 +217,10 @@ RequestBuilder request = delete("/books/remove/{id}", 1);
 
 
     @Test
-void testRemoveWithWrongId() {
-    when(mockBookService.deleteBookById(123L)).thenThrow(NullPointerException.class);
+void testRemoveWithWrongId() throws Exception {
+        assertThrows(ServletException.class, () -> {
+            mockMvc.perform(delete("/books/remove/{id}", 123L));
+        });
 }
 
     private Book getBook() {

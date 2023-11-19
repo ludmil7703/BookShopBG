@@ -93,8 +93,8 @@ public class AdminController {
 	@GetMapping("/bookList")
 	public String bookList(Model model) throws IOException {
 		List<BookBindingModel> books = bookService.findAll();
-		model.addAttribute("bookList", books);
-		return "bookList";
+		model.addAttribute("bookShelf", books);
+		return "bookShelf";
 
 	}
 
@@ -107,7 +107,7 @@ public String remove(@PathVariable Long id, Model model) throws IOException {
 	List<BookBindingModel> bookList = bookService.findAll();
 	model.addAttribute("bookList", bookList);
 
-	return "redirect:/book/bookList";
+	return "redirect:/books/bookList";
 }
 
 

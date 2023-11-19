@@ -41,6 +41,9 @@ logging:
     blog: WARN
 server:
   port: 8090
+  error:
+    whitelabel:
+      enabled: true
 #  when port change, need fetch url port change
 mail:
   bookshop:"bookshop@example.com
@@ -52,4 +55,3 @@ cloud:
   name: de2t3mhgr
   key: 319136679127269
   secret: CyqB-VhB40myASzDFaN3aIp1JgQ
-

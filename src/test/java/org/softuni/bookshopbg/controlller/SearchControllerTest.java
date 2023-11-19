@@ -4,14 +4,20 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.softuni.bookshopbg.model.entities.Book;
+import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.softuni.bookshopbg.service.impl.BookServiceImpl;
+import org.softuni.bookshopbg.service.impl.CategoryServiceImpl;
+import org.softuni.bookshopbg.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -25,6 +31,44 @@ class SearchControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Mock
+    private BookServiceImpl mockBookService;
+
+    @Mock
+    private CategoryServiceImpl mockCategoryService;
+
+    @Mock
+    private UserServiceImpl mockUserService;
+
+    @Mock
+    private Category mockCategory;
+
+    @Mock
+    private Book mockBook;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(
+                new SearchController(mockUserService, mockBookService, mockCategoryService))
+                .build();
+
+        mockCategory = new Category();
+        mockCategory.setCategoryName(CategoryName.IT);
+
+        mockBook = new Book();
+        mockBook.setAuthor("test");
+        mockBook.setCategory(mockCategory);
+
+        when(mockBookService.findByCategory(CategoryName.IT))
+                .thenReturn(List.of(mockBook));
+
+        when(mockBookService.blurrySearch("test"))
+                .thenReturn(List.of(mockBook));
+
+        when(mockCategoryService.getAllCategories())
+                .thenReturn(List.of(mockCategory));
+    }
+
 
 
     @Test
@@ -32,7 +76,7 @@ class SearchControllerTest {
         RequestBuilder request = get("/search");
 
         mockMvc.perform(request)
-                .andExpect(view().name("bookshelf"))
+                .andExpect(view().name("bookShelf"))
                 .andExpect(model().attributeExists("categoryList"))
                 .andExpect(model().attributeExists("bookShelf"))
                 .andExpect(status().isOk());
@@ -44,7 +88,7 @@ class SearchControllerTest {
                 .param("category", CategoryName.IT.name());
 
         mockMvc.perform(request)
-                .andExpect(view().name("bookshelf"))
+                .andExpect(view().name("bookShelf"))
                 .andExpect(model().attributeExists("categoryList"))
                 .andExpect(model().attributeExists("bookShelf"))
                 .andExpect(status().isOk());
@@ -52,13 +96,29 @@ class SearchControllerTest {
 
 
     @Test
-    void searchBook() throws Exception {
+    void searchBookWithExistingBookTest() throws Exception {
+
+
         RequestBuilder request = get("/searchBook")
-                .param("search", "test");
+                .param("keyword", "test");
 
         mockMvc.perform(request)
-                .andExpect(view().name("bookshelf"))
-                .andExpect(model().attributeExists("categoryList"))
+                .andExpect(view().name("bookShelf"))
+                .andExpect(model().attributeExists("bookShelf"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void searchBookWithNonExistingBookTest() throws Exception {
+        when(mockBookService.blurrySearch("test"))
+                .thenReturn(List.of());
+
+        RequestBuilder request = get("/searchBook")
+                .param("keyword", "test");
+
+        mockMvc.perform(request)
+                .andExpect(view().name("bookShelf"))
+                .andExpect(model().attributeExists("emptyList"))
                 .andExpect(model().attributeExists("bookShelf"))
                 .andExpect(status().isOk());
     }

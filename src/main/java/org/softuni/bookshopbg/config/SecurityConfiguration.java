@@ -51,7 +51,8 @@ public class SecurityConfiguration {
       return httpSecurity.authorizeHttpRequests(
         authorizeRequests -> authorizeRequests
                 .requestMatchers(PUBLIC_MATCHERS).permitAll()
-            .requestMatchers("/books/**").hasRole(UserRoleEnum.ADMIN.name())
+                .requestMatchers("/shoppingcart/**").hasRole(UserRoleEnum.USER.name())
+            .requestMatchers("/books/**","/shoppingCart/**").hasRole(UserRoleEnum.ADMIN.name())
             .anyRequest().authenticated()
     )
             .csrf(AbstractHttpConfigurer::disable)

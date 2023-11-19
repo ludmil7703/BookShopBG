@@ -23,7 +23,7 @@
         <ul>
             <li><a th:href="@{/}" class="current"><i class="fa fa-home" aria-hidden="true"></i>Home</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a th:href="@{/search}"><i class="fa fa-search" aria-hidden="true"></i>Search</a></li>
-            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/subpage.html">New Releases</a></li>
+            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/templates/subpageInfo.html">New Releases</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="#">Company</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a th:href="@{/contact}"><i class="fa fa-id-badge" aria-hidden="true"></i>Contact</a></li>
             <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/add}"><i class="fa fa-plus" aria-hidden="true"></i>Add Book</a></li>
@@ -52,6 +52,12 @@
                 <a sec:authorize="isAuthenticated()" class="nav_right" >Welcome, <th:block sec:authentication="name"></th:block></a>
 
             </li>
+
+            <li><a sec:authorize="isAnonymous()" th:href="@{/users/login}"><span
+                    class="glyphicon glyphicon-user nav_right"></span> MY ACCOUNT</a></li>
+            <li><a sec:authorize="isAuthenticated()"
+                   th:href="@{/myProfile}"><span
+                    class="glyphicon glyphicon-user nav_right"></span> MY ACCOUNT</a></li>
 
 
 

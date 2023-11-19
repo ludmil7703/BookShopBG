@@ -5,7 +5,7 @@
 
 <body>
 
-<div id="project_container" th:object="${bookList}">
+<div id="project_container" th:object="${bookShelf}">
 	<nav th:replace="fragments/commons::nav"></nav>
 	<div class="table-responsive">
 			<table id="bookListTable" class="table table-bordered table-hover table-striped">
@@ -22,7 +22,7 @@
 					</tr>
 				</thead>
 				<tbody id="body">
-					<tr data-th-each="book : ${bookList}">
+					<tr data-th-each="book : ${bookShelf}">
 						<td><a th:href="@{/books/bookInfo/{id}(id=${book.getId()})}"><span th:text="${book.title}"></span></a></td>
 						<td th:text="${book.author}"></td>
 						<td th:text="${book.category.name()}"></td>

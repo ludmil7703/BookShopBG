@@ -1,5 +1,6 @@
 package org.softuni.bookshopbg.controlller;
 
+import jakarta.websocket.server.PathParam;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.entities.Category;
@@ -63,19 +64,20 @@ public class HomeController {
     public String contact(Model model){
         List<Category> categoryList = categoryService.getAllCategories();
         model.addAttribute("categoryList", categoryList);
-        return "contact";
+        return "contactInfo";
     }
 
     @GetMapping("/subpage")
     public String subpage(Model model) {
         List<Category> categoryList = categoryService.getAllCategories();
         model.addAttribute("categoryList", categoryList);
-        return "subpage";
+        return "subpageInfo";
     }
 
 
     @RequestMapping("/bookDetail/{id}")
-    public String bookDetails(@PathVariable Long id, Model model, Principal principal) {
+    public String bookDetails(Model model,
+                              Principal principal, @PathVariable Long id) {
         if (principal != null) {
             String username = principal.getName();
             Optional<UserEntity> user = userService.findUserByUsername(username);
@@ -84,19 +86,22 @@ public class HomeController {
         Book book = bookService.findBookById(id);
         BookBindingModel bookBindingModel = bookService.mapBookToBookBindingModel(book);
         model.addAttribute("book", bookBindingModel);
-        List<Integer> qtyList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
 
+        List<Integer> qtyList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
         model.addAttribute("qtyList", qtyList);
         model.addAttribute("qty", 1);
         return "bookDetail";
     }
+
     @GetMapping("/admin")
     public String admin() {
-        return "admin";
+        return "adminPage";
     }
 
     @GetMapping("/faq")
-    public String faq(){
-        return "faq";
+    public String faq(Model model){
+        List<Category> categoryList = categoryService.getAllCategories();
+        model.addAttribute("categoryList", categoryList);
+        return "faqInfo";
     }
 }
