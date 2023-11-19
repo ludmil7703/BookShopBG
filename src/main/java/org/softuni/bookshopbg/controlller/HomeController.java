@@ -82,7 +82,8 @@ public class HomeController {
             model.addAttribute("user", user);
         }
         Book book = bookService.findBookById(id);
-        model.addAttribute("book", book);
+        BookBindingModel bookBindingModel = bookService.mapBookToBookBindingModel(book);
+        model.addAttribute("book", bookBindingModel);
         List<Integer> qtyList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
 
         model.addAttribute("qtyList", qtyList);

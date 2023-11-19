@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+
+<body>
+
+	<div id="project_container" class="container">
+		<nav th:replace="fragments/commons::nav"></nav>
+		<header th:replace="fragments/commons::header"></header>
+
+			<div class="container">
+				<h2 class="section-headline">
+					<h2 class="section-headline">
+						<span
+							th:text="${user}? ${#strings.toUpperCase(user.username)} : 'All Books'"></span>
+					</h2>
+				</h2>
+			</div>
+		<!--**************** display products in cart ****************-->
+
+		<div class="container" th:each="cartItem : ${cartItemList}">
+					<form class="row" style="margin-top: 20px" method="post" th:action="@{/shoppingCart/updateCartItem}">
+						<hr />
+						<div class="col">
+							<a th:href="@{/bookDetail/{id}(id=${cartItem.book.id})}"> <img
+									class="img-responsive shelf-book center-block"
+									style="width:70px;"
+									th:src="${cartItem.book.imageUrl}" />
+							</a>
+						</div>
+						<div class="col">
+							<div style="margin-left:50px;">
+								<a th:href="@{/bookDetail/{id}(id=${cartItem.book.id})}"><h4 th:text="${cartItem.book.title}"></h4></a>
+								<p style="color: green;"
+								   th:if="${cartItem.book.inStockNumber&gt;10}">In Stock</p>
+								<p style="color: green;"
+								   th:if="${cartItem.book.inStockNumber&lt;10 and cartItem.book.inStockNumber&gt;0}">
+									Only <span th:text="${cartItem.book.inStockNumber}"></span> In
+									Stock
+								</p>
+								<p style="color: darkred;"
+								   th:if="${cartItem.book.inStockNumber==0}">Product Unavailable</p>
+								<a class="btn btn-danger" th:href="@{/shoppingCart/removeItem(id=${cartItem.id})}">Delete</a>
+							</div>
+						</div>
+
+						<div class="cleaner_with_width"></div>
+						<div class="cleaner_with_width"></div>
+						<div class="col">
+							<h5 style="color: #db3208; font-size: large;">
+								$<span th:style="${cartItem.book.inStockNumber}==0? 'text-decoration: line-through' : ''"
+									   th:text="${cartItem.book.ourPrice}"></span>
+							</h5>
+						</div>
+
+						<div class="col-xs-2">
+							<input hidden="hidden" name="id" th:value="${cartItem.id}" /> <input
+								class="form-control cartItemQty" th:disabled="${cartItem.book.inStockNumber==0}" th:id="${cartItem.id}" th:name="qty" th:value="${cartItem.qty}" />
+							<button class="btn btn-warning btn-xs"
+									th:id="${cartItem.id}"
+									type="submit">Update</button>
+						</div>
+					</form>
+					<div class="cleaner_with_height"></div>
+
+				</div>
+
+
+
+
+				<div class="row">
+
+					<div class="container">
+						<hr />
+						<h4 class="col-xs-12 text-right">
+							<strong style="font-size: large;">Total Price (<span
+									th:text="${#lists.size(cartItemList)}"></span> items):
+							</strong> <span style="color: #db3208; font-szie: large;">$<span
+								th:text="${shoppingCart.grandTotal}"></span></span>
+						</h4>
+					</div>
+					<div class="cleaner_with_width"></div>
+					<div class="col-xs-3 text-left">
+						<a class="btn btn-warning" th:href="@{/}">Continue
+							Shopping</a>
+					</div>
+					<div class="col-xs-3 text-right">
+						<a class="btn btn-primary"
+							th:href="@{/checkout(id=${shoppingCart.id})}">Check Out</a>
+					</div>
+
+					<br />
+					<div class="alert alert-warning" th:if="${notEnoughStock}">
+						Oops, some of the products don't have enough stock. Please update
+						product quantity.</div>
+					<div class="alert alert-warning" th:if="${emptyCart}">Oops,
+						your cart is empty. See if you can find what you like in the
+						bookshelf and add them to cart.</div>
+
+
+					<div class="cleaner_with_height"></div>
+				</div>
+
+
+	<!-- end of container -->
+<footer th:replace="fragments/commons::footer"></footer>
+</div>
+</body>
+</html>

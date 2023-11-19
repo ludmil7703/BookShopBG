@@ -43,7 +43,7 @@ public class CartItemServiceImplTest {
     @BeforeEach
     void setUp() {
         cartItemServiceToTest = new CartItemServiceImpl(mockCartItemRepository, mockBookRepository, mockModelMapper);
-//        when(mockModelMapper.map(any(), any())).thenReturn(bookBindingModel);
+        when(mockModelMapper.map(any(), any())).thenReturn(bookBindingModel);
 
         bookBindingModel.setId(1L);
         bookBindingModel.setOurPrice(BigDecimal.TEN);
@@ -98,7 +98,6 @@ public class CartItemServiceImplTest {
         List<CartItem> cartItemList = new ArrayList<>();
         cartItemList.add(cartItem);
         BookBindingModel bookBindingModel = creatBookDTO();
-
 
         when(mockBookRepository.findById(bookBindingModel.getId()))
                 .thenReturn(Optional.of(cartItem.getBook()));

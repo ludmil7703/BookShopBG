@@ -20,5 +20,6 @@ public interface CartItemService {
 	
 	List<CartItem> findByOrder(Order order);
 
-	void deleteCartItemById(Long id);
+	CartItem deleteCartItemById(Long id);
+
 }

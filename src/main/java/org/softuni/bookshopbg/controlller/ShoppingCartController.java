@@ -1,6 +1,7 @@
 package org.softuni.bookshopbg.controlller;
 
 
+import org.modelmapper.ModelMapper;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.entities.CartItem;
@@ -41,7 +42,7 @@ public class ShoppingCartController {
 
 
 
-	@RequestMapping("/cart")
+	@GetMapping("/cart")
 	public String shoppingCart(Model model, Principal principal) {
 		UserEntity user = userService.findUserByUsername(principal.getName()).orElse(null);
         assert user != null;
@@ -65,21 +66,22 @@ public class ShoppingCartController {
 
 	@PostMapping("/addItem")
 	public String addItem(
-			@ModelAttribute("book") BookBindingModel book,
+			@ModelAttribute("book") BookBindingModel bookBindingModel,
 			@ModelAttribute("qty") String qty,
 			Model model, Principal principal
 			) {
 		UserEntity user = userService.findUserByUsername(principal.getName()).get();
-		Book bookById = bookService.findBookById(book.getId());
-
-		if (Integer.parseInt(qty) > book.getInStockNumber()) {
+		Book bookInStock = bookService.findBookById(bookBindingModel.getId());
+		if (Integer.parseInt(qty) > bookInStock.getInStockNumber()) {
 			model.addAttribute("notEnoughStock", true);
-			return "forward:/bookDetail/"+book.getId();
+			return "forward:/bookDetail/"+bookInStock.getId();
 		}
+
+		ModelMapper modelMapper = new ModelMapper();
+		BookBindingModel book = modelMapper.map(bookInStock, BookBindingModel.class);
 
 		cartItemService.addBookToCartItem(book, user, Integer.parseInt(qty));
 		model.addAttribute("addBookSuccess", true);
-
 		return "forward:/bookDetail/"+book.getId();
 	}
 

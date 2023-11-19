@@ -93,8 +93,8 @@ public class CartItemServiceImpl implements CartItemService {
 	}
 
 	@Override
-	public void deleteCartItemById(Long id) {
-		Optional<CartItem> cartItem = cartItemRepository.findById(id);
+	public CartItem deleteCartItemById(Long id) {
+ 		Optional<CartItem> cartItem = cartItemRepository.findById(id);
 
 		if (cartItem.isPresent()) {
 			Book book = cartItem.get().getBook();
@@ -109,7 +109,8 @@ public class CartItemServiceImpl implements CartItemService {
 			cartItem.get().setShoppingCart(null);
 		}
 
-		cartItemRepository.deleteCartItemById(cartItem.get().getId());
+		cartItemRepository.delete(cartItem.get());
+		return cartItem.get();
 	}
 
 }

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+
+<body>
+
+	<div id="project_container">
+		<nav th:replace="fragments/commons::nav"></nav>
+		<header th:replace="fragments/commons::header"></header>
+
+		<div class="row justify-content-center form-group" style="margin-top:10px">
+			<div class="col-xs-9 col-xs-offset-3">
+				<h5>Bad request. The request path is invalid. Click <a th:href="@{/}">here</a> to return to the home page.</h5>
+				<img th:src="@{/images/errorImg.webp}" class="rounded-circle" style="width: 400px">
+			</div>
+		</div>
+
+		<footer th:replace="fragments/commons::footer"></footer>
+	</div>
+	<!-- end of container -->
+
+</body>
+</html>
