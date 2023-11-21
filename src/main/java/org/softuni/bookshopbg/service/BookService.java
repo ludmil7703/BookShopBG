@@ -20,6 +20,7 @@ public interface BookService {
 	List<BookBindingModel> findAll() throws IOException;
 
 
+	List<Book> findAllBooks();
 
     Book deleteBookById(Long id);
 

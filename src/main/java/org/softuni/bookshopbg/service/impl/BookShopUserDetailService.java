@@ -1,7 +1,7 @@
 package org.softuni.bookshopbg.service.impl;
 
 import org.softuni.bookshopbg.model.entities.UserEntity;
-import org.softuni.bookshopbg.model.entities.UserRoleEntity;
+import org.softuni.bookshopbg.model.security.UserRoleEntity;
 import org.softuni.bookshopbg.repositories.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

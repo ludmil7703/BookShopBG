@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.softuni.bookshopbg.model.dto.UserRegisterBindingModel;
 import org.softuni.bookshopbg.model.entities.UserEntity;
-import org.softuni.bookshopbg.model.entities.UserRoleEntity;
+import org.softuni.bookshopbg.model.security.UserRoleEntity;
 import org.softuni.bookshopbg.model.enums.UserRoleEnum;
+import org.softuni.bookshopbg.repositories.PasswordResetTokenRepository;
 import org.softuni.bookshopbg.repositories.RoleRepository;
 import org.softuni.bookshopbg.repositories.UserRepository;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,9 +35,12 @@ class UserServiceImplTest {
     @Mock
     private UserServiceImpl userServiceToTest;
 
+    @Mock
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+
     @BeforeEach
     void setUp() {
-        userServiceToTest = new UserServiceImpl(mockUserRepository, mockRoleRepository, mockPasswordEncoder);
+        userServiceToTest = new UserServiceImpl(userPaymentRepository, mockUserRepository, mockRoleRepository, mockPasswordEncoder, passwordResetTokenRepository);
     }
 
     @AfterEach

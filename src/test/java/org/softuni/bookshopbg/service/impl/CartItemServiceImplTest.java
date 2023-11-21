@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
@@ -13,6 +14,7 @@ import org.softuni.bookshopbg.repositories.BookRepository;
 import org.softuni.bookshopbg.repositories.CartItemRepository;
 import org.softuni.bookshopbg.service.CartItemService;
 import org.modelmapper.ModelMapper;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 
 import java.math.BigDecimal;
@@ -35,18 +37,26 @@ public class CartItemServiceImplTest {
 
     @Mock
     private ModelMapper mockModelMapper;
-    private  BookBindingModel bookBindingModel = new BookBindingModel();
-    private Book book = new Book();
 
+    @Mock
+    private  BookBindingModel mockBookBindingModel;
+
+    @Mock
+    private Book mockBook;
+
+    @Mock
+    private ShoppingCart mockShoppingCart;
+
+    @InjectMocks
     private CartItemServiceImpl cartItemServiceToTest;
 
     @BeforeEach
     void setUp() {
         cartItemServiceToTest = new CartItemServiceImpl(mockCartItemRepository, mockBookRepository, mockModelMapper);
-        when(mockModelMapper.map(any(), any())).thenReturn(bookBindingModel);
 
-        bookBindingModel.setId(1L);
-        bookBindingModel.setOurPrice(BigDecimal.TEN);
+
+        mockBookBindingModel.setId(1L);
+        mockBookBindingModel.setOurPrice(BigDecimal.TEN);
     }
 
     @AfterEach
@@ -90,31 +100,30 @@ public class CartItemServiceImplTest {
 
     @Test
     void testAddBookToCartItem() {
-        CartItem cartItem = createShoppingCart().getCartItemList().get(0);
+        mockShoppingCart = createShoppingCart();
+        CartItem cartItem = mockShoppingCart.getCartItemList().get(0);
+
 
         UserEntity user = new UserEntity();
-        user.setShoppingCart(createShoppingCart());
+        user.setUsername("test123");
+        user.setId(1L);
+        user.setShoppingCart(mockShoppingCart);
 
-        List<CartItem> cartItemList = new ArrayList<>();
-        cartItemList.add(cartItem);
-        BookBindingModel bookBindingModel = creatBookDTO();
+        List<CartItem> cartItemList = mockShoppingCart.getCartItemList();
 
-        when(mockBookRepository.findById(bookBindingModel.getId()))
-                .thenReturn(Optional.of(cartItem.getBook()));
-
-        when(mockCartItemRepository.findByShoppingCart(user.getShoppingCart()))
-                .thenReturn(cartItemList);
-
-        when(mockBookRepository.save(cartItem.getBook()))
-                .thenReturn(cartItem.getBook());
+        Book book = creatBook();
+        doReturn(book).when(mockModelMapper).map(mockBookBindingModel, Book.class);
 
 
-//        when(mockCartItemRepository.save(cartItem))
-//                .thenReturn(cartItem);
+        doReturn(cartItemList).when(mockCartItemRepository).findByShoppingCart(mockShoppingCart);
 
-        when(cartItemServiceToTest.addBookToCartItem(creatBookDTO(), user, 1))
-                .thenReturn(cartItem);
-        verify(cartItemServiceToTest, times(1)).addBookToCartItem(creatBookDTO(), user, 1);
+
+        doReturn(cartItem).when(cartItemServiceToTest).addBookToCartItem(mockBookBindingModel, user, 1);
+
+        CartItem actualCartItem = cartItemServiceToTest.addBookToCartItem(mockBookBindingModel, user, 1);
+
+
+        verify(mockCartItemRepository, times(1)).save(cartItem);
 
     }
 
@@ -165,12 +174,17 @@ public class CartItemServiceImplTest {
         when(mockCartItemRepository.findById(cartItem.getId()))
                 .thenReturn(Optional.of(cartItem));
 
-        when(mockCartItemRepository.deleteCartItemById(cartItem.getId()))
-                .thenReturn(cartItem);
+        doNothing().when(mockCartItemRepository).delete(cartItem);
 
         cartItemServiceToTest.deleteCartItemById(cartItem.getId());
 
-        verify(mockCartItemRepository, times(1)).deleteCartItemById(cartItem.getId());
+        verify(mockCartItemRepository, times(1)).delete(cartItem);
+    }
+    @Test
+    void testDeleteCartItemByIdWithNull() {
+        CartItem cartItem = createCartItem();
+        assertThrows(IllegalArgumentException.class, () -> cartItemServiceToTest.deleteCartItemById(cartItem.getId()));
+
     }
 
     private CartItem createCartItem() {

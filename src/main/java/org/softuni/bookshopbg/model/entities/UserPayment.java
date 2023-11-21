@@ -29,7 +29,7 @@ public class UserPayment extends BaseEntity{
 	@JoinColumn(name="user_id")
 	private UserEntity user;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "userPayment",orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL,mappedBy = "userPayment",orphanRemoval = true)
 	private UserBilling userBilling;
 
 }

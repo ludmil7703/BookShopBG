@@ -1,3 +1,36 @@
+
+
+
+.tab-content {
+	color : white;
+	background-color: #428bca;
+	padding : 5px 15px;
+}
+
+ h3 {
+	color : white;
+	background-color: #428bca;
+	padding : 5px 15px;
+}
+
+/* remove border radius for the tab */
+
+.nav-pills > li > a {
+	border-radius: 0;
+}
+
+/* change border radius for the tab , apply corners on top*/
+
+.nav-pills > li > a {
+	border-radius: 4px 4px 0 0 ;
+}
+
+.tab-content {
+	color : white;
+	background-color: #3c3f42;
+	padding : 5px 15px;
+}
+
 body {
 	margin: 0;
 	padding: 0;

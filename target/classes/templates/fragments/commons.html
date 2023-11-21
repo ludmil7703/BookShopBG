@@ -6,7 +6,7 @@
     <title>Book Shop BG</title>
     <meta name="keywords" content="" />
     <meta name="description" content="" />
-    <script th:src="@{/js/scripts.js}"></script>
+    <script th:src="@{/js/script.js}"></script>
     <script th:src="@{/js/bootbox.min.js}"></script>
     <script th:src="@{/js/jquery.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
@@ -56,7 +56,7 @@
             <li><a sec:authorize="isAnonymous()" th:href="@{/users/login}"><span
                     class="glyphicon glyphicon-user nav_right"></span> MY ACCOUNT</a></li>
             <li><a sec:authorize="isAuthenticated()"
-                   th:href="@{/myProfile}"><span
+                   th:href="@{/users/myProfile}"><span
                     class="glyphicon glyphicon-user nav_right"></span> MY ACCOUNT</a></li>
 
 
@@ -93,5 +93,6 @@
         Copyright © 2024 <a href="#"><strong>Book Shop BG</strong></a>
     </footer>
 </div> <!-- end of container -->
+
 </body> <!-- end of container -->
 </html>

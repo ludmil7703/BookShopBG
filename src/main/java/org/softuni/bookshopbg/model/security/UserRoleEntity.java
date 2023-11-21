@@ -1,4 +1,4 @@
-package org.softuni.bookshopbg.model.entities;
+package org.softuni.bookshopbg.model.security;
 
 import jakarta.persistence.*;
 

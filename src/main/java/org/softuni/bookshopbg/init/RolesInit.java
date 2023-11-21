@@ -1,6 +1,6 @@
 package org.softuni.bookshopbg.init;
 
-import org.softuni.bookshopbg.model.entities.UserRoleEntity;
+import org.softuni.bookshopbg.model.security.UserRoleEntity;
 import org.softuni.bookshopbg.model.enums.UserRoleEnum;
 import org.softuni.bookshopbg.repositories.RoleRepository;
 import org.springframework.boot.CommandLineRunner;

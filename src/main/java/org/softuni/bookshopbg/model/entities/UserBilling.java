@@ -24,7 +24,7 @@ public class UserBilling extends BaseEntity{
 	private String userBillingCountry;
 	private String userBillingZipcode;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private UserPayment userPayment;
 
 }

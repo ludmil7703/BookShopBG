@@ -60,7 +60,7 @@ class UserPaymentServiceImplTest {
         userPayment.setCardName("cardName");
         userPayment.setCardNumber("cardNumber");
 
-        userPaymentServiceTest.deleteById(1L);
+        userPaymentServiceTest.deleteUserPaymentsById(1L);
 
         verify(mockUserPaymentRepository, times(1)).deleteById(1L);
 

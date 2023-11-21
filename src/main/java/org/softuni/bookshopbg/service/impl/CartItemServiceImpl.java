@@ -52,7 +52,7 @@ public class CartItemServiceImpl implements CartItemService {
 	public CartItem addBookToCartItem(BookBindingModel bookBindingModel, UserEntity user, int qty) {
 
 
-		List<CartItem> cartItemList = findByShoppingCart(user.getShoppingCart());
+		List<CartItem> cartItemList = cartItemRepository.findByShoppingCart(user.getShoppingCart());
 
 		ModelMapper modelMapper = new ModelMapper();
 		Book book = modelMapper.map(bookBindingModel, Book.class);
@@ -73,6 +73,7 @@ public class CartItemServiceImpl implements CartItemService {
         cartItem.getShoppingCart().setUser(user);
 		cartItem.setQty(qty);
 		cartItem.setSubtotal(new BigDecimal(String.valueOf(book.getOurPrice())).multiply(new BigDecimal(qty)));
+
 		return cartItemRepository.save(cartItem);
 	}
 

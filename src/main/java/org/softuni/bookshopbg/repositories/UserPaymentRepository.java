@@ -11,4 +11,7 @@ import java.util.Optional;
 public interface UserPaymentRepository extends JpaRepository<UserPayment, Long> {
 
     Optional<UserPayment> findById(Long id);
+
+
+    void deleteById(Long id);
 }

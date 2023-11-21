@@ -32,9 +32,8 @@ public class SecurityConfiguration {
             "/allBooks",
             "/contact",
             "/error",
-            "/users/register",
             "/users/login",
-            "/users/login-error",
+            "/users/newUser",
             "/"
 
     };
@@ -51,8 +50,8 @@ public class SecurityConfiguration {
       return httpSecurity.authorizeHttpRequests(
         authorizeRequests -> authorizeRequests
                 .requestMatchers(PUBLIC_MATCHERS).permitAll()
-                .requestMatchers("/shoppingcart/**").hasRole(UserRoleEnum.USER.name())
-            .requestMatchers("/books/**","/shoppingCart/**").hasRole(UserRoleEnum.ADMIN.name())
+                .requestMatchers("/shoppingcart/**","/users/**").hasRole(UserRoleEnum.USER.name())
+            .requestMatchers("/books/**","/shoppingCart/**", "/users/**").hasRole(UserRoleEnum.ADMIN.name())
             .anyRequest().authenticated()
     )
             .csrf(AbstractHttpConfigurer::disable)

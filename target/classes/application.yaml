@@ -27,6 +27,23 @@ spring:
       static-locations: file:src/main/resources/static/
       cache:
         period: 0
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: bookshopbg2023@gmail.com
+    password: agfg tofl qfjq iuey
+    protocol: smtp
+    properties:
+      mail:
+       smtp:
+        auth: true
+        socketFactory:
+          port: 465
+          class: javax.net.ssl.SSLSocketFactory
+          fallback: false
+support:
+  email: bookshop2023@gmail.com
 bookShop:
   remember.me.key: ${REMEMBER_ME_KEY:bookShop}
 
@@ -43,14 +60,12 @@ server:
   port: 8090
   error:
     whitelabel:
-      enabled: true
+      enabled: false
 #  when port change, need fetch url port change
-mail:
-  bookshop:"bookshop@example.com
-  host:localhost
-    port:1025
-    username:bookshop
-    password:bookshop
+
+#
+
+
 cloud:
   name: de2t3mhgr
   key: 319136679127269
