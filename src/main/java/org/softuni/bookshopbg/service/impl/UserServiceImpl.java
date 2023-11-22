@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,14 +49,14 @@ public class UserServiceImpl implements UserService {
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.userShippingRepository = userShippingRepository;
     }
+    @Override
+    public boolean register(
+            UserRegisterBindingModel userRegisterBindingModel) {
 
-//    @Override
-//    public boolean register(
-//            UserRegisterBindingModel userRegisterBindingModel) {
-//
-//        userRepository.save(map(userRegisterBindingModel));
-//        return true;
-//    }
+        userRepository.save(map(userRegisterBindingModel));
+        return true;
+    }
+
 
     @Override
     @Transactional
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
           shoppingCart.setUser(user);
           user.setShoppingCart(shoppingCart);
 
-          user.setUserShippingList(new ArrayList<UserShipping>());
+          user.setUserShippingList(new HashSet<>());
           user.setUserPaymentList(new ArrayList<UserPayment>());
 
 
@@ -99,24 +100,24 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-//    public UserEntity map(UserRegisterBindingModel userRegisterBindingModel) {
-//        UserEntity user = new UserEntity();
-//
-//        if (userRepository.count() == 0) {
-//            user.getRoles().add(roleRepository.findByRole(UserRoleEnum.ADMIN));
-//        } else {
-//            user.getRoles().add(roleRepository.findByRole(UserRoleEnum.USER));
-//        }
-//        user.setActive(true);
-//        user.setFirstName(userRegisterBindingModel.getFirstName());
-//        user.setLastName(userRegisterBindingModel.getLastName());
-//        user.setEmail(userRegisterBindingModel.getEmail());
-//        user.setUsername(userRegisterBindingModel.getUsername());
-//        user.setShoppingCart(new ShoppingCart());
-//        user.setUserShippingList(new ArrayList<>());
-//        user.setPassword(passwordEncoder.encode(UserRegisterBindingModel.getPassword()));
-//        return user;
-//    }
+    public UserEntity map(UserRegisterBindingModel userRegisterBindingModel) {
+        UserEntity user = new UserEntity();
+
+        if (userRepository.count() == 0) {
+            user.getRoles().add(roleRepository.findByRole(UserRoleEnum.ADMIN));
+        } else {
+            user.getRoles().add(roleRepository.findByRole(UserRoleEnum.USER));
+        }
+        user.setActive(true);
+        user.setFirstName(userRegisterBindingModel.getFirstName());
+        user.setLastName(userRegisterBindingModel.getLastName());
+        user.setEmail(userRegisterBindingModel.getEmail());
+        user.setUsername(userRegisterBindingModel.getUsername());
+        user.setShoppingCart(new ShoppingCart());
+        user.setUserShippingList(new HashSet<>());
+        user.setPassword(passwordEncoder.encode(UserRegisterBindingModel.getPassword()));
+        return user;
+    }
     @Override
     public UserEntity findUserByEmail(String email) {
         Optional<UserEntity> user = this.userRepository.findByEmail(email);
@@ -139,12 +140,12 @@ public class UserServiceImpl implements UserService {
         passwordResetTokenRepository.save(myToken);
     }
 
-//    @Override
-//    public boolean checkCredentials(String username, String password) {
-//        Optional<UserEntity> user = this.userRepository.findByUsername(username);
-//
-//        return user.isPresent() && passwordEncoder.matches(password, user.get().getPassword());
-//    }
+    @Override
+    public boolean checkCredentials(String username, String password) {
+        Optional<UserEntity> user = this.userRepository.findByUsername(username);
+
+        return user.isPresent() && passwordEncoder.matches(password, user.get().getPassword());
+    }
 
     @Override
     public UserEntity save(UserEntity user) {
@@ -152,20 +153,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updateUserBilling(UserBilling userBilling, UserPayment userPayment, UserEntity user) {
-        userPayment.setUser(user);
-        userPayment.setUserBilling(userBilling);
-        userPayment.setDefaultPayment(true);
-        userBilling.setUserPayment(userPayment);
+            UserPayment userPaymentExists = userPaymentRepository.findUserPaymentByCardName(userPayment.getCardName());
+            UserBilling userBillingExists = userPaymentExists.getUserBilling();
+            if(userBillingExists != null){
+                userBillingExists.setUserBillingName(userBilling.getUserBillingName());
+                userBillingExists.setUserBillingStreet1(userBilling.getUserBillingStreet1());
+                userBillingExists.setUserBillingStreet2(userBilling.getUserBillingStreet2());
+                userBillingExists.setUserBillingCity(userBilling.getUserBillingCity());
+                userBillingExists.setUserBillingState(userBilling.getUserBillingState());
+                userBillingExists.setUserBillingCountry(userBilling.getUserBillingCountry());
+                userBillingExists.setUserBillingZipcode(userBilling.getUserBillingZipcode());
 
-        user.getUserPaymentList().add(userPayment);
-        save(user);
+
+                userPaymentExists.setUserBilling(userBilling);
+                userPaymentExists.setDefaultPayment(true);
+                userBilling.setUserPayment(userPaymentExists);
+                userPaymentRepository.save(userPaymentExists);
+
+            }else{
+                userPayment.setUser(user);
+                userPayment.setUserBilling(userBilling);
+                userPayment.setDefaultPayment(true);
+                userBilling.setUserPayment(userPayment);
+                user.getUserPaymentList().add(userPayment);
+                save(user);
+            }
+
     }
 
     @Override
     public void updateUserShipping(UserShipping userShipping, UserEntity user){
+        UserShipping userShippingExists = userShippingRepository.findUserShippingByUserShippingName(userShipping.getUserShippingName());
+        if(userShippingExists != null){
+            userShippingExists.setUserShippingName(userShipping.getUserShippingName());
+            userShippingExists.setUserShippingStreet1(userShipping.getUserShippingStreet1());
+            userShippingExists.setUserShippingStreet2(userShipping.getUserShippingStreet2());
+            userShippingExists.setUserShippingCity(userShipping.getUserShippingCity());
+            userShippingExists.setUserShippingState(userShipping.getUserShippingState());
+            userShippingExists.setUserShippingCountry(userShipping.getUserShippingCountry());
+            userShippingExists.setUserShippingZipcode(userShipping.getUserShippingZipcode());
+
+            userShippingRepository.save(userShippingExists);
+            return;
+        }
         userShipping.setUser(user);
         userShipping.setUserShippingDefault(true);
+        userShippingRepository.save(userShipping);
         user.getUserShippingList().add(userShipping);
         save(user);
     }

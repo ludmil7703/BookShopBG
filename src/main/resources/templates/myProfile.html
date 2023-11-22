@@ -186,7 +186,7 @@
 											</thead>
 											<tbody>
 											<tr th:each="order : ${orderList}">
-												<td><a th:href="@{/orderDetail(id=${order.id})}"><span
+												<td><a th:href="@{/users/orderDetail(id=${order.id})}"><span
 														th:text="${order.orderDate}"></span></a></td>
 												<td data-th-text="${order.id}"></td>
 												<td data-th-text="${order.orderTotal}"></td>
@@ -196,7 +196,7 @@
 										</table>
 
 										<div th:if="${displayOrderDetail}">
-											<div class="row">
+											<div class="row justify-content-around">
 												<div class="col-xs-12">
 													<div class="text-center">
 														<h2>
@@ -226,7 +226,7 @@
 															</div>
 														</div>
 
-														<div class="col-xs-4">
+														<div class="col-xs-4" style="padding-left: 10px">
 															<div class="panel panel-default height">
 																<div class="panel-heading">
 																	<strong>Payment Information</strong>
@@ -242,7 +242,7 @@
 															</div>
 														</div>
 
-														<div class="col-xs-4">
+														<div class="col-xs-4" style="padding-left: 10px">
 															<div class="panel panel-default height">
 																<div class="panel-heading">
 																	<strong>Shipping Details</strong>
@@ -566,11 +566,11 @@
 
 										<ol class="breadcrumb">
 											<li class="breadcrumb-item active"><a
-													th:href="@{/listOfShippingAddresses}"
+													th:href="@{/users/listOfShippingAddresses}"
 													th:style="${listOfShippingAddresses}? 'color:red'">List
 												of Shipping Addresses</a></li>
 											<li class="breadcrumb-item active"><a
-													th:href="@{/addNewShippingAddress}"
+													th:href="@{/users/addNewShippingAddress}"
 													th:style="${addNewShippingAddress}? 'color:red'">Add(Update)
 												Shipping Address</a></li>
 										</ol>
@@ -698,55 +698,6 @@
 
 </div>
 <!-- end of container -->
-<div th:fragment="body-bottom-scripts">
-	<script th:src="@{/js/jquery.min.js}"></script>
-	<script src="/js/bootstrap.min.js"></script>
-
-	<script th:src="@{/js/script.js}"></script>
-
-	<!-- data table -->
-	<script th:src="@{/js/jquery.dataTables.min.js}"></script>
-	<script th:src="@{/js/dataTables.bootstrap.min.js}"></script>
-</div>
 
 </body>
-<script>
-	function checkBillingAddress() {
-		if($("#theSameAsShippingAddress").is(":checked")) {
-			$(".billingAddress").prop("disabled", true);
-		} else {
-			$(".billingAddress").prop("disabled", false);
-		}
-	}
-
-	function checkPasswordMatch() {
-		var password = $("#txtNewPassword").val();
-		var confirmPassword = $("#txtConfirmPassword").val();
-
-		if(password == "" && confirmPassword =="") {
-			$("#checkPasswordMatch").html("");
-			$("#updateUserInfoButton").prop('disabled', false);
-		} else {
-			if(password != confirmPassword) {
-				$("#checkPasswordMatch").html("Passwords do not match!");
-				$("#updateUserInfoButton").prop('disabled', true);
-			} else {
-				$("#checkPasswordMatch").html("Passwords match");
-				$("#updateUserInfoButton").prop('disabled', false);
-			}
-		}
-	}
-
-	$(document).ready(function(){
-		$(".cartItemQty").on('change', function(){
-			var id=this.id;
-
-			$('#update-item-'+id).css('display', 'inline-block');
-		});
-		$("#theSameAsShippingAddress").on('click', checkBillingAddress);
-		$("#txtConfirmPassword").keyup(checkPasswordMatch);
-		$("#txtNewPassword").keyup(checkPasswordMatch);
-
-	});
-</script>
 </html>

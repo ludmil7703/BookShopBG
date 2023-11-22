@@ -4,7 +4,6 @@ package org.softuni.bookshopbg.service.impl;
 import org.softuni.bookshopbg.model.entities.UserShipping;
 import org.softuni.bookshopbg.repositories.UserShippingRepository;
 import org.softuni.bookshopbg.service.UserShippingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,7 +23,10 @@ public class UserShippingServiceImpl implements UserShippingService {
 	}
 	
 	public void deleteById(Long id) {
-		userShippingRepository.deleteById(id);
+		Optional<UserShipping> userShippingToDelete = this.findById(id);
+		userShippingToDelete.get().getUser().getUserShippingList().remove(userShippingToDelete.get());
+		userShippingToDelete.ifPresent(userShipping -> userShipping.setUser(null));
+		userShippingRepository.deleteById(userShippingToDelete.get().getId());
 	}
 
 }

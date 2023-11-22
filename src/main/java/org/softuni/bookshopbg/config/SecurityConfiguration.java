@@ -34,6 +34,7 @@ public class SecurityConfiguration {
             "/error",
             "/users/login",
             "/users/newUser",
+            "/users/forgetPassword",
             "/"
 
     };

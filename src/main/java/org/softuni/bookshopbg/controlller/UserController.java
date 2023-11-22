@@ -3,6 +3,7 @@ package org.softuni.bookshopbg.controlller;
 
 import jakarta.mail.PasswordAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.websocket.server.PathParam;
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.model.security.PasswordResetToken;
@@ -30,6 +31,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/users")
+@Transactional
 public class UserController {
 
     @Autowired
@@ -390,7 +392,7 @@ public class UserController {
         UserShipping userShipping = userShippingService.findById(shippingAddressId).get();
 
         if(user.getId() != userShipping.getUser().getId()) {
-            return "badRequestPage";
+            return "error";
         } else {
             model.addAttribute("user", user);
 

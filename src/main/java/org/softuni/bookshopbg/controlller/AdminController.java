@@ -71,7 +71,8 @@ public class AdminController {
 	@GetMapping("/updateBook/{id}")
 	public String updateBook(@PathVariable Long id, Model model) {
 		Book book = bookService.findBookById(id);
-		model.addAttribute("book", book);
+		BookBindingModel bookDTO = bookService.mapBookToBookBindingModel(book);
+		model.addAttribute("book", bookDTO);
 		List<Category> categoryList = categoryService.getAllCategories();
 		model.addAttribute("categoryList", categoryList);
 		return "updateBook";
@@ -84,7 +85,7 @@ public class AdminController {
 		if (bindingResult.hasErrors()){
 			rAtt.addFlashAttribute("book", bookDTO);
 			rAtt.addFlashAttribute("org.springframework.validation.BindingResult.book", bindingResult);
-			return "redirect:/books/add";
+			return "redirect:/books/updateBook/"+bookDTO.getId();
 		}
 		bookService.saveWithDTO(bookDTO);
 		return "redirect:/books/bookInfo/"+bookDTO.getId();

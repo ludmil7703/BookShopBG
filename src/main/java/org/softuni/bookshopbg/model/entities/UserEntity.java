@@ -7,7 +7,9 @@ import lombok.Setter;
 import org.softuni.bookshopbg.model.security.UserRoleEntity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -39,20 +41,20 @@ public class UserEntity extends BaseEntity{
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
     private ShoppingCart shoppingCart;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<UserShipping> userShippingList;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<UserShipping> userShippingList;
 
-    @OneToMany( mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany( mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserPayment> userPaymentList;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Order> orderList;
 
 
 public UserEntity(){
     this.shoppingCart = new ShoppingCart();
     this.orderList = new ArrayList<>();
-    this.userShippingList = new ArrayList<>();
+    this.userShippingList = new HashSet<>();
     this.userPaymentList = new ArrayList<>();
 }
 

@@ -10,6 +10,8 @@ import org.softuni.bookshopbg.model.entities.UserShipping;
 import org.softuni.bookshopbg.repositories.UserShippingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -34,10 +36,10 @@ class UserShippingServiceImplTest {
 
     @Test
     void findById() {
-        UserShipping userShipping = createUserShipping();
-        when(mockUserShippingRepository.findById(1L)).thenReturn(java.util.Optional.of(userShipping));
+        Optional<UserShipping> userShipping = Optional.of(createUserShipping());
+        when(mockUserShippingRepository.findById(1L)).thenReturn(userShipping);
 
-        assertEquals(userShipping, userShippingServiceToTest.findById(1L).get());
+        assertEquals(userShipping, userShippingServiceToTest.findById(1L));
 
 
     }

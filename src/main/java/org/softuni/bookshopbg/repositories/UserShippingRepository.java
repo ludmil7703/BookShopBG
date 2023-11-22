@@ -12,6 +12,10 @@ public interface UserShippingRepository extends JpaRepository<UserShipping, Long
 	
 	Optional<UserShipping> findById(Long id);
 
+	UserShipping save(UserShipping userShipping);
+
+	UserShipping findUserShippingByUserShippingName(String userShippingName);
+
 	void deleteById(Long id);
 
 }

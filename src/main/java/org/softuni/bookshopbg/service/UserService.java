@@ -13,14 +13,14 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface UserService {
-//    boolean register(UserRegisterBindingModel userRegisterBindingModel);
+    boolean register(UserRegisterBindingModel userRegisterBindingModel);
 
 
     UserEntity findUserByEmail(String username);
 
     Optional<UserEntity> findUserByUsername(String username);
 
-//    boolean checkCredentials(String username, String password);
+    boolean checkCredentials(String username, String password);
 
 
     void createPasswordResetTokenForUser(UserEntity user, String token);

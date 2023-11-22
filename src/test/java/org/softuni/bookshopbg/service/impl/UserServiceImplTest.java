@@ -10,6 +10,7 @@ import org.softuni.bookshopbg.model.security.UserRoleEntity;
 import org.softuni.bookshopbg.model.enums.UserRoleEnum;
 import org.softuni.bookshopbg.repositories.PasswordResetTokenRepository;
 import org.softuni.bookshopbg.repositories.RoleRepository;
+import org.softuni.bookshopbg.repositories.UserPaymentRepository;
 import org.softuni.bookshopbg.repositories.UserRepository;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +28,9 @@ import static org.mockito.Mockito.*;
 class UserServiceImplTest {
     @Mock
     private UserRepository mockUserRepository;
+
+    @Mock
+    private UserPaymentRepository mockUserPaymentRepository;
     @Mock
     private RoleRepository mockRoleRepository;
     @Mock
@@ -40,7 +44,7 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        userServiceToTest = new UserServiceImpl(userPaymentRepository, mockUserRepository, mockRoleRepository, mockPasswordEncoder, passwordResetTokenRepository);
+        userServiceToTest = new UserServiceImpl(mockUserPaymentRepository, mockUserRepository, mockRoleRepository, mockPasswordEncoder, passwordResetTokenRepository, null);
     }
 
     @AfterEach

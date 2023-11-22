@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Controller
@@ -88,7 +89,7 @@ public class CheckoutController {
 			}
 		}
 
-		List<UserShipping> userShippingList = user.getUserShippingList();
+		Set<UserShipping> userShippingList = user.getUserShippingList();
 		List<UserPayment> userPaymentList = user.getUserPaymentList();
 		
 		model.addAttribute("userShippingList", userShippingList);
@@ -214,7 +215,7 @@ public class CheckoutController {
 
 			modelAddAttr(model, user, cartItemList);
 
-			List<UserShipping> userShippingList = user.getUserShippingList();
+			Set<UserShipping> userShippingList = user.getUserShippingList();
 			List<UserPayment> userPaymentList = user.getUserPaymentList();
 			
 			model.addAttribute("userShippingList", userShippingList);
@@ -259,7 +260,7 @@ public class CheckoutController {
 
 			modelAddAttr(model, user, cartItemList);
 
-			List<UserShipping> userShippingList = user.getUserShippingList();
+			Set<UserShipping> userShippingList = user.getUserShippingList();
 			List<UserPayment> userPaymentList = user.getUserPaymentList();
 			
 			model.addAttribute("userShippingList", userShippingList);

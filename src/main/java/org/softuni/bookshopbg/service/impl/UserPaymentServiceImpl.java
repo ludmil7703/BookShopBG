@@ -23,6 +23,11 @@ public class UserPaymentServiceImpl implements UserPaymentService {
 	}
 	
 	public void deleteById(Long id) {
+		UserPayment userPaymentToDelete = findById(id);
+		userPaymentToDelete.getUser().getUserPaymentList().remove(userPaymentToDelete);
+		userPaymentToDelete.setUser(null);
+		userPaymentToDelete.getUserBilling().setUserPayment(null);
+		userPaymentToDelete.setUserBilling(null);
 		userPaymentRepository.deleteById(id);
 	}
 } 
