@@ -99,34 +99,63 @@ public class CartItemServiceImplTest {
     }
 
     @Test
-    void testAddBookToCartItem() {
-        mockShoppingCart = createShoppingCart();
-        CartItem cartItem = mockShoppingCart.getCartItemList().get(0);
-
-
+    void testAddBookToCartItemTest() {
+        BookBindingModel bookBindingModel = creatBookDTO();
         UserEntity user = new UserEntity();
-        user.setUsername("test123");
+        user.setShoppingCart(new ShoppingCart());
+        user.getShoppingCart().setCartItemList(new ArrayList<>());
+        user.getShoppingCart().setGrandTotal(BigDecimal.ZERO);
+        user.getShoppingCart().setUser(user);
         user.setId(1L);
-        user.setShoppingCart(mockShoppingCart);
-
-        List<CartItem> cartItemList = mockShoppingCart.getCartItemList();
 
         Book book = creatBook();
-        doReturn(book).when(mockModelMapper).map(mockBookBindingModel, Book.class);
 
+        when(mockModelMapper.map(bookBindingModel, Book.class)).thenReturn(book);
 
-        doReturn(cartItemList).when(mockCartItemRepository).findByShoppingCart(mockShoppingCart);
+        int qty = 2;
 
+        // Mock data for existing cart item
+        CartItem existingCartItem = createCartItem();
+        existingCartItem.setBook(creatBook());
+        existingCartItem.getBook().setOurPrice(BigDecimal.TEN);
+        existingCartItem.setShoppingCart(user.getShoppingCart());
+        existingCartItem.setSubtotal(BigDecimal.TEN);
+        existingCartItem.setId(1L);
+        existingCartItem.setQty(1);
 
-        doReturn(cartItem).when(cartItemServiceToTest).addBookToCartItem(mockBookBindingModel, user, 1);
+        List<CartItem> cartItemList = new ArrayList<>();
+        cartItemList.add(existingCartItem);
 
-        CartItem actualCartItem = cartItemServiceToTest.addBookToCartItem(mockBookBindingModel, user, 1);
+        // Mock behavior of the repository
+        when(mockCartItemRepository.findByShoppingCart(user.getShoppingCart())).thenReturn(cartItemList);
+        when(mockCartItemRepository.save(cartItemList.get(0))).thenReturn(existingCartItem);
 
+        // Call the method
+        CartItem resultCartItem = cartItemServiceToTest.addBookToCartItem(bookBindingModel, user, qty);
 
-        verify(mockCartItemRepository, times(1)).save(cartItem);
+        // Verify the result
+        assertNotNull(resultCartItem);
 
+        // Verify that the repository methods were called as expected
+        verify(mockCartItemRepository, times(1)).findByShoppingCart(user.getShoppingCart());
+        verify(mockCartItemRepository, times(1)).save(any(CartItem.class));
     }
 
+    @Test
+    void  addBookToCartItemWithEmptyCartItemListTest(){
+        BookBindingModel bookBindingModel = creatBookDTO();
+        Book book = creatBook();
+        when(mockCartItemRepository.findByShoppingCart(any(ShoppingCart.class))).thenReturn(new ArrayList<>());
+        when(mockModelMapper.map(bookBindingModel, Book.class)).thenReturn(book);
+
+        when(mockCartItemRepository.save(any(CartItem.class))).thenReturn(createCartItem());
+
+        cartItemServiceToTest.addBookToCartItem(bookBindingModel, new UserEntity(), 1);
+
+        verify(mockCartItemRepository, times(1)).findByShoppingCart(any(ShoppingCart.class));
+        verify(mockModelMapper, times(1)).map(bookBindingModel, Book.class);
+
+    }
     @Test
     void testFindById() {
         CartItem cartItem = createShoppingCart().getCartItemList().get(0);
@@ -187,6 +216,23 @@ public class CartItemServiceImplTest {
 
     }
 
+    @Test
+    void testDeleteCartItemByIdWithNullShoppingCart() {
+        CartItem cartItem = createCartItem();
+        cartItem.setSubtotal(BigDecimal.TEN);
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setGrandTotal(BigDecimal.TEN);
+        List<CartItem> cartItemList = List.of(cartItem);
+        shoppingCart.setCartItemList(cartItemList);
+        cartItem.setShoppingCart(shoppingCart);
+        when(mockCartItemRepository.findById(cartItem.getId()))
+                .thenReturn(Optional.of(cartItem));
+
+
+cartItemServiceToTest.deleteCartItemById(cartItem.getId());
+        verify(mockCartItemRepository, times(1)).delete(cartItem);
+    }
+
     private CartItem createCartItem() {
         CartItem cartItem = new CartItem();
         cartItem.setId(1L);
@@ -238,6 +284,8 @@ public class CartItemServiceImplTest {
             book.setLanguage("Language");
             book.setNumberOfPages(10);
             book.setIsbn(12345);
+            book.setId(1L);
+            book.setCartItems(new ArrayList<>());
             return book;
         }
 
@@ -256,6 +304,7 @@ public class CartItemServiceImplTest {
             book.setLanguage("Language");
             book.setNumberOfPages(10);
             book.setIsbn(12345);
+            book.setId(1L);
             return book;
         }
 

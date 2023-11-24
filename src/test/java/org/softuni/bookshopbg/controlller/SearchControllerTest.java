@@ -88,9 +88,9 @@ class SearchControllerTest {
         RequestBuilder request = get("/search");
 
         mockMvc.perform(request)
-                .andExpect(view().name("bookShelf"))
+                .andExpect(view().name("bookList"))
                 .andExpect(model().attributeExists("categoryList"))
-                .andExpect(model().attributeExists("bookShelf"))
+                .andExpect(model().attributeExists("bookList"))
                 .andExpect(status().isOk());
     }
 
@@ -102,8 +102,8 @@ class SearchControllerTest {
                 .principal(mockPrincipal);
 
         mockMvc.perform(request)
-                .andExpect(view().name("bookShelf"))
-                .andExpect(model().attributeExists("bookShelf"))
+                .andExpect(view().name("bookList"))
+                .andExpect(model().attributeExists("bookList"))
                 .andExpect(status().isOk());
     }
 
@@ -117,9 +117,9 @@ class SearchControllerTest {
                 .principal(mockPrincipal);
 
         mockMvc.perform(request)
-                .andExpect(view().name("bookShelf"))
+                .andExpect(view().name("bookList"))
                 .andExpect(model().attributeExists("emptyList"))
-                .andExpect(model().attributeExists("bookShelf"))
+                .andExpect(model().attributeExists("bookList"))
                 .andExpect(status().isOk());
     }
 
@@ -132,8 +132,8 @@ class SearchControllerTest {
                 .param("keyword", "test");
 
         mockMvc.perform(request)
-                .andExpect(view().name("bookShelf"))
-                .andExpect(model().attributeExists("bookShelf"))
+                .andExpect(view().name("bookList"))
+                .andExpect(model().attributeExists("bookList"))
                 .andExpect(status().isOk());
     }
 
@@ -146,9 +146,9 @@ class SearchControllerTest {
                 .param("keyword", "test");
 
         mockMvc.perform(request)
-                .andExpect(view().name("bookShelf"))
+                .andExpect(view().name("bookList"))
                 .andExpect(model().attributeExists("emptyList"))
-                .andExpect(model().attributeExists("bookShelf"))
+                .andExpect(model().attributeExists("bookList"))
                 .andExpect(status().isOk());
     }
 }

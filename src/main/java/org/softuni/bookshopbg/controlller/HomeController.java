@@ -80,7 +80,7 @@ public class HomeController {
                               Principal principal, @PathVariable Long id) {
         if (principal != null) {
             String username = principal.getName();
-            Optional<UserEntity> user = userService.findUserByUsername(username);
+            UserEntity user = userService.findUserByUsername(username);
             model.addAttribute("user", user);
         }
         Book book = bookService.findBookById(id);

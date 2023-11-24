@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.softuni.bookshopbg.model.entities.UserEntity;
 import org.softuni.bookshopbg.model.entities.UserShipping;
 import org.softuni.bookshopbg.repositories.UserShippingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserShippingServiceImplTest {
@@ -36,7 +37,7 @@ class UserShippingServiceImplTest {
 
     @Test
     void findById() {
-        Optional<UserShipping> userShipping = Optional.of(createUserShipping());
+        Optional<UserShipping> userShipping = createUserShipping();
         when(mockUserShippingRepository.findById(1L)).thenReturn(userShipping);
 
         assertEquals(userShipping, userShippingServiceToTest.findById(1L));
@@ -46,18 +47,28 @@ class UserShippingServiceImplTest {
 
     @Test
     void deleteById() {
-        UserShipping userShipping = createUserShipping();
-        mockUserShippingRepository.save(userShipping);
+        Optional<UserShipping> userShippingToDelete = createUserShipping();
+        when(mockUserShippingRepository.findById(1L)).thenReturn(userShippingToDelete);
+        doNothing().when(mockUserShippingRepository).deleteById(userShippingToDelete.get().getId());
 
         userShippingServiceToTest.deleteById(1L);
-        assertEquals(0, mockUserShippingRepository.count());
+
+        verify(mockUserShippingRepository, times(1)).deleteById(1L);
+
     }
 
-    private UserShipping createUserShipping(){
-        UserShipping userShipping = new UserShipping();
-        userShipping.setId(1L);
-        userShipping.setUserShippingName("Shipping Name");
-        userShipping.setUserShippingCity("Shipping City");
+    private Optional<UserShipping> createUserShipping(){
+        Optional<UserShipping> userShipping = Optional.of(new UserShipping());
+        userShipping.get().setId(1L);
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        userEntity.getUserShippingList().add(userShipping.get());
+
+        userShipping.get().setUser(userEntity);
+        userShipping.get().setUserShippingName("Shipping Name");
+        userShipping.get().setUserShippingCity("Shipping City");
+
         return userShipping;
     }
 }

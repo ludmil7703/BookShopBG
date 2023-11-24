@@ -47,7 +47,7 @@ public class ShoppingCartController {
 
 	@RequestMapping("/cart")
 	public String shoppingCart(Model model, Principal principal) {
-		UserEntity user = userService.findUserByUsername(principal.getName()).orElse(null);
+		UserEntity user = userService.findUserByUsername(principal.getName());
         assert user != null;
         ShoppingCart shoppingCart = user.getShoppingCart();
 		shoppingCart.setUser(user);
@@ -75,7 +75,7 @@ public class ShoppingCartController {
 			@ModelAttribute("qty") String qty,
 			Model model, Principal principal
 			) {
-		UserEntity user = userService.findUserByUsername(principal.getName()).get();
+		UserEntity user = userService.findUserByUsername(principal.getName());
 		Book bookInStock = bookService.findBookById(bookBindingModel.getId());
 		if (Integer.parseInt(qty) > bookInStock.getInStockNumber()) {
 			model.addAttribute("notEnoughStock", true);

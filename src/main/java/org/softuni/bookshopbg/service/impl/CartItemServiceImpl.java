@@ -54,7 +54,7 @@ public class CartItemServiceImpl implements CartItemService {
 
 		List<CartItem> cartItemList = cartItemRepository.findByShoppingCart(user.getShoppingCart());
 
-		ModelMapper modelMapper = new ModelMapper();
+
 		Book book = modelMapper.map(bookBindingModel, Book.class);
 
 		for (CartItem cartItem : cartItemList) {
@@ -66,7 +66,6 @@ public class CartItemServiceImpl implements CartItemService {
 				return cartItem;
 			}
 		}
-
 		CartItem cartItem = new CartItem();
 		cartItem.setShoppingCart(user.getShoppingCart());
 		cartItem.setBook(book);

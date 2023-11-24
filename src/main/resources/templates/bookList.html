@@ -44,11 +44,11 @@
         </section> <!-- end of content left -->
         <div id="book_list_right" class="col-sm-9 container">
 
-            <div th:if="${bookShelf.isEmpty()}">
+            <div th:if="${bookList.isEmpty()}">
                 <h5 style="font-style: italic;">Oops, no result is found. Try
                     something else or try again later.</h5>
             </div>
-            <div th:unless="${bookShelf.isEmpty()}" class="col card-body" th:each="book : ${bookShelf}">
+            <div th:unless="${bookList.isEmpty()}" class="col card-body" th:each="book : ${bookList}">
                 <h5 class="row card-title" th:text="${book.title} + '  (by ' + ${book.author} + ')'">Photography<span th:text="">(by Best Author)</span></h5>
 
                 <div class="row">

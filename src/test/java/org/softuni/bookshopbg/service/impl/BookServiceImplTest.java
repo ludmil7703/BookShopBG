@@ -1,5 +1,7 @@
 package org.softuni.bookshopbg.service.impl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +58,7 @@ class BookServiceImplTest {
     }
 
 
-
+//
 //    @Test
 //    void testSaveWithDTO() throws IOException, ParseException {
 //        Book book = new Book();
@@ -66,16 +68,17 @@ class BookServiceImplTest {
 //        bookBindingModel.setCategory(CategoryName.IT);
 //        bookBindingModel.setDescription("Description");
 //        bookBindingModel.setTitle("Title");
-//        bookBindingModel.setBookImage(mockMultipartFile);
-//
-//        when(bookBindingModel.getBookImage().getSize()).thenReturn(0L);
-//
+//        bookBindingModel.setBookImage(new MockMultipartFile("data", "filename.txt", "text/plain", new byte[] { 0x20 }));
+//        MultipartFile imageToCloud = bookBindingModel.getBookImage();
+//        mockMultipartFile = new MockMultipartFile("data", "filename.txt", "text/plain", "some xml".getBytes());
 //
 //        when(mockCategoryRepository.findCategoryByCategoryName(bookBindingModel.getCategory())).thenReturn(new Category(CategoryName.IT));
 //
 //        when(mockModelMapper.map(bookBindingModel, Book.class)).thenReturn(book);
 //
-//        mockModelMapper.map(bookBindingModel, book);
+//        Cloudinary cloudinary = mock(new Cloudinary(ObjectUtils.asMap("cloud", "test", "api_key", "1234", "api_secret", "secret")));
+//        when(cloudinary.uploader().upload(imageToCloud.getBytes(), Collections.emptyMap())).thenReturn(Map.of("url", "https://res.cloudinary.com/softuni-bookshop/image/upload/v1620896169/Bookshop/Books/Title.jpg"));
+//
 //        when(mockBookRepository.save(book))
 //                .thenReturn(book);
 //        mockBookRepository.save(book);

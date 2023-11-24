@@ -23,7 +23,7 @@ public class UserShippingServiceImpl implements UserShippingService {
 	}
 	
 	public void deleteById(Long id) {
-		Optional<UserShipping> userShippingToDelete = this.findById(id);
+		Optional<UserShipping> userShippingToDelete = findById(id);
 		userShippingToDelete.get().getUser().getUserShippingList().remove(userShippingToDelete.get());
 		userShippingToDelete.ifPresent(userShipping -> userShipping.setUser(null));
 		userShippingRepository.deleteById(userShippingToDelete.get().getId());

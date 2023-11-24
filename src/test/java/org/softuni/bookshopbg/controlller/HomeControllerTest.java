@@ -142,9 +142,9 @@ class HomeControllerTest {
 
         when(mockCategoryService.getAllCategories()).thenReturn(List.of(mockCategory));
 
-        when(mockUserService.findUserByUsername("test123")).thenReturn(Optional.ofNullable(mockUser));
+        when(mockUserService.findUserByUsername("test123")).thenReturn(mockUser);
 
-        when(mockUserService.findUserByUsername("test123")).thenReturn(Optional.ofNullable(mockUser));
+        when(mockUserService.findUserByUsername("test123")).thenReturn(mockUser);
 
         Principal principal = mockPrincipal;
         when(principal.getName()).thenReturn("test123");

@@ -7,16 +7,13 @@ import org.softuni.bookshopbg.model.dto.UserRegisterBindingModel;
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.model.enums.UserRoleEnum;
 import org.softuni.bookshopbg.model.security.PasswordResetToken;
-import org.softuni.bookshopbg.model.security.UserRoleEntity;
 import org.softuni.bookshopbg.repositories.*;
 import org.softuni.bookshopbg.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,7 +77,7 @@ public class UserServiceImpl implements UserService {
           shoppingCart.setUser(user);
           user.setShoppingCart(shoppingCart);
 
-          user.setUserShippingList(new HashSet<>());
+          user.setUserShippingList(new ArrayList<>());
           user.setUserPaymentList(new ArrayList<UserPayment>());
 
 
@@ -97,7 +94,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity findById(Long id) {
-        return null;
+        return userRepository.findById(id).get();
     }
 
     public UserEntity map(UserRegisterBindingModel userRegisterBindingModel) {
@@ -114,7 +111,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userRegisterBindingModel.getEmail());
         user.setUsername(userRegisterBindingModel.getUsername());
         user.setShoppingCart(new ShoppingCart());
-        user.setUserShippingList(new HashSet<>());
+        user.setUserShippingList(new ArrayList<>());
         user.setPassword(passwordEncoder.encode(UserRegisterBindingModel.getPassword()));
         return user;
     }
@@ -129,10 +126,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserEntity> findUserByUsername(String username) {
-        return this.userRepository.findByUsername(username);
-
-
+    public UserEntity findUserByUsername(String username) {
+        return this.userRepository.findByUsername(username).get();
     }
     @Override
     public void createPasswordResetTokenForUser(final UserEntity user, final String token) {
@@ -172,13 +167,13 @@ public class UserServiceImpl implements UserService {
                 userBilling.setUserPayment(userPaymentExists);
                 userPaymentRepository.save(userPaymentExists);
 
-            }else{
+            } else {
                 userPayment.setUser(user);
                 userPayment.setUserBilling(userBilling);
                 userPayment.setDefaultPayment(true);
                 userBilling.setUserPayment(userPayment);
                 user.getUserPaymentList().add(userPayment);
-                save(user);
+                userRepository.save(user);
             }
 
     }
@@ -198,11 +193,12 @@ public class UserServiceImpl implements UserService {
             userShippingRepository.save(userShippingExists);
             return;
         }
+
         userShipping.setUser(user);
         userShipping.setUserShippingDefault(true);
         userShippingRepository.save(userShipping);
         user.getUserShippingList().add(userShipping);
-        save(user);
+        userRepository.save(user);
     }
 
     @Override

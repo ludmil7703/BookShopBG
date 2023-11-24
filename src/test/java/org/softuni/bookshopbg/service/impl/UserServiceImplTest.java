@@ -5,17 +5,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.softuni.bookshopbg.model.dto.UserRegisterBindingModel;
-import org.softuni.bookshopbg.model.entities.UserEntity;
+import org.softuni.bookshopbg.model.entities.*;
+import org.softuni.bookshopbg.model.security.PasswordResetToken;
 import org.softuni.bookshopbg.model.security.UserRoleEntity;
 import org.softuni.bookshopbg.model.enums.UserRoleEnum;
-import org.softuni.bookshopbg.repositories.PasswordResetTokenRepository;
-import org.softuni.bookshopbg.repositories.RoleRepository;
-import org.softuni.bookshopbg.repositories.UserPaymentRepository;
-import org.softuni.bookshopbg.repositories.UserRepository;
+import org.softuni.bookshopbg.repositories.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +30,9 @@ class UserServiceImplTest {
 
     @Mock
     private UserPaymentRepository mockUserPaymentRepository;
+
+    @Mock
+    private UserShippingRepository mockUserShippingRepository;
     @Mock
     private RoleRepository mockRoleRepository;
     @Mock
@@ -42,9 +44,28 @@ class UserServiceImplTest {
     @Mock
     private PasswordResetTokenRepository passwordResetTokenRepository;
 
+    @Mock
+    private UserEntity mockuser;
+
+    @Mock
+    private PasswordResetToken mockPasswordResetToken;
+
     @BeforeEach
     void setUp() {
-        userServiceToTest = new UserServiceImpl(mockUserPaymentRepository, mockUserRepository, mockRoleRepository, mockPasswordEncoder, passwordResetTokenRepository, null);
+        userServiceToTest = new UserServiceImpl(mockUserPaymentRepository,
+                mockUserRepository,
+                mockRoleRepository,
+                mockPasswordEncoder,
+                passwordResetTokenRepository,
+                mockUserShippingRepository);
+
+        mockuser.setUsername("ivan");
+        mockuser.setPassword("1234");
+
+        mockPasswordResetToken.setToken("1234");
+        mockPasswordResetToken.setUser(mockuser);
+        mockPasswordResetToken.setExpiryDate(null);
+        mockPasswordResetToken.setId(1L);
     }
 
     @AfterEach
@@ -52,6 +73,201 @@ class UserServiceImplTest {
         userServiceToTest = null;
     }
 
+
+    @Test
+    void createUserWithAdminRoleTest() {
+
+        when(mockUserRepository.findByUsername(mockuser.getUsername())).thenReturn(Optional.empty());
+        when(mockUserRepository.count()).thenReturn(0L);
+        when(mockUserRepository.save(any())).thenReturn(mockuser);
+
+        UserEntity result = userServiceToTest.createUser(mockuser);
+
+        assertEquals(mockuser, result);
+
+    }
+
+    @Test
+    void  createUserWithExistingUser(){
+
+        when(mockUserRepository.findByUsername(mockuser.getUsername())).thenReturn(Optional.of(mockuser));
+
+        when(mockUserRepository.count()).thenReturn(1L);
+        when(mockUserRepository.save(any())).thenReturn(mockuser);
+        UserEntity result = userServiceToTest.createUser(mockuser);
+
+        assertNull(result);
+    }
+
+    @Test
+    void createUserWIthUserRoleTest(){
+
+        when(mockUserRepository.findByUsername(mockuser.getUsername())).thenReturn(Optional.empty());
+        when(mockUserRepository.count()).thenReturn(1L);
+        when(mockUserRepository.save(any())).thenReturn(mockuser);
+
+        UserEntity result = userServiceToTest.createUser(mockuser);
+
+        assertEquals(mockuser, result);
+    }
+
+    @Test
+    void  getPasswordResetTokenTest(){
+        when(passwordResetTokenRepository.findByToken(any())).thenReturn(mockPasswordResetToken);
+
+        userServiceToTest.getPasswordResetToken( "1234");
+
+        verify(passwordResetTokenRepository, times(1)).findByToken(any());
+    }
+
+    @Test
+    void  createPasswordResetTokenZForUserTest(){
+
+
+        when(passwordResetTokenRepository.save(any())).thenReturn(mockPasswordResetToken);
+
+        userServiceToTest.createPasswordResetTokenForUser(mockuser, "1234");
+
+        verify(passwordResetTokenRepository, times(1)).save(any());
+    }
+
+    @Test
+    void updateUserBillingTest() {
+        UserEntity user = createUser();
+        UserBilling userBilling = new UserBilling();
+        Payment payment = new Payment();
+        payment.setCardName("Ivan");
+        UserPayment userPayment = new UserPayment();
+        userPayment.setDefaultPayment(true);
+        userPayment.setUserBilling(userBilling);
+        user.setUserPaymentList(List.of(userPayment));
+
+
+        when(mockUserPaymentRepository.findUserPaymentByCardName(any())).thenReturn(user.getUserPaymentList().get(0));
+        when(mockUserPaymentRepository.save(any())).thenReturn(user.getUserPaymentList().get(0));
+
+        userServiceToTest.updateUserBilling(userBilling, user.getUserPaymentList().get(0), user);
+
+        verify(mockUserPaymentRepository, times(1)).save(any());
+        assertEquals(user.getUserPaymentList().get(0).getUserBilling(), userBilling);
+    }
+
+    @Test
+    void updateUserBillingTestNull() {
+        UserEntity user = createUser();
+        UserBilling userBilling = new UserBilling();
+        Payment payment = new Payment();
+        payment.setCardName("Ivan");
+        UserPayment userPayment = new UserPayment();
+
+
+        when(mockUserPaymentRepository.findUserPaymentByCardName(any())).thenReturn(userPayment);
+
+        when(mockUserRepository.save(user)).thenReturn(user);
+
+        userServiceToTest.updateUserBilling(userBilling, userPayment, user);
+
+      assertEquals(user.getUserPaymentList().get(0).getUserBilling(), userBilling);
+
+        verify(mockUserRepository,times(1)).save(user);
+    }
+
+    @Test
+    void updateUserShippingTest() {
+        UserEntity user = createUser();
+        UserShipping userShipping = new UserShipping();
+        userShipping.setUserShippingName("ivan");
+
+        userShipping.setId(1L);
+
+        userShipping.setUserShippingDefault(true);
+
+        user.setUserShippingList(List.of(userShipping));
+        userShipping.setUser(user);
+
+        when(mockUserShippingRepository.save(any())).thenReturn(userShipping);
+        when(mockUserShippingRepository.findUserShippingByUserShippingName(userShipping.getUserShippingName())).thenReturn(userShipping);
+
+        userServiceToTest.updateUserShipping(userShipping, user);
+
+        verify(mockUserShippingRepository, times(1)).save(any());
+    }
+
+    @Test
+    void updateUserShippingTestNull() {
+        UserEntity user = createUser();
+        UserShipping userShipping = new UserShipping();
+
+        when(mockUserShippingRepository.save(any())).thenReturn(userShipping);
+        when(mockUserShippingRepository.findUserShippingByUserShippingName(userShipping.getUserShippingName())).thenReturn(null);
+
+        when(mockUserRepository.save(user)).thenReturn(user);
+
+        userServiceToTest.updateUserShipping(userShipping, user);
+
+        verify(mockUserShippingRepository, times(1)).save(any());
+
+        verify(mockUserRepository,times(1)).save(user);
+    }
+
+    @Test
+    void setDefaultPaymentTest() {
+        UserEntity user = createUser();
+        UserPayment userPayment = new UserPayment();
+        userPayment.setDefaultPayment(true);
+        userPayment.setUser(user);
+
+        when(mockUserPaymentRepository.findAll()).thenReturn(List.of(userPayment));
+        when(mockUserPaymentRepository.save(any())).thenReturn(userPayment);
+
+        userServiceToTest.setUserDefaultPayment(userPayment.getId(), user);
+
+        verify(mockUserPaymentRepository, times(1)).save(any());
+    }
+    @Test
+    void setDefaultPaymentFalseTest() {
+        UserEntity user = createUser();
+        UserPayment userPayment = new UserPayment();
+        userPayment.setDefaultPayment(false);
+        userPayment.setUser(user);
+
+        when(mockUserPaymentRepository.findAll()).thenReturn(List.of(userPayment));
+        when(mockUserPaymentRepository.save(any())).thenReturn(userPayment);
+
+        userServiceToTest.setUserDefaultPayment(2L, user);
+
+        verify(mockUserPaymentRepository, times(1)).save(any());
+    }
+
+    @Test
+    void  setUserDefaultShippingTest(){
+        UserEntity user = createUser();
+        UserShipping userShipping = new UserShipping();
+        userShipping.setUserShippingDefault(true);
+        userShipping.setUser(user);
+
+        when(mockUserShippingRepository.findAll()).thenReturn(List.of(userShipping));
+        when(mockUserShippingRepository.save(any())).thenReturn(userShipping);
+
+        userServiceToTest.setUserDefaultShipping(userShipping.getId(), user);
+
+        verify(mockUserShippingRepository, times(1)).save(any());
+    }
+
+    @Test
+    void  setUserDefaultShippingFalseTest(){
+        UserEntity user = createUser();
+        UserShipping userShipping = new UserShipping();
+        userShipping.setUserShippingDefault(false);
+        userShipping.setUser(user);
+
+        when(mockUserShippingRepository.findAll()).thenReturn(List.of(userShipping));
+        when(mockUserShippingRepository.save(any())).thenReturn(userShipping);
+
+        userServiceToTest.setUserDefaultShipping(2L, user);
+
+        verify(mockUserShippingRepository, times(1)).save(any());
+    }
     @Test
     void registerTest() {
         UserEntity user = createUser();
@@ -74,7 +290,7 @@ class UserServiceImplTest {
         userRegisterBindingModel.setLastName("Ivanov");
         userRegisterBindingModel.setEmail("ivan@mail.com");
         userRegisterBindingModel.setUsername("ivan");
-        userRegisterBindingModel.setPassword("1234");
+        UserRegisterBindingModel.setPassword("1234");
         userRegisterBindingModel.setConfirmPassword("1234");
 
 
@@ -87,6 +303,16 @@ class UserServiceImplTest {
         assertEquals(userRegisterBindingModel.getFirstName(), result.getFirstName());
     }
 
+    @Test
+    void saveTest(){
+        UserEntity user = createUser();
+
+        when(mockUserRepository.save(any())).thenReturn(user);
+
+        UserEntity result = userServiceToTest.save(user);
+
+        assertEquals(user, result);
+    }
     @Test
     void mapTestAdmin(){
         UserRegisterBindingModel userRegisterBindingModel = new UserRegisterBindingModel();
@@ -145,21 +371,12 @@ class UserServiceImplTest {
 
         when(mockUserRepository.findByUsername(username)).thenReturn(java.util.Optional.of(user));
 
-        Optional<UserEntity> result = userServiceToTest.findUserByUsername(username);
+        UserEntity result = userServiceToTest.findUserByUsername(username);
 
-        assertEquals(user, result.get());
+        assertEquals(user, result);
     }
 
-    @Test
-    void findUserByUsernameTestNull() {
-        String username = "ivan";
 
-        when(mockUserRepository.findByUsername(username)).thenReturn(Optional.empty());
-
-        Optional<UserEntity> result = userServiceToTest.findUserByUsername(username);
-
-        assertEquals(Optional.empty(), result);
-    }
 
     @Test
     void checkCredentialsTest() {
@@ -196,18 +413,19 @@ class UserServiceImplTest {
 
         assertFalse(result);
     }
-
     @Test
-    void saveTest() {
+    void  findByIdTest(){
+        Long id = 1L;
+
         UserEntity user = createUser();
 
-        when(mockUserRepository.save(user)).thenReturn(user);
+        when(mockUserRepository.findById(id)).thenReturn(java.util.Optional.of(user));
 
-        userServiceToTest.save(user);
+        UserEntity result = userServiceToTest.findById(id);
 
-        verify(mockUserRepository,times(1)).save(user);
-
+        assertEquals(user, result);
     }
+
 
     private UserEntity createUser() {
         UserEntity user = new UserEntity();

@@ -19,8 +19,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -129,6 +131,8 @@ class AdminControllerTest {
         Book book = getBook();
         Category category = new Category(CategoryName.IT);
         List<Category> categoryList = List.of(category);
+        BookBindingModel bookBindingModel = getBookBindingModel();
+        when(mockBookService.mapBookToBookBindingModel(book)).thenReturn(bookBindingModel);
         when(mockBookService.findBookById(1L)).thenReturn(book);
         when(mockCategoryService.getAllCategories()).thenReturn(categoryList);
         RequestBuilder request = get("/books/updateBook/{id}", 1L);
@@ -147,9 +151,9 @@ class AdminControllerTest {
 
     @Test
     void testUpdateBook() throws Exception {
-
 //Must return a bookInfo with id 1
-        RequestBuilder request = post("/books/updateBook")
+
+        RequestBuilder requestBuilder = post("/books/updateBook")
                 .param("title", "Title1")
                 .param("author", "Author1")
                 .param("description", "Description1")
@@ -166,23 +170,22 @@ class AdminControllerTest {
                 .param("language", "language")
                 .param("publisher", "publisher");
 
-
-
-      mockMvc.perform(request)
+        mockMvc.perform(requestBuilder)
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/books/bookInfo/1"));
-
 
     }
 
     @Test
     void testUpdateBookWithWrongData() throws Exception {
-        RequestBuilder requestBuilder = post("/books/updateBook")
-                .param("title", "Title1");
+        RequestBuilder requestBuilder= post("/books/updateBook")
+                .param("title", "Title1")
+                .param("inStockNumber", "abc")
+                .param("id", "1");
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/books/add"));
+                .andExpect(view().name("redirect:/books/updateBook/1" ));
 
     }
 
@@ -240,6 +243,7 @@ void testRemoveWithWrongId() throws Exception {
     private BookBindingModel getBookBindingModel() {
         BookBindingModel bookBindingModel = new BookBindingModel();
         bookBindingModel.setAuthor("Author");
+        bookBindingModel.setId(1L);
         bookBindingModel.setCategory(CategoryName.ENGINEERING);
         bookBindingModel.setDescription("Description");
         bookBindingModel.setListPrice(BigDecimal.valueOf(10));

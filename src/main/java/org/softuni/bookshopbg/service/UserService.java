@@ -18,7 +18,7 @@ public interface UserService {
 
     UserEntity findUserByEmail(String username);
 
-    Optional<UserEntity> findUserByUsername(String username);
+    UserEntity findUserByUsername(String username);
 
     boolean checkCredentials(String username, String password);
 

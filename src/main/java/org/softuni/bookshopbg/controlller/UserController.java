@@ -5,6 +5,7 @@ import jakarta.mail.PasswordAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.websocket.server.PathParam;
+import org.junit.Test;
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.model.security.PasswordResetToken;
 import org.softuni.bookshopbg.service.*;
@@ -100,7 +101,7 @@ public class UserController {
 
         if(principal != null) {
             String username = principal.getName();
-            UserEntity user = userService.findUserByUsername(username).get();
+            UserEntity user = userService.findUserByUsername(username);
             model.addAttribute("user", user);
         }
 
@@ -110,8 +111,10 @@ public class UserController {
         model.addAttribute("bookList", bookList);
         model.addAttribute("activeAll",true);
 
-        return "bookShelf";
+        return "bookList";
     }
+
+
 
     @RequestMapping("/bookDetail")
     public String bookDetail(
@@ -119,7 +122,7 @@ public class UserController {
     ) {
         if(principal != null) {
             String username = principal.getName();
-            UserEntity user = userService.findUserByUsername(username).get();
+            UserEntity user = userService.findUserByUsername(username);
             model.addAttribute("user", user);
         }
 
@@ -188,7 +191,7 @@ public class UserController {
 
     @RequestMapping("/myProfile")
     public String myProfile(Model model, Principal principal) {
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("userPaymentList", user.getUserPaymentList());
         model.addAttribute("userShippingList", user.getUserShippingList());
@@ -215,7 +218,7 @@ public class UserController {
     public String listOfCreditCards(
             Model model, Principal principal, HttpServletRequest request
     ) {
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("userPaymentList", user.getUserPaymentList());
         model.addAttribute("userShippingList", user.getUserShippingList());
@@ -235,7 +238,7 @@ public class UserController {
     public String listOfShippingAddresses(
             Model model, Principal principal, HttpServletRequest request
     ) {
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("userPaymentList", user.getUserPaymentList());
         model.addAttribute("userShippingList", user.getUserShippingList());
@@ -255,7 +258,7 @@ public class UserController {
     public String addNewCreditCard(
             Model model, Principal principal
     ){
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user);
 
         model.addAttribute("addNewCreditCard", true);
@@ -286,7 +289,7 @@ public class UserController {
     public String addNewShippingAddress(
             Model model, Principal principal
     ){
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user);
 
         model.addAttribute("addNewShippingAddress", true);
@@ -316,7 +319,7 @@ public class UserController {
             @ModelAttribute("userBilling") UserBilling userBilling,
             Principal principal, Model model
     ){
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         userService.updateUserBilling(userBilling, userPayment, user);
 
         model.addAttribute("user", user);
@@ -335,7 +338,7 @@ public class UserController {
             @ModelAttribute("userShipping") UserShipping userShipping,
             Principal principal, Model model
     ){
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         userService.updateUserShipping(userShipping, user);
 
         model.addAttribute("user", user);
@@ -354,7 +357,7 @@ public class UserController {
     public String updateCreditCard(
             @ModelAttribute("id") Long creditCardId, Principal principal, Model model
     ) {
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         UserPayment userPayment = userPaymentService.findById(creditCardId);
 
         if(user.getId() != userPayment.getUser().getId()) {
@@ -388,7 +391,7 @@ public class UserController {
     public String updateUserShipping(
             @ModelAttribute("id") Long shippingAddressId, Principal principal, Model model
     ) {
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         UserShipping userShipping = userShippingService.findById(shippingAddressId).get();
 
         if(user.getId() != userShipping.getUser().getId()) {
@@ -421,7 +424,7 @@ public class UserController {
     public String setDefaultPayment(
             @ModelAttribute("defaultUserPaymentId") Long defaultPaymentId, Principal principal, Model model
     ) {
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         userService.setUserDefaultPayment(defaultPaymentId, user);
 
         model.addAttribute("user", user);
@@ -440,7 +443,7 @@ public class UserController {
     public String setDefaultShippingAddress(
             @ModelAttribute("defaultShippingAddressId") Long defaultShippingId, Principal principal, Model model
     ) {
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         userService.setUserDefaultShipping(defaultShippingId, user);
 
         model.addAttribute("user", user);
@@ -459,7 +462,7 @@ public class UserController {
     public String removeCreditCard(
             @ModelAttribute("id") Long creditCardId, Principal principal, Model model
     ){
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         UserPayment userPayment = userPaymentService.findById(creditCardId);
 
         if(user.getId() != userPayment.getUser().getId()) {
@@ -487,7 +490,7 @@ public class UserController {
     public String removeUserShipping(
             @ModelAttribute("id") Long userShippingId, Principal principal, Model model
     ){
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         UserShipping userShipping = userShippingService.findById(userShippingId).get();
 
         if(user.getId() != userShipping.getUser().getId()) {
@@ -522,7 +525,7 @@ public class UserController {
         model.addAttribute("email", userEmail);
         model.addAttribute("username", username);
 
-        if (userService.findUserByUsername(username).isPresent()) {
+        if (userService.findUserByUsername(username) != null) {
             model.addAttribute("usernameExists", true);
 
             return "myAccount";
@@ -598,7 +601,7 @@ public class UserController {
             @ModelAttribute("newPassword") String newPassword,
             Model model
     ) {
-        UserEntity currentUser = userService.findUserByUsername(user.getUsername()).get();
+        UserEntity currentUser = userService.findUserByUsername(user.getUsername());
 
         /*check email already exists*/
         if (userService.findUserByEmail(user.getEmail())!=null) {
@@ -609,8 +612,8 @@ public class UserController {
         }
 
         /*check username already exists*/
-        if (userService.findUserByUsername(user.getUsername()).isPresent()) {
-            if(!Objects.equals(userService.findUserByUsername(user.getUsername()).get().getId(), currentUser.getId())) {
+        if (userService.findUserByUsername(user.getUsername()) != null) {
+            if(!Objects.equals(userService.findUserByUsername(user.getUsername()).getId(), currentUser.getId())) {
                 model.addAttribute("usernameExists", true);
                 return "myProfile";
             }
@@ -659,7 +662,7 @@ public class UserController {
             @RequestParam("id") Long orderId,
             Principal principal, Model model
     ){
-        UserEntity user = userService.findUserByUsername(principal.getName()).get();
+        UserEntity user = userService.findUserByUsername(principal.getName());
         Order order = orderService.findById(orderId).get();
 
         if(order.getUser().getId()!=user.getId()) {

@@ -39,9 +39,9 @@ public class SearchController {
 	public String search(Model model){
 		List<Category> categoryList = categoryService.getAllCategories();
 		model.addAttribute("categoryList", categoryList);
-		List<Book> bookShelf = new ArrayList<>();
-		model.addAttribute("bookShelf", bookShelf);
-		return "bookShelf";
+		List<Book> bookList = new ArrayList<>();
+		model.addAttribute("bookList", bookList);
+		return "bookList";
 	}
 	@RequestMapping("/searchByCategory")
 	public String searchByCategory(
@@ -51,17 +51,17 @@ public class SearchController {
 		searchBook(model, principal);
 
 
-		List<Book> bookShelf = bookService.findByCategory(category);
+		List<Book> bookList = bookService.findByCategory(category);
 
-		if (bookShelf.isEmpty()) {
+		if (bookList.isEmpty()) {
 			model.addAttribute("emptyList", true);
-			model.addAttribute("bookShelf", bookShelf);
-			return "bookShelf";
+			model.addAttribute("bookList", bookList);
+			return "bookList";
 		}
 
-		model.addAttribute("bookShelf", bookShelf);
+		model.addAttribute("bookList", bookList);
 
-		return "bookShelf";
+		return "bookList";
 	}
 
 
@@ -72,23 +72,23 @@ public class SearchController {
 			Principal principal, Model model
 	) {
 		searchBook(model, principal);
-		List<Book> bookShelf = bookService.blurrySearch(keyword);
+		List<Book> bookList = bookService.blurrySearch(keyword);
 
-		if (bookShelf.isEmpty()) {
+		if (bookList.isEmpty()) {
 			model.addAttribute("emptyList", true);
-			model.addAttribute("bookShelf", bookShelf);
-			return "bookShelf";
+			model.addAttribute("bookList", bookList);
+			return "bookList";
 		}
 
-		model.addAttribute("bookShelf", bookShelf);
+		model.addAttribute("bookList", bookList);
 
-		return "bookShelf";
+		return "bookList";
 	}
 
 	private void searchBook(Model model, Principal principal) {
 		if(principal!=null) {
 			String username = principal.getName();
-			UserEntity user = userService.findUserByUsername(username).orElse(null);
+			UserEntity user = userService.findUserByUsername(username);
 			model.addAttribute("user", user);
 		}
 		List<Category> categoryList = categoryService.getAllCategories();

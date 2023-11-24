@@ -103,7 +103,7 @@ class ShoppingCartControllerTest {
         userEntity.setUsername(mockPrincipal.getName());
         userEntity.setShoppingCart(shoppingCart);
         when(mockUserService.findUserByUsername(mockPrincipal.getName()))
-                .thenReturn(Optional.of(userEntity));
+                .thenReturn((userEntity));
 
 
         when(mockCartItemService.findByShoppingCart(shoppingCart))
@@ -135,7 +135,7 @@ class ShoppingCartControllerTest {
         userEntity.setShoppingCart(shoppingCart);
 
         when(mockUserService.findUserByUsername(mockPrincipal.getName()))
-                .thenReturn(Optional.of(userEntity));
+                .thenReturn(userEntity);
 
         when(mockCartItemService.findByShoppingCart(shoppingCart))
                 .thenReturn(cartItemList);
@@ -162,7 +162,7 @@ class ShoppingCartControllerTest {
         book.setInStockNumber(1);
 
         when(mockUserService.findUserByUsername(mockPrincipal.getName()))
-                .thenReturn(Optional.of(userEntity));
+                .thenReturn(userEntity);
         when(mockBookService.findBookById(1L))
                 .thenReturn(book);
 
@@ -188,7 +188,7 @@ class ShoppingCartControllerTest {
         book.setInStockNumber(10);
 
         when(mockUserService.findUserByUsername(mockPrincipal.getName()))
-                .thenReturn(Optional.of(userEntity));
+                .thenReturn(userEntity);
         when(mockBookService.findBookById(1L))
                 .thenReturn(book);
 

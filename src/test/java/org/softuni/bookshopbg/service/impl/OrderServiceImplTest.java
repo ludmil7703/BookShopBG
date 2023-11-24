@@ -52,11 +52,12 @@ class OrderServiceImplTest {
         orderServiceTest = null;
     }
 
+
     @Test
     void createOrder() {
        Order order = new Order();
         order.setId(1L);
-        order.setOrderStatus("orderStatus");
+        order.setOrderStatus("created");
         order.setOrderDate(null);
         order.setOrderTotal(BigDecimal.TEN);
         order.setShippingAddress(createShippingAddress());
