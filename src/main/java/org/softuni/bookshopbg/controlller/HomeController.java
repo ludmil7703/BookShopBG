@@ -1,13 +1,11 @@
 package org.softuni.bookshopbg.controlller;
 
-import jakarta.websocket.server.PathParam;
 import org.softuni.bookshopbg.model.dto.BookBindingModel;
 import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.model.entities.UserEntity;
 import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.service.CategoryService;
-import org.softuni.bookshopbg.exception.ObjectNotFoundException;
 import org.softuni.bookshopbg.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +15,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class HomeController {
@@ -90,7 +87,7 @@ public class HomeController {
         List<Integer> qtyList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
         model.addAttribute("qtyList", qtyList);
         model.addAttribute("qty", 1);
-        return "bookDetail";
+        return "bookDetails";
     }
 
     @GetMapping("/admin")

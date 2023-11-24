@@ -5,7 +5,6 @@ import jakarta.mail.PasswordAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.websocket.server.PathParam;
-import org.junit.Test;
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.model.security.PasswordResetToken;
 import org.softuni.bookshopbg.service.*;
@@ -138,7 +137,7 @@ public class UserController {
         List<Category> categoryList = categoryService.getAllCategories();
         model.addAttribute("categoryList", categoryList);
 
-        return "bookDetail";
+        return "bookDetails";
     }
 
     @RequestMapping("/forgetPassword")
