@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -85,22 +85,19 @@ class OrderServiceImplTest {
 
         when(mockCartItemRepository.findByShoppingCart(shoppingCart)).thenReturn(cartItemList);
 
-        mockCartItemRepository.findByShoppingCart(shoppingCart);
-
+        when(mockOrderRepository.save(order)).thenReturn(order);
 
         when(mockBookRepository.save(book)).thenReturn(book);
-        mockBookRepository.save(book);
 
         when(mockCartItemRepository.save(cartItem)).thenReturn(cartItem);
-        mockCartItemRepository.save(cartItem);
 
         when(mockOrderRepository.save(order)).thenReturn(order);
-        mockOrderRepository.save(order);
 
-        when(orderServiceTest.createOrder(shoppingCart, createShippingAddress(), createBillingAddress(), createPayment(), "shippingMethod", createUser())).thenReturn(order);
 
-        assertEquals(order, orderServiceTest.createOrder(shoppingCart, createShippingAddress(), createBillingAddress(), createPayment(), "shippingMethod", createUser()));
+        orderServiceTest.createOrder(shoppingCart, createShippingAddress(), createBillingAddress(), createPayment(), "shippingMethod", createUser());
 
+        verify(mockCartItemRepository, times(1)).findByShoppingCart(shoppingCart);
+        verify(mockBookRepository, times(1)).save(book);
     }
 
     @Test

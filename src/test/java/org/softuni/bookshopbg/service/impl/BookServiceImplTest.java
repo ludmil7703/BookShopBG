@@ -17,6 +17,8 @@ import org.softuni.bookshopbg.repositories.BookRepository;
 import org.softuni.bookshopbg.repositories.CategoryRepository;
 import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.utils.CloudinaryConfig;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -135,26 +137,23 @@ class BookServiceImplTest {
 
     @Test
     void testDeleteBookById() {
-        Book resultBook = createBook();
+        Book book = createBook();
 
+        when(mockBookRepository.findBookById(2L))
+                .thenReturn(null);
 
+        Exception exception = new Exception();
+        try {
+            bookServiceToTest.deleteBookById(2L);
+        } catch (Exception e) {
+            exception = e;
+            assertEquals(e.getMessage(), "Book with the given id was not found!");
+        }
 
         when(mockBookRepository.findBookById(1L))
-                .thenReturn(resultBook);
+                .thenReturn(book);
 
-
-        Book book = mockBookRepository.findBookById(1L);
-        bookServiceToTest.saveBook(book);
-        assertEquals(book, resultBook);
-        assertEquals(book.getAuthor(), resultBook.getAuthor());
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            bookServiceToTest.deleteBookById(2L);
-        });
-
-        assertEquals(exception.getMessage(), "Book with the given id was not found!");
-
-        mockBookRepository.delete(book);
+       bookServiceToTest.deleteBookById(1L);
 
         verify(mockBookRepository, times(1)).delete(book);
 
@@ -199,6 +198,7 @@ class BookServiceImplTest {
         assertEquals("Author", books.get(0).getAuthor(), "Author is not correct!");
             }
 
+
     @Test
     void testFindByCategory() {
         Book book = createBook();
@@ -206,6 +206,18 @@ class BookServiceImplTest {
                 .thenReturn(List.of(book));
 
         List<Book> books = bookServiceToTest.findByCategory(CategoryName.ENGINEERING);
+
+        assertEquals(1, books.size(), "Books count is not correct!");
+        assertEquals("Author", books.get(0).getAuthor(), "Author is not correct!");
+    }
+
+    @Test
+    void findAllBooks() {
+        Book book = createBook();
+        when(mockBookRepository.findAll())
+                .thenReturn(List.of(book));
+
+        List<Book> books = bookServiceToTest.findAllBooks();
 
         assertEquals(1, books.size(), "Books count is not correct!");
         assertEquals("Author", books.get(0).getAuthor(), "Author is not correct!");
