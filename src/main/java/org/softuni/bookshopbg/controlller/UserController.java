@@ -492,18 +492,18 @@ public class UserController {
         UserEntity user = userService.findUserByUsername(principal.getName());
         UserShipping userShipping = userShippingService.findById(userShippingId).get();
 
-        if(user.getId() != userShipping.getUser().getId()) {
-            return "badRequestPage";
+        if (user.getId() != userShipping.getUser().getId()) {
+            return "error";
         } else {
             model.addAttribute("user", user);
+
+            List<Category> categoryList = categoryService.getAllCategories();
+            model.addAttribute("categoryList", categoryList);
 
             userShippingService.deleteById(userShippingId);
 
             model.addAttribute("listOfShippingAddresses", true);
             model.addAttribute("classActiveShipping", true);
-
-            List<Category> categoryList = categoryService.getAllCategories();
-            model.addAttribute("categoryList", categoryList);
 
             model.addAttribute("userPaymentList", user.getUserPaymentList());
             model.addAttribute("userShippingList", user.getUserShippingList());
@@ -612,7 +612,7 @@ public class UserController {
 
         /*check username already exists*/
         if (userService.findUserByUsername(user.getUsername()) != null) {
-            if(!Objects.equals(userService.findUserByUsername(user.getUsername()).getId(), currentUser.getId())) {
+            if((userService.findUserByUsername(user.getUsername()) != currentUser)) {
                 model.addAttribute("usernameExists", true);
                 return "myProfilePage";
             }
