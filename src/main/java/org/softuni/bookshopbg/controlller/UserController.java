@@ -210,7 +210,7 @@ public class UserController {
         model.addAttribute("stateList", stateList);
         model.addAttribute("classActiveEdit", true);
 
-        return "myProfile";
+        return "myProfilePage";
     }
 
     @RequestMapping("/listOfCreditCards")
@@ -230,7 +230,7 @@ public class UserController {
         model.addAttribute("classActiveBilling", true);
         model.addAttribute("listOfShippingAddresses", true);
 
-        return "myProfile";
+        return "myProfilePage";
     }
 
     @RequestMapping("/listOfShippingAddresses")
@@ -250,7 +250,7 @@ public class UserController {
         List<Category> categoryList = categoryService.getAllCategories();
         model.addAttribute("categoryList", categoryList);
 
-        return "myProfile";
+        return "myProfilePage";
     }
 
     @RequestMapping("/addNewCreditCard")
@@ -281,7 +281,7 @@ public class UserController {
         model.addAttribute("userShippingList", user.getUserShippingList());
         model.addAttribute("orderList", user.getOrderList());
 
-        return "myProfile";
+        return "myProfilePage";
     }
 
     @RequestMapping("/addNewShippingAddress")
@@ -309,7 +309,7 @@ public class UserController {
         model.addAttribute("userShippingList", user.getUserShippingList());
         model.addAttribute("orderList", user.getOrderList());
 
-        return "myProfile";
+        return "myProfilePage";
     }
 
     @RequestMapping(value="/addNewCreditCard", method= RequestMethod.POST)
@@ -329,7 +329,7 @@ public class UserController {
         model.addAttribute("listOfShippingAddresses", true);
         model.addAttribute("orderList", user.getOrderList());
 
-        return "myProfile";
+        return "myProfilePage";
     }
 
     @RequestMapping(value="/addNewShippingAddress", method=RequestMethod.POST)
@@ -348,7 +348,7 @@ public class UserController {
         model.addAttribute("listOfCreditCards", true);
         model.addAttribute("orderList", user.getOrderList());
 
-        return "myProfile";
+        return "myProfilePage";
     }
 
 
@@ -382,7 +382,7 @@ public class UserController {
             model.addAttribute("userShippingList", user.getUserShippingList());
             model.addAttribute("orderList", user.getOrderList());
 
-            return "myProfile";
+            return "myProfilePage";
         }
     }
 
@@ -415,7 +415,7 @@ public class UserController {
             model.addAttribute("userShippingList", user.getUserShippingList());
             model.addAttribute("orderList", user.getOrderList());
 
-            return "myProfile";
+            return "myProfilePage";
         }
     }
 
@@ -435,7 +435,7 @@ public class UserController {
         model.addAttribute("userShippingList", user.getUserShippingList());
         model.addAttribute("orderList", user.getOrderList());
 
-        return "myProfile";
+        return "myProfilePage";
     }
 
     @RequestMapping(value="/setDefaultShippingAddress", method=RequestMethod.POST)
@@ -454,7 +454,7 @@ public class UserController {
         model.addAttribute("userShippingList", user.getUserShippingList());
         model.addAttribute("orderList", user.getOrderList());
 
-        return "myProfile";
+        return "myProfilePage";
     }
 
     @RequestMapping("/removeCreditCard")
@@ -481,7 +481,7 @@ public class UserController {
             model.addAttribute("userShippingList", user.getUserShippingList());
             model.addAttribute("orderList", user.getOrderList());
 
-            return "myProfile";
+            return "myProfilePage";
         }
     }
 
@@ -509,7 +509,7 @@ public class UserController {
             model.addAttribute("userShippingList", user.getUserShippingList());
             model.addAttribute("orderList", user.getOrderList());
 
-            return "myProfile";
+            return "myProfilePage";
         }
     }
 
@@ -591,7 +591,7 @@ public class UserController {
 
         model.addAttribute("classActiveEdit", true);
         model.addAttribute("orderList", user.getOrderList());
-        return "myProfile";
+        return "myProfilePage";
     }
 
     @RequestMapping(value="/updateUserInfo", method=RequestMethod.POST)
@@ -606,7 +606,7 @@ public class UserController {
         if (userService.findUserByEmail(user.getEmail())!=null) {
             if(userService.findUserByEmail(user.getEmail()).getId() != currentUser.getId()) {
                 model.addAttribute("emailExists", true);
-                return "myProfile";
+                return "myProfilePage";
             }
         }
 
@@ -614,7 +614,7 @@ public class UserController {
         if (userService.findUserByUsername(user.getUsername()) != null) {
             if(!Objects.equals(userService.findUserByUsername(user.getUsername()).getId(), currentUser.getId())) {
                 model.addAttribute("usernameExists", true);
-                return "myProfile";
+                return "myProfilePage";
             }
         }
 
@@ -627,7 +627,7 @@ public class UserController {
             } else {
                 model.addAttribute("incorrectPassword", true);
 
-                return "myProfile";
+                return "myProfilePage";
             }
         }
 
@@ -653,7 +653,7 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         model.addAttribute("orderList", user.getOrderList());
 
-        return "myProfile";
+        return "myProfilePage";
     }
 
     @RequestMapping("/orderDetail")
@@ -691,7 +691,7 @@ public class UserController {
             model.addAttribute("listOfCreditCards", true);
             model.addAttribute("displayOrderDetail", true);
 
-            return "myProfile";
+            return "myProfilePage";
         }
     }
 }

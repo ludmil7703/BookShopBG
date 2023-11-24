@@ -155,9 +155,94 @@ class UserControllerTest {
 
 
     @Test
-    void myProfileTest() {
+    void myProfileTest() throws Exception {
+        when(mockPrincipal.getName()).thenReturn("test");
+        doReturn(mockUser).when(mockUserService).findUserByUsername("test");
 
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/myProfile")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(view().name("myProfilePage"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("userPaymentList"))
+                .andExpect(model().attributeExists("userShippingList"))
+                .andExpect(model().attributeExists("orderList"))
+                .andExpect(model().attributeExists("listOfCreditCards"))
+                .andExpect(model().attributeExists("listOfShippingAddresses"))
+                .andExpect(model().attributeExists("classActiveEdit"))
+                .andExpect(model().attributeExists("categoryList"))
+                .andExpect(model().attributeExists("userShipping"));
     }
+
+    @Test
+    void listOfCreditCards() throws Exception {
+        when(mockPrincipal.getName()).thenReturn("test");
+        doReturn(mockUser).when(mockUserService).findUserByUsername("test");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/listOfCreditCards")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(view().name("myProfilePage"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("userPaymentList"))
+                .andExpect(model().attributeExists("userShippingList"))
+                .andExpect(model().attributeExists("orderList"))
+                .andExpect(model().attributeExists("listOfCreditCards"))
+                .andExpect(model().attributeExists("listOfShippingAddresses"))
+                .andExpect(model().attributeExists("classActiveBilling"))
+                .andExpect(model().attributeExists("categoryList"));
+    }
+
+    @Test
+    void listOfShippingAddresses() throws Exception {
+        when(mockPrincipal.getName()).thenReturn("test");
+        doReturn(mockUser).when(mockUserService).findUserByUsername("test");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/listOfShippingAddresses")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(view().name("myProfilePage"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("userPaymentList"))
+                .andExpect(model().attributeExists("userShippingList"))
+                .andExpect(model().attributeExists("orderList"))
+                .andExpect(model().attributeExists("listOfCreditCards"))
+                .andExpect(model().attributeExists("listOfShippingAddresses"))
+                .andExpect(model().attributeExists("classActiveShipping"))
+                .andExpect(model().attributeExists("categoryList"));
+    }
+
+
+    @Test
+    void addNewCreditCard() throws Exception {
+        when(mockPrincipal.getName()).thenReturn("test");
+        doReturn(mockUser).when(mockUserService).findUserByUsername("test");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/addNewCreditCard")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(view().name("myProfilePage"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("addNewCreditCard"))
+                .andExpect(model().attributeExists("classActiveBilling"))
+                .andExpect(model().attributeExists("listOfShippingAddresses"))
+                .andExpect(model().attributeExists("categoryList"))
+                .andExpect(model().attributeExists("userBilling"))
+                .andExpect(model().attributeExists("userPayment"))
+                .andExpect(model().attributeExists("stateList"))
+                .andExpect(model().attributeExists("userPaymentList"))
+                .andExpect(model().attributeExists("userShippingList"))
+                .andExpect(model().attributeExists("orderList"));
+    }
+
 
     @Test
     void testRegister() throws Exception {
@@ -182,19 +267,6 @@ class UserControllerTest {
     @Test
     void addAttribute() {
 
-    }
-
-
-    @Test
-    void listOfCreditCards() {
-    }
-
-    @Test
-    void listOfShippingAddresses() {
-    }
-
-    @Test
-    void addNewCreditCard() {
     }
 
     @Test
