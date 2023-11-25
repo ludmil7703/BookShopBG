@@ -15,6 +15,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -27,8 +28,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -97,20 +97,7 @@ class CheckoutControllerTest {
                 mockUserShippingService,
                 mockUserPaymentService,
                 mockOrderService);
-
-        Mockito.reset(mockCategoryService,
-                mockMailSender,
-                mockMailConstructor,
-                mockUserService,
-                mockCartItemService,
-                mockShoppingCartService,
-                mockShippingAddressService,
-                mockBillingAddressService,
-                mockPaymentService,
-                mockUserShippingService,
-                mockUserPaymentService,
-                mockOrderService);
-
+        mockMvc = MockMvcBuilders.standaloneSetup(checkoutControllerUnderTest).build();
     }
 
     @AfterEach
@@ -121,44 +108,61 @@ class CheckoutControllerTest {
     @Test
     @WithMockUser(username = "test", password = "1234", roles = {"USER", "ADMIN"})
     void checkoutWrongCartId() throws Exception {
-        mockUser = getTestUser();
+        UserEntity mockUser = new UserEntity();
+        mockUser.setId(1L);
+        mockUser.setUsername("test");
+        mockUser.setPassword("1234");
+        mockUser.setEmail("test");
+        mockUserService.save(mockUser);
+        when(mockPrincipal.getName()).thenReturn("test");
+        when(mockUserService.findUserByUsername("test")).thenReturn(mockUser);
 
         Category category = new Category();
         category.setId(1L);
+        when(mockCategoryService.getAllCategories()).thenReturn(List.of(category));
 
-        Book book = new Book();
-
-        book.setId(1L);
-        book.setCategory(category);
-
-        CartItem cartItem = new CartItem();
-        cartItem.setId(1L);
-        cartItem.setBook(book);
+        when(mockCartItemService.findByShoppingCart(any())).thenReturn(new ArrayList<>());
 
 
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setId(1L);
-        shoppingCart.setCartItemList(new ArrayList<>());
-        shoppingCart.getCartItemList().add(cartItem);
-        shoppingCart.setUser(mockUser);
-
-
-        when(mockPrincipal.getName()).thenReturn(mockUser.getUsername());
-
-        when(mockUserService.findUserByUsername(mockPrincipal.getName())).thenReturn(mockUser);
-
-        when(mockPrincipal.getName()).thenReturn(mockUser.getUsername());
-
-when(mockUserService.findUserByUsername(mockPrincipal.getName())).thenReturn(mockUser);
 
 RequestBuilder requestBuilder = get("/checkout")
                 .param("id", "1")
-                .param("cartId", "2")
+                .param("missingRequiredField", "false")
                 .principal(mockPrincipal);
 
         mockMvc.perform(requestBuilder)
-                .andExpect(status().is3xxRedirection())
+                .andExpect(status().isOk())
                 .andExpect(view().name("error"));
+    }
+
+    @Test
+    void  checkoutEmptyCartTest() throws Exception {
+        UserEntity mockUser = new UserEntity();
+        mockUser.setId(1L);
+        mockUser.setUsername("test");
+        mockUser.setPassword("1234");
+        mockUser.setEmail("test");
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setId(1L);
+
+        shoppingCart.setUser(mockUser);
+        mockUser.setShoppingCart(shoppingCart);
+
+        when(mockPrincipal.getName()).thenReturn("test");
+        when(mockUserService.findUserByUsername("test")).thenReturn(mockUser);
+
+        when(mockCartItemService.findByShoppingCart(any())).thenReturn(new ArrayList<>());
+
+        RequestBuilder requestBuilder = get("/checkout")
+                .param("id", "1")
+                .param("missingRequiredField", "false")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("emptyCart"))
+                .andExpect(view().name("forward:/shoppingCart/cart"));
     }
 
     @Test

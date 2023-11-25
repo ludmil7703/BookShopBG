@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -134,25 +135,23 @@ class HomeControllerTest {
 
     @Test
     void testBookDetailsWithLoginUser() throws Exception {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        userEntity.setUsername("test");
+        userEntity.setEmail("test");
+        userEntity.setPassword("test");
+        when(mockPrincipal.getName()).thenReturn("test");
+        doReturn(userEntity).when(mockUserService).findUserByUsername(userEntity.getUsername());
 
-
-        when(mockBookService.findBookById(1L)).thenReturn(mockBook);
-
-        when(mockBookService.mapBookToBookBindingModel(mockBook)).thenReturn(mockBookDTO);
-
-        when(mockCategoryService.getAllCategories()).thenReturn(List.of(mockCategory));
-
-        when(mockUserService.findUserByUsername("test123")).thenReturn(mockUser);
-
-        when(mockUserService.findUserByUsername("test123")).thenReturn(mockUser);
-
-        Principal principal = mockPrincipal;
-        when(principal.getName()).thenReturn("test123");
+        BookBindingModel bookBindingModel = new BookBindingModel();
+        Book book = new Book();
+        when(mockBookService.findBookById(1L)).thenReturn(book);
+        doReturn(bookBindingModel).when(mockBookService).mapBookToBookBindingModel(book);
 
         mockMvc.perform(get("/bookDetail/{id}", 1L)
-                        .principal(principal))
+                        .principal(mockPrincipal))
                 .andExpect(status().isOk())
-                .andExpect(view().name("bookDetail"))
+                .andExpect(view().name("bookDetails"))
                 .andExpect(model().attributeExists("book"))
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attributeExists("qty"))

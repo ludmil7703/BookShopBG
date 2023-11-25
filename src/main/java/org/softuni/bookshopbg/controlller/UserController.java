@@ -173,11 +173,7 @@ public class UserController {
 
         SimpleMailMessage newEmail = mailConstructor.constructResetTokenEmail(appUrl, request.getLocale(), token, user, password);
 
-        new jakarta.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("ludmil7703", "Lty#88290");
-            }
-        };
+
         mailSender.send(newEmail);
 
         ;
@@ -612,7 +608,7 @@ public class UserController {
 
         /*check username already exists*/
         if (userService.findUserByUsername(user.getUsername()) != null) {
-            if((userService.findUserByUsername(user.getUsername()) != currentUser)) {
+            if(!Objects.equals(userService.findUserByUsername(user.getUsername()).getId(), user.getId())) {
                 model.addAttribute("usernameExists", true);
                 return "myProfilePage";
             }

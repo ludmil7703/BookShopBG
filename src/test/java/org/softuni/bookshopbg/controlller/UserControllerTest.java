@@ -1,28 +1,35 @@
 package org.softuni.bookshopbg.controlller;
 
 
+import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.util.ServerSetup;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.model.enums.CategoryName;
+import org.softuni.bookshopbg.model.security.PasswordResetToken;
 import org.softuni.bookshopbg.service.*;
 import org.softuni.bookshopbg.utils.MailConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.ui.Model;
 import java.security.Principal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,13 +43,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserControllerTest {
 
-    @Autowired
+    @Mock
     private MockMvc mockMvc;
 
-    @Autowired
-    private JavaMailSender mailSender;
-    @Autowired
-    private MailConstructor mailConstructor;
+    private GreenMail greenMail;
 
     @Mock
     private Principal mockPrincipal;
@@ -71,6 +75,18 @@ class UserControllerTest {
     @Mock
     private UserEntity mockUser;
 
+    @Mock
+    private PasswordEncoder mockPasswordEncoder;
+
+    @Mock
+    private PasswordResetToken mockPasswordResetToken;
+    @Mock
+    private MailConstructor mockMailConstructor;
+
+
+
+
+
 
     private UserController userControllerTest;
 
@@ -85,11 +101,18 @@ class UserControllerTest {
                 mockOrderService,
                 mockCategoryService);
         mockMvc = MockMvcBuilders.standaloneSetup(userControllerTest).build();
+        this.mockPasswordEncoder = mock(BCryptPasswordEncoder.class);
+
+        greenMail = new GreenMail(new ServerSetup(3333,  "localhost", "smtp"));
+        greenMail.start();
+        greenMail.setUser("test@example.com", "topsecret");
+
     }
 
  @AfterEach
     void tearDown() {
         userControllerTest = null;
+        greenMail.stop();
     }
 
     @Test
@@ -586,31 +609,199 @@ class UserControllerTest {
     }
 
     @Test
-    void newUser() {
-
-    }
-
-
-    @Test
-    void updateUserInfo() throws Exception {
+    void newUserWithNullTokenTest() throws Exception {
         UserEntity userEntity = new UserEntity();
         userEntity.setId(1L);
+        userEntity.setUsername("test");
         userEntity.setEmail("test");
+        userEntity.setPassword("test");
         when(mockPrincipal.getName()).thenReturn("test");
         doReturn(userEntity).when(mockUserService).findUserByUsername(userEntity.getUsername());
 
-        doReturn(userEntity).when(mockUserService).findUserByEmail(any());
+        when(mockUserService.getPasswordResetToken(any())).thenReturn(null);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/newUser")
+                .param("username", "test")
+                .param("email", "test")
+                .param("password", "test")
+                .param("token", "test")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/error"));
+
+    }
+
+    @Test
+    void newUserGetCorrectTest() throws Exception {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        userEntity.setUsername("test");
+        userEntity.setEmail("test");
+        userEntity.setPassword("test");
+        when(mockPrincipal.getName()).thenReturn("test");
+
+        doReturn(userEntity).when(mockUserService).findUserByUsername(userEntity.getUsername());
+
+        when(mockUserService.getPasswordResetToken(any())).thenReturn(mockPasswordResetToken);
+
+        when(mockPasswordResetToken.getUser()).thenReturn(userEntity);
+
         UserDetails userDetails = mock(UserDetails.class);
+
         when(mockUserDetailsService.loadUserByUsername(userEntity.getUsername())).thenReturn(userDetails);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/updateUserInfo")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/newUser")
+                .param("username", "test")
+                .param("email", "test")
+                .param("password", "test")
+                .param("token", "test")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("classActiveEdit"))
+                .andExpect(model().attributeExists("orderList"))
+                .andExpect(model().attributeExists("categoryList"))
+                .andExpect(view().name("myProfilePage"));
+
+    }
+
+    @Test
+    void newUserPostWithExistingUsernameTest() throws Exception {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        userEntity.setUsername("test");
+        userEntity.setEmail("test");
+        userEntity.setPassword("test");
+        when(mockPrincipal.getName()).thenReturn("test");
+
+        doReturn(userEntity).when(mockUserService).findUserByUsername(userEntity.getUsername());
+
+
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/newUser")
+                .param("username", "test")
                 .param("email", "test")
                 .principal(mockPrincipal);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("classActiveNewAccount"))
+                .andExpect(model().attributeExists("email"))
+                .andExpect(model().attributeExists("username"))
+                .andExpect(model().attributeExists("usernameExists"))
+                .andExpect(view().name("myAccount"));
+
+    }
+
+    @Test
+    void newUserPostWithExistingEmailTest() throws Exception {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        userEntity.setUsername("test");
+        userEntity.setEmail("test");
+        userEntity.setPassword("test");
+        when(mockPrincipal.getName()).thenReturn("test");
+        doReturn(userEntity).when(mockUserService).findUserByUsername(userEntity.getUsername());
+
+        when(mockUserService.findUserByEmail(any())).thenReturn(userEntity);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/newUser")
+                .param("username", "test1")
+                .param("email", "test")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("classActiveNewAccount"))
+                .andExpect(model().attributeExists("email"))
+                .andExpect(model().attributeExists("username"))
+                .andExpect(model().attributeExists("emailExists"))
+                .andExpect(view().name("myAccount"));
+
+    }
+
+//    @Test
+//    void newUserWithCorrectTest() throws Exception {
+//        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/newUser")
+//                .param("username", "test1")
+//                .param("email", "test2");
+//
+//        mockMvc.perform(requestBuilder)
+//                .andExpect(status().isOk())
+//                .andExpect(model().attributeExists("classActiveNewAccount"))
+//                .andExpect(model().attributeExists("email"))
+//                .andExpect(model().attributeExists("username"))
+//                .andExpect(model().attributeExists("emailExists"))
+//                .andExpect(view().name("myAccount"));
+//
+//        greenMail.waitForIncomingEmail(1);
+//        MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+//        assertEquals(1, receivedMessages.length);
+//        MimeMessage registrationMessage = receivedMessages[0];
+//      assertTrue(registrationMessage.getContent().toString().contains("Pesho"));
+//      assertEquals(1, registrationMessage.getAllRecipients().length);
+//      assertEquals("pesho@softuni.bg", registrationMessage.getAllRecipients()[0].toString());
+//
+//    }
+
+    @Test
+    void updateUserInfoTest() throws Exception {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        userEntity.setUsername("test");
+        userEntity.setEmail("test");
+        userEntity.setPassword("test");
+        when(mockPrincipal.getName()).thenReturn("test");
+        doReturn(userEntity).when(mockUserService).findUserByUsername(userEntity.getUsername());
+
+        doReturn(null).when(mockUserService).findUserByEmail(any());
+        UserDetails userDetails = mock(UserDetails.class);
+
+        when(mockUserDetailsService.loadUserByUsername(userEntity.getUsername())).thenReturn(userDetails);
+
+        //password are matching
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/updateUserInfo")
+                .param("username", "test")
+                .param("password", "test")
+                .param("id", "1")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("categoryList"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("updateSuccess"))
+                .andExpect(model().attributeExists("classActiveEdit"))
+                .andExpect(model().attributeExists("orderList"))
                 .andExpect(view().name("myProfilePage"));
     }
+
+
+//    @Test
+//    void updateUserInfo() throws Exception {
+//        UserEntity userEntity = new UserEntity();
+//        userEntity.setId(1L);
+//        userEntity.setEmail("test");
+//        when(mockPrincipal.getName()).thenReturn("test");
+//        doReturn(userEntity).when(mockUserService).findUserByUsername(userEntity.getUsername());
+//
+//        doReturn(userEntity).when(mockUserService).findUserByEmail(any());
+//        UserDetails userDetails = mock(UserDetails.class);
+//        when(mockUserDetailsService.loadUserByUsername(userEntity.getUsername())).thenReturn(userDetails);
+//
+//        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/updateUserInfo")
+//                .param("email", "test")
+//                .principal(mockPrincipal);
+//
+//        mockMvc.perform(requestBuilder)
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("myProfilePage"));
+//    }
 
     @Test
     void testUpdateUserInfoEmailExist() throws Exception {
@@ -649,10 +840,12 @@ class UserControllerTest {
 
         doReturn(null).when(mockUserService).findUserByEmail(any());
         UserDetails userDetails = mock(UserDetails.class);
+        mockUserDetailsService.loadUserByUsername(userEntity.getUsername());
         when(mockUserDetailsService.loadUserByUsername(userEntity.getUsername())).thenReturn(userDetails);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/updateUserInfo")
                 .param("username", "test")
+                .param("password", "test")
                 .param("id", "2")
                 .principal(mockPrincipal);
 
@@ -660,6 +853,37 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("myProfilePage"))
                 .andExpect(model().attributeExists("usernameExists"));
+    }
+
+    @Test
+    void updateUserInfoIncorrectPassword() throws Exception {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        userEntity.setUsername("test");
+        userEntity.setEmail("test");
+        userEntity.setPassword("test");
+        when(mockPrincipal.getName()).thenReturn("test");
+        doReturn(userEntity).when(mockUserService).findUserByUsername(userEntity.getUsername());
+
+        doReturn(null).when(mockUserService).findUserByEmail(any());
+        UserDetails userDetails = mock(UserDetails.class);
+
+        when(mockUserDetailsService.loadUserByUsername(userEntity.getUsername())).thenReturn(userDetails);
+
+        //password are matching
+        when(mockPasswordEncoder.matches(any(), any())).thenReturn(true);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/updateUserInfo")
+                .param("username", "test")
+                .param("newPassword", "test")
+                .param("password", "test")
+                .param("id", "1")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(view().name("myProfilePage"))
+                .andExpect(model().attributeExists("incorrectPassword"));
     }
 
 
