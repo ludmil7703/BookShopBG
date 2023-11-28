@@ -88,7 +88,7 @@ class SearchControllerTest {
         RequestBuilder request = get("/search");
 
         mockMvc.perform(request)
-                .andExpect(view().name("bookList"))
+                .andExpect(view().name("bookSearch"))
                 .andExpect(model().attributeExists("categoryList"))
                 .andExpect(model().attributeExists("bookList"))
                 .andExpect(status().isOk());
@@ -132,7 +132,7 @@ class SearchControllerTest {
                 .param("keyword", "test");
 
         mockMvc.perform(request)
-                .andExpect(view().name("bookList"))
+                .andExpect(view().name("bookSearch"))
                 .andExpect(model().attributeExists("bookList"))
                 .andExpect(status().isOk());
     }
@@ -146,7 +146,7 @@ class SearchControllerTest {
                 .param("keyword", "test");
 
         mockMvc.perform(request)
-                .andExpect(view().name("bookList"))
+                .andExpect(view().name("bookSearch"))
                 .andExpect(model().attributeExists("emptyList"))
                 .andExpect(model().attributeExists("bookList"))
                 .andExpect(status().isOk());

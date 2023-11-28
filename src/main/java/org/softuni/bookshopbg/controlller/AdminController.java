@@ -7,7 +7,6 @@ import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.service.CategoryService;
-import org.softuni.bookshopbg.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.*;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/books")
@@ -95,7 +93,7 @@ public class AdminController {
 	public String bookList(Model model) throws IOException {
 		List<BookBindingModel> books = bookService.findAll();
 		model.addAttribute("bookShelf", books);
-		return "bookShelf";
+		return "bookShelfAdmin";
 
 	}
 

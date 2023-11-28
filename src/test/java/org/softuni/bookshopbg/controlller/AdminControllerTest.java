@@ -197,7 +197,7 @@ class AdminControllerTest {
         RequestBuilder request = get("/books/bookList");
                 mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(view().name("bookShelf"))
+                .andExpect(view().name("bookShelfAdmin"))
                 .andExpect(model().attributeExists("bookShelf"));
     }
 

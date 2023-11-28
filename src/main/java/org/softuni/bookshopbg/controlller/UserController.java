@@ -1,7 +1,6 @@
 package org.softuni.bookshopbg.controlller;
 
 
-import jakarta.mail.PasswordAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.websocket.server.PathParam;
@@ -509,7 +508,7 @@ public class UserController {
         }
     }
 
-    @PostMapping(value="/newUser")
+    @RequestMapping(value="/newUser", method=RequestMethod.POST)
     public String newUserPost(
             HttpServletRequest request,
             @ModelAttribute("email") String userEmail,

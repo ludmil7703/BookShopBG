@@ -41,7 +41,7 @@ public class SearchController {
 		model.addAttribute("categoryList", categoryList);
 		List<Book> bookList = new ArrayList<>();
 		model.addAttribute("bookList", bookList);
-		return "bookList";
+		return "bookSearch";
 	}
 	@RequestMapping("/searchByCategory")
 	public String searchByCategory(
@@ -77,12 +77,12 @@ public class SearchController {
 		if (bookList.isEmpty()) {
 			model.addAttribute("emptyList", true);
 			model.addAttribute("bookList", bookList);
-			return "bookList";
+			return "bookSearch";
 		}
 
 		model.addAttribute("bookList", bookList);
 
-		return "bookList";
+		return "bookSearch";
 	}
 
 	private void searchBook(Model model, Principal principal) {

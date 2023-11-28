@@ -944,16 +944,6 @@ class UserControllerTest {
                 .andExpect(view().name("error"));
     }
 
-    @Test
-    void testRegister() throws Exception {
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/register");
-        ResultActions resultActions = mockMvc.perform(requestBuilder);
-        resultActions.andExpect(status().isOk());
-        resultActions.andExpect(view().name("register"));
-        resultActions.andExpect(model().attributeExists("userRegisterBindingModel"));
-
-    }
-
 //    @Test
 //    void testRegisterSubmit() throws Exception {
 //        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/register");

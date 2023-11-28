@@ -7,15 +7,21 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: 'false'
+  sql:
+    init:
+      mode: never
   mvc:
     hiddenmethod:
       filter:
         enabled: 'true'
   datasource:
      driverClassName: com.mysql.cj.jdbc.Driver
-     url: jdbc:mysql://localhost:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
-     username: 'root'
-     password: 'Lty#88290'
+     url: jdbc:mysql://bookshop.mysql.database.azure.com:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+     username: '${MYSQL_USERNAME: book}'
+     password: '${MYSQL_PASSWORD: Ludmil#77}'
+#     url: jdbc:mysql://localhost:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+#     username: 'root'
+#     password: '123456'
 
   thymeleaf: # Thymeleaf properties
     cache: false
@@ -57,7 +63,7 @@ logging:
       nodeValue: WARN
     blog: WARN
 server:
-  port: 8090
+  port: 8080
   error:
     whitelabel:
       enabled: false

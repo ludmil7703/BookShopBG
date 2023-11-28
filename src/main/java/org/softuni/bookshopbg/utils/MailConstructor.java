@@ -15,8 +15,7 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 
 @Component
@@ -27,6 +26,19 @@ public class MailConstructor {
 
     @Autowired
     private Environment env;
+
+//    @Autowired
+//    public void EmailService(TemplateEngine templateEngine) {
+//
+//        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+//        templateResolver.setPrefix("mail");
+//        templateResolver.setSuffix(".html");
+//        templateResolver.setTemplateMode("HTML5");
+//        templateResolver.setCacheable(false);
+//        templateEngine.setTemplateResolver(templateResolver);
+//
+//        this.templateEngine = templateEngine;
+//    }
 
     public SimpleMailMessage constructResetTokenEmail(
             String contextPath, Locale locale, String token, UserEntity user, String password
@@ -44,24 +56,24 @@ public class MailConstructor {
     }
 
     public MimeMessagePreparator constructOrderConfirmationEmail (UserEntity user, Order order, Locale locale) {
-        Context context = new Context();
-        context.setVariable("order", order);
-        context.setVariable("user", user);
-        context.setVariable("cartItemList", order.getCartItemList());
-        String text = templateEngine.process("orderConfirmationEmailTemplate", context);
+            Context context = new Context();
+            context.setVariable("order", order);
+            context.setVariable("user", user);
+            context.setVariable("cartItemList", order.getCartItemList());
+            String text = templateEngine.process("orderConfirmationEmailTemplate", context);
 
-        MimeMessagePreparator messagePreparator = new MimeMessagePreparator() {
-            @Override
-            public void prepare(MimeMessage mimeMessage) throws Exception {
-                MimeMessageHelper email = new MimeMessageHelper(mimeMessage);
-                email.setTo(user.getEmail());
-                email.setSubject("Order Confirmation - "+order.getId());
-                email.setText(text, true);
-                email.setFrom(new InternetAddress("foysal.ecommerce@gmail.com"));
-            }
-        };
+            MimeMessagePreparator preparator = new MimeMessagePreparator() {
+                @Override
+                public void prepare(MimeMessage mimeMessage) throws Exception {
+                    MimeMessageHelper email = new MimeMessageHelper(mimeMessage);
+                    email.setTo(user.getEmail());
+                    email.setSubject("Order Confirmation - "+order.getId());
+                    email.setText(text, true);
+                    email.setFrom(new InternetAddress("bookshop2023@gmail.com"));
+                }
+            };
 
-        return messagePreparator;
+            return preparator;
     }
 
 

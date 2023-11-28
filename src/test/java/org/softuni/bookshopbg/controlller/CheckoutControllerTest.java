@@ -165,46 +165,151 @@ RequestBuilder requestBuilder = get("/checkout")
                 .andExpect(view().name("forward:/shoppingCart/cart"));
     }
 
+
+
     @Test
-    void checkoutPost() throws Exception {
+    void checkoutWithINotIBookInStock() throws Exception {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        when(mockPrincipal.getName()).thenReturn("test");
+        doReturn(userEntity).when(mockUserService).findUserByUsername("test");
+
+
         ShoppingCart mockSh = new ShoppingCart();
         mockSh.setId(1L);
         mockSh.setGrandTotal(BigDecimal.valueOf(1.0));
 
         CartItem mockCartItem = new CartItem();
         mockCartItem.setId(1L);
-        mockCartItem.setQty(1);
+        mockCartItem.setQty(3);
         mockCartItem.setSubtotal(BigDecimal.valueOf(1.0));
-        mockCartItem.setBook(new Book());
+        Book mockBook = new Book();
+        mockBook.setId(1L);
+        mockBook.setInStockNumber(1);
+        mockCartItem.setBook(mockBook);
         mockCartItem.setShoppingCart(mockSh);
 
         mockSh.setCartItemList(List.of(mockCartItem));
-
-        mockUser = getTestUser();
-        mockUser.setShoppingCart(mockSh);
-
-        when(mockPrincipal.getName()).thenReturn(mockUser.getUsername());
-        when( mockUserService.findUserByUsername(mockPrincipal.getName())).thenReturn(mockUser);
-        when(mockUserService.findById(mockUser.getId())).thenReturn(mockUser);
-        when(mockUser.getShoppingCart()).thenReturn(mockSh);
-        when(mockUserService.findById(mockUser.getId())).thenReturn(mockUser);
+        userEntity.setShoppingCart(mockSh);
 
 
-        mockShippingAddress.setId(1L);
+        when(mockCartItemService.findByShoppingCart(userEntity.getShoppingCart())).thenReturn(List.of(mockCartItem));
 
-        when(mockShippingAddressService.setByUserShipping(any(), any())).thenReturn(mockShippingAddress);
-
-        when(mockCartItemService.findByShoppingCart(any())).thenReturn(new ArrayList<>());
-
-        RequestBuilder requestBuilder = post("/checkout")
+        RequestBuilder requestBuilder = get("/checkout")
                 .param("id", "1")
                 .param("cartId", "1")
                 .principal(mockPrincipal);
 
         mockMvc.perform(requestBuilder)
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/checkout?id=1&cartId=1"));
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("notEnoughStock"))
+                .andExpect(view().name("forward:/shoppingCart/cart"));
 
+    }
+    @Test
+    void checkoutWithIBookInStockTest() throws Exception {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        when(mockPrincipal.getName()).thenReturn("test");
+        doReturn(userEntity).when(mockUserService).findUserByUsername("test");
+
+        ShoppingCart mockSh = new ShoppingCart();
+        mockSh.setId(1L);
+        mockSh.setGrandTotal(BigDecimal.valueOf(1.0));
+
+        CartItem mockCartItem = new CartItem();
+        mockCartItem.setId(1L);
+        mockCartItem.setQty(3);
+        mockCartItem.setSubtotal(BigDecimal.valueOf(1.0));
+        Book mockBook = new Book();
+        mockBook.setId(1L);
+        mockBook.setInStockNumber(22);
+        mockCartItem.setBook(mockBook);
+        mockCartItem.setShoppingCart(mockSh);
+
+        mockSh.setCartItemList(List.of(mockCartItem));
+        userEntity.setShoppingCart(mockSh);
+
+        when(mockCartItemService.findByShoppingCart(userEntity.getShoppingCart())).thenReturn(List.of(mockCartItem));
+
+        RequestBuilder requestBuilder = get("/checkout")
+                .param("id", "1")
+                .param("cartId", "1")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("categoryList"))
+                .andExpect(model().attributeExists("userShippingList"))
+                .andExpect(model().attributeExists("userPaymentList"))
+                .andExpect(model().attributeExists("emptyShippingList"))
+                .andExpect(model().attributeExists("emptyPaymentList"))
+                .andExpect(model().attributeExists("shippingAddress"))
+                .andExpect(model().attributeExists("billingAddress"))
+                .andExpect(model().attributeExists("payment"))
+                .andExpect(model().attributeExists("cartItemList"))
+                .andExpect(model().attributeExists("shoppingCart"))
+                .andExpect(model().attributeExists("stateList"))
+                .andExpect(model().attributeExists("classActiveShipping"))
+                .andExpect(view().name("checkoutPage"));
+    }
+
+    @Test
+    void checkoutWithIBookInStockAndUserShippingAndUserPaymentTest() throws Exception {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        when(mockPrincipal.getName()).thenReturn("test");
+        doReturn(userEntity).when(mockUserService).findUserByUsername("test");
+
+        ShoppingCart mockSh = new ShoppingCart();
+        mockSh.setId(1L);
+        mockSh.setGrandTotal(BigDecimal.valueOf(1.0));
+
+        CartItem mockCartItem = new CartItem();
+        mockCartItem.setId(1L);
+        mockCartItem.setQty(3);
+        mockCartItem.setSubtotal(BigDecimal.valueOf(1.0));
+        Book mockBook = new Book();
+        mockBook.setId(1L);
+        mockBook.setInStockNumber(22);
+        mockCartItem.setBook(mockBook);
+        mockCartItem.setShoppingCart(mockSh);
+
+        UserPayment mockUserPayment = getTestUserPayment();
+        mockUserPayment.setUser(userEntity);
+        userEntity.setUserPaymentList(List.of(mockUserPayment));
+
+        UserShipping mockUserShipping = getTestUserShipping();
+        mockUserShipping.setUser(userEntity);
+        userEntity.setUserShippingList(List.of(mockUserShipping));
+
+
+
+        mockSh.setCartItemList(List.of(mockCartItem));
+        userEntity.setShoppingCart(mockSh);
+
+        when(mockCartItemService.findByShoppingCart(userEntity.getShoppingCart())).thenReturn(List.of(mockCartItem));
+
+        RequestBuilder requestBuilder = get("/checkout")
+                .param("id", "1")
+                .param("cartId", "1")
+                .principal(mockPrincipal);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("categoryList"))
+                .andExpect(model().attributeExists("userShippingList"))
+                .andExpect(model().attributeExists("userPaymentList"))
+                .andExpect(model().attributeExists("emptyShippingList"))
+                .andExpect(model().attributeExists("emptyPaymentList"))
+                .andExpect(model().attributeExists("shippingAddress"))
+                .andExpect(model().attributeExists("billingAddress"))
+                .andExpect(model().attributeExists("payment"))
+                .andExpect(model().attributeExists("cartItemList"))
+                .andExpect(model().attributeExists("shoppingCart"))
+                .andExpect(model().attributeExists("stateList"))
+                .andExpect(model().attributeExists("classActiveShipping"))
+                .andExpect(view().name("checkoutPage"));
     }
 
     @Test
@@ -237,6 +342,59 @@ RequestBuilder requestBuilder = get("/checkout")
         mockUser.setShoppingCart(shoppingCart);
 
         return mockUser;
+    }
+
+    private UserShipping getTestUserShipping() {
+        UserShipping userShipping = new UserShipping();
+        userShipping.setId(1L);
+        userShipping.setUserShippingDefault(true);
+        return userShipping;
+    }
+
+    private UserPayment getTestUserPayment() {
+        UserPayment userPayment = new UserPayment();
+        userPayment.setId(1L);
+        userPayment.setDefaultPayment(true);
+        return userPayment;
+    }
+
+    private ShippingAddress getTestShippingAddress() {
+        ShippingAddress shippingAddress = new ShippingAddress();
+        shippingAddress.setId(1L);
+        shippingAddress.setShippingAddressName("Test");
+        shippingAddress.setShippingAddressStreet1("Test");
+        shippingAddress.setShippingAddressStreet2("Test");
+        shippingAddress.setShippingAddressCity("Test");
+        shippingAddress.setShippingAddressState("Test");
+        shippingAddress.setShippingAddressCountry("Test");
+        shippingAddress.setShippingAddressZipcode("Test");
+        return shippingAddress;
+    }
+
+    private BillingAddress getTestBillingAddress() {
+        BillingAddress billingAddress = new BillingAddress();
+        billingAddress.setId(1L);
+        billingAddress.setBillingAddressName("Test");
+        billingAddress.setBillingAddressStreet1("Test");
+        billingAddress.setBillingAddressStreet2("Test");
+        billingAddress.setBillingAddressCity("Test");
+        billingAddress.setBillingAddressState("Test");
+        billingAddress.setBillingAddressCountry("Test");
+        billingAddress.setBillingAddressZipcode("Test");
+        return billingAddress;
+    }
+
+    private  UserBilling getTestUserBilling() {
+        UserBilling userBilling = new UserBilling();
+        userBilling.setId(1L);
+        userBilling.setUserBillingName("Test");
+        userBilling.setUserBillingStreet1("Test");
+        userBilling.setUserBillingStreet2("Test");
+        userBilling.setUserBillingCity("Test");
+        userBilling.setUserBillingState("Test");
+        userBilling.setUserBillingCountry("Test");
+        userBilling.setUserBillingZipcode("Test");
+        return userBilling;
     }
 }
 

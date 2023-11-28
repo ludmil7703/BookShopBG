@@ -127,6 +127,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity findUserByUsername(String username) {
+        if (this.userRepository.findByUsername(username).isEmpty()){
+            return null;
+        }
         return this.userRepository.findByUsername(username).get();
     }
     @Override

@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.service.*;
@@ -107,7 +106,6 @@ public class CheckoutController {
 				return "forward:/shoppingCart/cart";
 			}
 		}
-
 		List<UserShipping> userShippingList = user.getUserShippingList();
 		List<UserPayment> userPaymentList = user.getUserPaymentList();
 
@@ -119,13 +117,11 @@ public class CheckoutController {
 		} else {
 			model.addAttribute("emptyPaymentList", false);
 		}
-
 		if (userShippingList.size() == 0) {
 			model.addAttribute("emptyShippingList", true);
 		} else {
 			model.addAttribute("emptyShippingList", false);
 		}
-
 		ShoppingCart shoppingCart = user.getShoppingCart();
 
 		for(UserShipping userShipping : userShippingList) {
@@ -156,11 +152,8 @@ public class CheckoutController {
 		if(missingRequiredField) {
 			model.addAttribute("missingRequiredField", true);
 		}
-
-		return "checkout";
-
+		return "checkoutPage";
 	}
-
 	@RequestMapping(value = "/checkout", method = RequestMethod.POST)
 	public String checkoutPost(@ModelAttribute("shippingAddress") ShippingAddress shippingAddress,
 							   @ModelAttribute("billingAddress") BillingAddress billingAddress, @ModelAttribute("payment") Payment payment,
@@ -265,7 +258,7 @@ public class CheckoutController {
 			model.addAttribute("emptyShippingList", false);
 
 
-			return "checkout";
+			return "checkoutPage";
 		}
 	}
 
@@ -320,7 +313,7 @@ public class CheckoutController {
 				model.addAttribute("emptyShippingList", false);
 			}
 
-			return "checkout";
+			return "checkoutPage";
 		}
 	}
 }

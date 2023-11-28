@@ -92,7 +92,7 @@
 									 class="form-control">
 								<option value="" th:selected="selected" disabled="disabled">Please
 									select an option...</option>
-<!--								<option th:each="category : ${categoryList}" th:value="${category.categoryName}"   th:text="${category.getCategoryName()}"></option>-->
+								<option th:each="category : ${categoryList}" th:value="${category.categoryName}"   th:text="${category.getCategoryName()}"></option>
 							</select>
 							<small class="invalid-feedback text-danger" th:if="${#fields.hasErrors('category')}" th:errors="*{category}">Category error message</small>
 						</div>

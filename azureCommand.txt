@@ -1,0 +1,1 @@
+az spring app deploy --resource-group bookshopbg --service bookshop --name bookshop --artifact-path BookShopBG-3.1.5.jar

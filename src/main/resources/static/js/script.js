@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function reloadBooks() {
         let bookContainer = document.getElementById("body");
         bookContainer.innerHTML = "";
-        fetch('http://localhost:8090/api/books')
+        fetch('http://localhost:8080/api/books')
             .then(response => response.json())
             .then(json => json.forEach( book=> {
 
@@ -79,7 +79,7 @@ function deleteBtnClicked(event) {
         method: 'DELETE'
     }
 
-    fetch(`http://localhost:8090/api/books/remove/${bookId}`, requestOptions)
+    fetch(`http://localhost:8080/api/books/remove/${bookId}`, requestOptions)
         .then(_ => reloadBooks())
         .catch(error => console.log('error', error))
 }
@@ -96,11 +96,11 @@ function checkPasswordMatch() {
     var password = $("#txtNewPassword").val();
     var confirmPassword = $("#txtConfirmPassword").val();
 
-    if(password == "" && confirmPassword =="") {
+    if(password === "" && confirmPassword ==="") {
         $("#checkPasswordMatch").html("");
         $("#updateUserInfoButton").prop('disabled', false);
     } else {
-        if(password != confirmPassword) {
+        if(password !== confirmPassword) {
             $("#checkPasswordMatch").html("Passwords do not match!");
             $("#updateUserInfoButton").prop('disabled', true);
         } else {
