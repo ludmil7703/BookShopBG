@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.softuni.bookshopbg.model.entities.BillingAddress;
 import org.softuni.bookshopbg.model.entities.UserBilling;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
@@ -17,9 +16,11 @@ class BillingAddressServiceImplTest {
     @Mock
     private BillingAddressServiceImpl billingAddressServiceToTest;
 
+
     @BeforeEach
     void setUp() {
         billingAddressServiceToTest = new BillingAddressServiceImpl();
+
     }
 
     @AfterEach

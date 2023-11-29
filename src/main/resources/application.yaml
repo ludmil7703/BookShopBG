@@ -11,14 +11,14 @@ spring:
     init:
       mode: never
   mvc:
-    hiddenmethod:
+    hidden-method:
       filter:
         enabled: 'true'
   datasource:
      driverClassName: com.mysql.cj.jdbc.Driver
      url: jdbc:mysql://bookshop.mysql.database.azure.com:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
-     username: '${MYSQL_USERNAME: book}'
-     password: '${MYSQL_PASSWORD: Ludmil#77}'
+     username: 'book'
+     password: 'Ludmil#77'
 #     url: jdbc:mysql://localhost:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
 #     username: 'root'
 #     password: '123456'

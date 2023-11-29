@@ -12,14 +12,8 @@ import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.repositories.BookRepository;
 import org.softuni.bookshopbg.repositories.CartItemRepository;
 import org.softuni.bookshopbg.repositories.OrderRepository;
-import org.softuni.bookshopbg.service.BookService;
-import org.softuni.bookshopbg.service.CartItemService;
-import org.softuni.bookshopbg.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -111,28 +105,6 @@ class OrderServiceImplTest {
         assertEquals(java.util.Optional.of(order), result);
     }
 
-    private ShoppingCart createShoppingCart() {
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setId(1L);
-        shoppingCart.setGrandTotal(BigDecimal.TEN);
-        CartItem cartItem = new CartItem();
-        Book book = new Book();
-        book.setId(1L);
-        book.setInStockNumber(22);
-        cartItem.setId(1L);
-        cartItem.setQty(1);
-        cartItem.setBook(book);
-        cartItem.setShoppingCart(shoppingCart);
-        List<CartItem> cartItemList = new ArrayList<>();
-        cartItemList.add(cartItem);
-        shoppingCart.setCartItemList(cartItemList);
-        UserEntity user = new UserEntity();
-        user.setId(1L);
-        user.setUsername("username");
-        shoppingCart.setUser(user);
-        return shoppingCart;
-    }
-
     private ShippingAddress createShippingAddress() {
         ShippingAddress shippingAddress = new ShippingAddress();
         shippingAddress.setId(1L);
@@ -164,22 +136,9 @@ class OrderServiceImplTest {
         user.setEmail("email");
         user.setActive(true);
         user.setRoles(null);
-        user.setShoppingCart(createShoppingCart());
+        user.setShoppingCart(new ShoppingCart());
         user.setUserShippingList(null);
         return user;
     }
 
-//    private Order createOrder(){
-//        Order order = new Order();
-//        order.setId(1L);
-//        order.setOrderStatus("orderStatus");
-//        order.setOrderDate(null);
-//        order.setOrderTotal(BigDecimal.TEN);
-//        order.setShippingAddress(createShippingAddress());
-//        order.setBillingAddress(createBillingAddress());
-//        order.setPayment(createPayment());
-//        order.setShippingMethod("shippingMethod");
-//        order.setUser(createUser());
-//        return order;
-//    }
 }

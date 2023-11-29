@@ -16,11 +16,4 @@ public class AppConfig {
     }
 
 
-//    @Bean
-//   public JavaMailSender javaMailSender(){
-//        return new JavaMailSenderImpl();
-//   }
-
-
-
 }

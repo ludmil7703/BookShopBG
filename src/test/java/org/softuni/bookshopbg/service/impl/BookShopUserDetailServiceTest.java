@@ -38,12 +38,7 @@ class BookShopUserDetailServiceTest {
         serviceToTest = null;
     }
 
-    @Test
-    void testUserNotFound() {
-         Assertions.assertThrows(
-                UsernameNotFoundException.class,
-                () -> serviceToTest.loadUserByUsername("pesho"));
-        }
+
         @Test
     void testUserNotFoundExceptionMessage() {
         UsernameNotFoundException exception = Assertions.assertThrows(

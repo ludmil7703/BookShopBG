@@ -12,11 +12,7 @@ import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.softuni.bookshopbg.repositories.BookRepository;
 import org.softuni.bookshopbg.repositories.CartItemRepository;
-import org.softuni.bookshopbg.service.CartItemService;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,11 +37,6 @@ public class CartItemServiceImplTest {
     @Mock
     private  BookBindingModel mockBookBindingModel;
 
-    @Mock
-    private Book mockBook;
-
-    @Mock
-    private ShoppingCart mockShoppingCart;
 
     @InjectMocks
     private CartItemServiceImpl cartItemServiceToTest;

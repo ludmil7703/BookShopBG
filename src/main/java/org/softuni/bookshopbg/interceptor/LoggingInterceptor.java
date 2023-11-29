@@ -14,7 +14,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
 
 
         String ipAddress = request.getHeader("X-Forward-For");

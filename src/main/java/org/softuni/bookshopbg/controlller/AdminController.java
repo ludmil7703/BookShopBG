@@ -28,7 +28,6 @@ public class AdminController {
 	private final CategoryService categoryService;
 
 
-
 	public AdminController(BookService bookService, CategoryService categoryService) {
 		this.bookService = bookService;
 		this.categoryService = categoryService;
