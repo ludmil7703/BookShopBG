@@ -1,5 +1,6 @@
 package org.softuni.bookshopbg.service.impl;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,7 @@ class UserShippingServiceImplTest {
     void deleteById() {
         // Arrange
         Optional<UserShipping> userShippingToDelete = createUserShipping();
+        assertTrue(userShippingToDelete.isPresent());
         when(mockUserShippingRepository.findById(1L)).thenReturn(userShippingToDelete);
         doNothing().when(mockUserShippingRepository).deleteById(userShippingToDelete.get().getId());
         // Act
