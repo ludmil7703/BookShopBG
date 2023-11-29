@@ -16,7 +16,6 @@ import org.softuni.bookshopbg.repositories.BookRepository;
 import org.softuni.bookshopbg.repositories.CategoryRepository;
 import org.softuni.bookshopbg.service.BookService;
 import org.softuni.bookshopbg.utils.CloudinaryConfig;
-import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -60,9 +59,7 @@ class BookServiceImplTest {
         //Act
         bookServiceToTest.saveBook(book);
         //Assert
-      assertThrows(IllegalArgumentException.class, () -> {
-            bookServiceToTest.saveBook(null);
-        });
+      assertThrows(IllegalArgumentException.class, () -> bookServiceToTest.saveBook(null));
     }
 
     @Test
@@ -94,7 +91,6 @@ class BookServiceImplTest {
     @Test
     void testDeleteBookById() {
         //Arrange
-        Book book = createBook();
         when(mockBookRepository.findBookById(1L))
                 .thenReturn(null);
         //Act

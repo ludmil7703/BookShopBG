@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.softuni.bookshopbg.model.entities.UserEntity;
 import org.softuni.bookshopbg.model.entities.UserShipping;
 import org.softuni.bookshopbg.repositories.UserShippingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
