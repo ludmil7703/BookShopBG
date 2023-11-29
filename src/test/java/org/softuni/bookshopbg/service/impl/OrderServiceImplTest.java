@@ -48,19 +48,40 @@ class OrderServiceImplTest {
 
 
     @Test
-    void createOrder() {
-       Order order = new Order();
-        order.setId(1L);
-        order.setOrderStatus("created");
-        order.setOrderDate(null);
-        order.setOrderTotal(BigDecimal.TEN);
-        order.setShippingAddress(createShippingAddress());
-        order.setBillingAddress(createBillingAddress());
-        order.setPayment(createPayment());
-        order.setShippingMethod("shippingMethod");
-        order.setUser(createUser());
+    void createOrderTest() {
+        //Arrange
+        Order order = createOrder();
+        CartItem cartItem = createCartItem();
+        Book book = cartItem.getBook();
+        List<CartItem> cartItemList = new ArrayList<>();
+        cartItemList.add(cartItem);
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setCartItemList(cartItemList);
+        shoppingCart.setUser(createUser());
+        when(mockCartItemRepository.findByShoppingCart(shoppingCart)).thenReturn(cartItemList);
+        when(mockOrderRepository.save(order)).thenReturn(order);
+        when(mockBookRepository.save(book)).thenReturn(book);
+        when(mockCartItemRepository.save(cartItem)).thenReturn(cartItem);
+        when(mockOrderRepository.save(order)).thenReturn(order);
+        //Act
+        orderServiceTest.createOrder(shoppingCart, createShippingAddress(), createBillingAddress(), createPayment(), "shippingMethod", createUser());
+        //Assert
+        verify(mockCartItemRepository, times(1)).findByShoppingCart(shoppingCart);
+        verify(mockBookRepository, times(1)).save(book);
+    }
 
+    @Test
+    void testFindById() {
+        //Arrange
+        Order order = new Order();
+        when(mockOrderRepository.findById(order.getId())).thenReturn(java.util.Optional.of(order));
+        //Act
+        Optional<Order> result = orderServiceTest.findById(order.getId());
+        //Assert
+        assertEquals(java.util.Optional.of(order), result);
+    }
 
+    private CartItem createCartItem() {
         CartItem cartItem = new CartItem();
         Book book = new Book();
         book.setId(1L);
@@ -68,43 +89,22 @@ class OrderServiceImplTest {
         cartItem.setId(1L);
         cartItem.setQty(1);
         cartItem.setBook(book);
-        List<CartItem> cartItemList = new ArrayList<>();
-        cartItemList.add(cartItem);
-
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setId(1L);
-        shoppingCart.setGrandTotal(BigDecimal.TEN);
-        shoppingCart.setCartItemList(cartItemList);
-        shoppingCart.setUser(createUser());
-
-        when(mockCartItemRepository.findByShoppingCart(shoppingCart)).thenReturn(cartItemList);
-
-        when(mockOrderRepository.save(order)).thenReturn(order);
-
-        when(mockBookRepository.save(book)).thenReturn(book);
-
-        when(mockCartItemRepository.save(cartItem)).thenReturn(cartItem);
-
-        when(mockOrderRepository.save(order)).thenReturn(order);
-
-
-        orderServiceTest.createOrder(shoppingCart, createShippingAddress(), createBillingAddress(), createPayment(), "shippingMethod", createUser());
-
-        verify(mockCartItemRepository, times(1)).findByShoppingCart(shoppingCart);
-        verify(mockBookRepository, times(1)).save(book);
+        return cartItem;
     }
 
-    @Test
-    void testFindById() {
+    private Order createOrder() {
         Order order = new Order();
-
-        when(mockOrderRepository.findById(order.getId())).thenReturn(java.util.Optional.of(order));
-
-        Optional<Order> result = orderServiceTest.findById(order.getId());
-
-        assertEquals(java.util.Optional.of(order), result);
+        order.setId(1L);
+        order.setOrderStatus("Order Status");
+        order.setOrderTotal(BigDecimal.TEN);
+        order.setCartItemList(null);
+        order.setPayment(createPayment());
+        order.setBillingAddress(createBillingAddress());
+        order.setShippingAddress(createShippingAddress());
+        order.setShippingMethod("Shipping Method");
+        order.setUser(createUser());
+        return order;
     }
-
     private ShippingAddress createShippingAddress() {
         ShippingAddress shippingAddress = new ShippingAddress();
         shippingAddress.setId(1L);

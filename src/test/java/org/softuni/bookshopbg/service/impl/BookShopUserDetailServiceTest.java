@@ -41,18 +41,37 @@ class BookShopUserDetailServiceTest {
 
         @Test
     void testUserNotFoundExceptionMessage() {
+        // Act
         UsernameNotFoundException exception = Assertions.assertThrows(
                 UsernameNotFoundException.class,
                 () -> serviceToTest.loadUserByUsername("pesho"));
-
+        // Assert
         Assertions.assertNotNull(exception);
-
         Assertions.assertEquals("User pesho not found!", exception.getMessage());
     }
 
     @Test
     void testExistingUser() {
         // Arrange
+       UserEntity userEntity = createUser();
+        // Act
+        var userDetails = serviceToTest.loadUserByUsername("pesho");
+        // Assert
+        Assertions.assertNotNull(userDetails);
+        Assertions.assertTrue(containsAuthority(userDetails, "ROLE_" + UserRoleEnum.USER));
+        Assertions.assertTrue(containsAuthority(userDetails, "ROLE_" + UserRoleEnum.ADMIN));
+        Assertions.assertEquals(2, userDetails.getAuthorities().size(), "Roles count is not correct!");
+        Assertions.assertEquals(userEntity.getUsername(), userDetails.getUsername(), "Username is not correct!" );
+        Assertions.assertEquals(userEntity.getPassword(), userDetails.getPassword(), "Password is not correct!" );
+        }
+    private boolean containsAuthority(UserDetails userDetails, String expectedAuthority) {
+        return userDetails.getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority().equals(expectedAuthority));
+
+    }
+
+    private UserEntity createUser(){
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername("pesho");
         userEntity.setPassword("12345");
@@ -61,24 +80,7 @@ class BookShopUserDetailServiceTest {
                 new UserRoleEntity().setRole(UserRoleEnum.ADMIN)));
         when(mockUserRepository.findByUsername("pesho"))
                 .thenReturn(Optional.of(userEntity));
-
-        // Act
-        var userDetails = serviceToTest.loadUserByUsername("pesho");
-
-        // Assert
-        Assertions.assertNotNull(userDetails);
-        Assertions.assertTrue(containsAuthority(userDetails, "ROLE_" + UserRoleEnum.USER));
-        Assertions.assertTrue(containsAuthority(userDetails, "ROLE_" + UserRoleEnum.ADMIN));
-        Assertions.assertEquals(2, userDetails.getAuthorities().size(), "Roles count is not correct!");
-        Assertions.assertEquals(userEntity.getUsername(), userDetails.getUsername(), "Username is not correct!" );
-        Assertions.assertEquals(userEntity.getPassword(), userDetails.getPassword(), "Password is not correct!" );
-
-        }
-    private boolean containsAuthority(UserDetails userDetails, String expectedAuthority) {
-        return userDetails.getAuthorities()
-                .stream()
-                .anyMatch(a -> a.getAuthority().equals(expectedAuthority));
-
+        return userEntity;
     }
 
 

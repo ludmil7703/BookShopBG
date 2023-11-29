@@ -31,14 +31,14 @@ class CategoryServiceImplTest {
 
     @Test
     void testGetAllCategories() {
+        // Arrange
         Category category = new Category();
         category.setCategoryName(CategoryName.IT);
-
         when(mockCategoryRepository.findAll())
                 .thenReturn(java.util.List.of(category));
-
+        // Act
         List<Category> categories = mockCategoryRepository.findAll();
-
+        // Assert
         assertEquals(1, categories.size());
         assertEquals(categories.get(0).getCategoryName(), category.getCategoryName());
     }

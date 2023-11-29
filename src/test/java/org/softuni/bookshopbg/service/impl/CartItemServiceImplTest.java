@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -44,8 +43,6 @@ public class CartItemServiceImplTest {
     @BeforeEach
     void setUp() {
         cartItemServiceToTest = new CartItemServiceImpl(mockCartItemRepository, mockBookRepository, mockModelMapper);
-
-
         mockBookBindingModel.setId(1L);
         mockBookBindingModel.setOurPrice(BigDecimal.TEN);
     }
@@ -57,76 +54,52 @@ public class CartItemServiceImplTest {
 
     @Test
     void findByShoppingCart() {
+        // Arrange
         ShoppingCart shoppingCart = createShoppingCart();
-
         when(mockCartItemRepository.findByShoppingCart(shoppingCart))
                 .thenReturn(shoppingCart.getCartItemList());
-
+        // Act
         List<CartItem> result = cartItemServiceToTest.findByShoppingCart(shoppingCart);
-
+        // Assert
         assertEquals(shoppingCart.getCartItemList(), result);
         assertEquals(shoppingCart.getCartItemList().size(), result.size());
-
-
     }
 
     @Test
     void testUpdateCartItem() {
+        // Arrange
         CartItem cartItem = createShoppingCart().getCartItemList().get(0);
-
-        when(mockCartItemRepository.save(cartItem))
-                .thenReturn(cartItem);
-
         cartItem.setQty(2);
         cartItem.setSubtotal(BigDecimal.valueOf(20));
-
+        when(mockCartItemRepository.save(cartItem))
+                .thenReturn(cartItem);
+        // Act
         CartItem result = cartItemServiceToTest.updateCartItem(cartItem);
-
         BigDecimal actualSubTotal = result.getSubtotal().setScale(0, BigDecimal.ROUND_HALF_UP);
+        // Assert
         assertEquals(cartItem, result);
         assertEquals(2, result.getQty());
         assertEquals(BigDecimal.valueOf(20), actualSubTotal);
-
     }
 
     @Test
     void testAddBookToCartItemTest() {
+        // Arrange
         BookBindingModel bookBindingModel = creatBookDTO();
-        UserEntity user = new UserEntity();
-        user.setShoppingCart(new ShoppingCart());
-        user.getShoppingCart().setCartItemList(new ArrayList<>());
-        user.getShoppingCart().setGrandTotal(BigDecimal.ZERO);
-        user.getShoppingCart().setUser(user);
-        user.setId(1L);
-
+        UserEntity user = createUser();
         Book book = creatBook();
-
-        when(mockModelMapper.map(bookBindingModel, Book.class)).thenReturn(book);
-
         int qty = 2;
-
-        // Mock data for existing cart item
         CartItem existingCartItem = createCartItem();
-        existingCartItem.setBook(creatBook());
-        existingCartItem.getBook().setOurPrice(BigDecimal.TEN);
-        existingCartItem.setShoppingCart(user.getShoppingCart());
-        existingCartItem.setSubtotal(BigDecimal.TEN);
-        existingCartItem.setId(1L);
-        existingCartItem.setQty(1);
-
         List<CartItem> cartItemList = new ArrayList<>();
         cartItemList.add(existingCartItem);
-
         // Mock behavior of the repository
         when(mockCartItemRepository.findByShoppingCart(user.getShoppingCart())).thenReturn(cartItemList);
         when(mockCartItemRepository.save(cartItemList.get(0))).thenReturn(existingCartItem);
-
-        // Call the method
+        when(mockModelMapper.map(bookBindingModel, Book.class)).thenReturn(book);
+        //Act
         CartItem resultCartItem = cartItemServiceToTest.addBookToCartItem(bookBindingModel, user, qty);
-
         // Verify the result
         assertNotNull(resultCartItem);
-
         // Verify that the repository methods were called as expected
         verify(mockCartItemRepository, times(1)).findByShoppingCart(user.getShoppingCart());
         verify(mockCartItemRepository, times(1)).save(any(CartItem.class));
@@ -134,94 +107,96 @@ public class CartItemServiceImplTest {
 
     @Test
     void  addBookToCartItemWithEmptyCartItemListTest(){
+        // Arrange
         BookBindingModel bookBindingModel = creatBookDTO();
         Book book = creatBook();
         when(mockCartItemRepository.findByShoppingCart(any(ShoppingCart.class))).thenReturn(new ArrayList<>());
         when(mockModelMapper.map(bookBindingModel, Book.class)).thenReturn(book);
-
         when(mockCartItemRepository.save(any(CartItem.class))).thenReturn(createCartItem());
-
+        //Act
         cartItemServiceToTest.addBookToCartItem(bookBindingModel, new UserEntity(), 1);
-
+        //Assert
         verify(mockCartItemRepository, times(1)).findByShoppingCart(any(ShoppingCart.class));
         verify(mockModelMapper, times(1)).map(bookBindingModel, Book.class);
-
     }
+
     @Test
     void testFindById() {
+        // Arrange
         CartItem cartItem = createShoppingCart().getCartItemList().get(0);
-
         when(mockCartItemRepository.findById(cartItem.getId()))
                 .thenReturn(Optional.of(cartItem));
-
+        // Act
         CartItem result = cartItemServiceToTest.findById(cartItem.getId());
-
+        // Assert
         assertEquals("Author", result.getBook().getAuthor());
     }
 
     @Test
     void testSaveCartItem() {
+        // Arrange
         CartItem cartItem = createShoppingCart().getCartItemList().get(0);
-
         when(mockCartItemRepository.save(cartItem))
                 .thenReturn(cartItem);
-
+        // Act
         CartItem result = cartItemServiceToTest.save(cartItem);
-
+        // Assert
         assertEquals(cartItem, result);
     }
 
     @Test
     void testFindByOrder() {
+        // Arrange
         List<CartItem> cartItemList = createShoppingCart().getCartItemList();
-
         Order order = createOrder();
-
         when(mockCartItemRepository.findByOrder(order))
                 .thenReturn(cartItemList);
-
+        // Act
         List<CartItem> result = cartItemServiceToTest.findByOrder(order);
-
+        // Assert
         assertEquals(cartItemList, result);
     }
 
-
-
     @Test
     void testDeleteCartItemById() {
+        // Arrange
         CartItem cartItem = createCartItem();
-
         when(mockCartItemRepository.findById(cartItem.getId()))
                 .thenReturn(Optional.of(cartItem));
-
         doNothing().when(mockCartItemRepository).delete(cartItem);
-
+        // Act
         cartItemServiceToTest.deleteCartItemById(cartItem.getId());
-
+        // Assert
         verify(mockCartItemRepository, times(1)).delete(cartItem);
     }
     @Test
     void testDeleteCartItemByIdWithNull() {
+        //Arrange
         CartItem cartItem = createCartItem();
+        //Act and Assert
         assertThrows(IllegalArgumentException.class, () -> cartItemServiceToTest.deleteCartItemById(cartItem.getId()));
-
     }
 
     @Test
     void testDeleteCartItemByIdWithNullShoppingCart() {
+        //Arrange
         CartItem cartItem = createCartItem();
-        cartItem.setSubtotal(BigDecimal.TEN);
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setGrandTotal(BigDecimal.TEN);
-        List<CartItem> cartItemList = List.of(cartItem);
-        shoppingCart.setCartItemList(cartItemList);
-        cartItem.setShoppingCart(shoppingCart);
         when(mockCartItemRepository.findById(cartItem.getId()))
                 .thenReturn(Optional.of(cartItem));
-
-
-cartItemServiceToTest.deleteCartItemById(cartItem.getId());
+        //Act
+       cartItemServiceToTest.deleteCartItemById(cartItem.getId());
+        //Assert
         verify(mockCartItemRepository, times(1)).delete(cartItem);
+    }
+
+    private UserEntity createUser() {
+        UserEntity user = new UserEntity();
+        user.setShoppingCart(new ShoppingCart());
+        user.getShoppingCart().setCartItemList(new ArrayList<>());
+        user.getShoppingCart().setGrandTotal(BigDecimal.ZERO);
+        user.getShoppingCart().setUser(user);
+        user.setId(1L);
+        return user;
     }
 
     private CartItem createCartItem() {

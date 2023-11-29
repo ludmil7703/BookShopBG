@@ -30,10 +30,14 @@ class BillingAddressServiceImplTest {
 
     @Test
     void testSetByUserBilling() {
+        //Arrange
         UserBilling userBilling = creatUserBilling();
         BillingAddress billingAddress = new BillingAddress();
+
+        //Act
         billingAddressServiceToTest.setByUserBilling(userBilling, billingAddress);
 
+        //Assert
         assertEquals(userBilling.getUserBillingName(), billingAddress.getBillingAddressName());
         assertEquals(userBilling.getUserBillingStreet1(), billingAddress.getBillingAddressStreet1());
     }

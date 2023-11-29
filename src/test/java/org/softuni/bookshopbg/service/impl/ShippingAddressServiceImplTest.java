@@ -27,11 +27,14 @@ class ShippingAddressServiceImplTest {
 
     @Test
     void setByUserShipping() {
+        //Arrange
         ShippingAddress shippingAddress = new ShippingAddress();
         UserShipping userShipping = createUserShipping();
 
+        //Act
         shippingAddressServiceToTest.setByUserShipping(userShipping, shippingAddress);
 
+        //Assert
         assertEquals(userShipping.getUserShippingName(), shippingAddress.getShippingAddressName());
     }
 

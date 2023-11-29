@@ -11,7 +11,6 @@ import org.softuni.bookshopbg.model.entities.CartItem;
 import org.softuni.bookshopbg.model.entities.ShoppingCart;
 import org.softuni.bookshopbg.repositories.CartItemRepository;
 import org.softuni.bookshopbg.repositories.ShoppingCartRepository;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -45,53 +44,64 @@ class ShoppingCartServiceImplTest {
 
     @Test
     void updateShoppingCart() {
-        CartItem cartItem = new CartItem();
-        cartItem.setSubtotal(BigDecimal.TEN);
-        cartItem.setQty(1);
-        cartItem.setBook(null);
-        Book book = new Book();
-        book.setOurPrice(BigDecimal.TEN);
-        book.setInStockNumber(1);
-        cartItem.setBook(book);
+        //Arrange
+        CartItem cartItem = createCartItem();
 
         List<CartItem> cartItemList = new ArrayList<>();
         cartItemList.add(cartItem);
 
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setGrandTotal(BigDecimal.TEN);
-        shoppingCart.setCartItemList(new ArrayList<>());
+        ShoppingCart shoppingCart = createShoppingCart();
+
         shoppingCart.setId(1L);
         shoppingCart.setUser(null);
         shoppingCart.setCartItemList(cartItemList);
 
         when(mockCartItemRepository.findByShoppingCart(shoppingCart)).thenReturn(cartItemList);
         when(mockCartItemRepository.save(cartItem)).thenReturn(cartItem);
-
-
         when(mockShoppingCartRepository.save(shoppingCart)).thenReturn(shoppingCart);
 
-        assertEquals(shoppingCart, shoppingCartServiceToTest.updateShoppingCart(shoppingCart));
+        //Act
+        ShoppingCart shoppingCartActual = shoppingCartServiceToTest.updateShoppingCart(shoppingCart);
+
+        //Assert
+        assertEquals(shoppingCart, shoppingCartActual);
         assertEquals(BigDecimal.TEN.setScale(2,BigDecimal.ROUND_HALF_UP), shoppingCart.getGrandTotal());
     }
 
     @Test
     void save() {
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setGrandTotal(BigDecimal.TEN);
-        shoppingCart.setCartItemList(new ArrayList<>());
-
+        //Arrange
+        ShoppingCart shoppingCart = createShoppingCart();
         when(mockShoppingCartRepository.save(shoppingCart)).thenReturn(shoppingCart);
 
+        //Act
         shoppingCartServiceToTest.save(shoppingCart);
+
+        //Assert
         verify(mockShoppingCartRepository, times(1)).save(shoppingCart);
     }
 
     @Test
     void clearShoppingCart() {
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setGrandTotal(BigDecimal.TEN);
-        shoppingCart.setCartItemList(new ArrayList<>());
+        //Arrange
+        ShoppingCart shoppingCart = createShoppingCart();
+        CartItem cartItem = createCartItem();
 
+        List<CartItem> cartItemList = new ArrayList<>();
+        cartItemList.add(cartItem);
+        shoppingCart.setCartItemList(cartItemList);
+
+        when(mockCartItemRepository.findByShoppingCart(shoppingCart)).thenReturn(cartItemList);
+        when(mockCartItemRepository.save(cartItem)).thenReturn(cartItem);
+        when(mockShoppingCartRepository.save(shoppingCart)).thenReturn(shoppingCart);
+
+        //Act
+        shoppingCartServiceToTest.clearShoppingCart(shoppingCart, null);
+
+        //Assert
+        verify(mockShoppingCartRepository, times(1)).save(shoppingCart);
+    }
+    private CartItem createCartItem()  {
         CartItem cartItem = new CartItem();
         cartItem.setSubtotal(BigDecimal.TEN);
         cartItem.setQty(1);
@@ -100,18 +110,14 @@ class ShoppingCartServiceImplTest {
         book.setOurPrice(BigDecimal.TEN);
         book.setInStockNumber(1);
         cartItem.setBook(book);
-
-        List<CartItem> cartItemList = new ArrayList<>();
-        cartItemList.add(cartItem);
-
-        shoppingCart.setCartItemList(cartItemList);
-
-        when(mockCartItemRepository.findByShoppingCart(shoppingCart)).thenReturn(cartItemList);
-        when(mockCartItemRepository.save(cartItem)).thenReturn(cartItem);
-
-        when(mockShoppingCartRepository.save(shoppingCart)).thenReturn(shoppingCart);
-
-        shoppingCartServiceToTest.clearShoppingCart(shoppingCart, null);
-        verify(mockShoppingCartRepository, times(1)).save(shoppingCart);
+        return cartItem;
     }
+    private ShoppingCart createShoppingCart() {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setGrandTotal(BigDecimal.TEN);
+        shoppingCart.setCartItemList(new ArrayList<>());
+        return shoppingCart;
+    }
+
+
 }
