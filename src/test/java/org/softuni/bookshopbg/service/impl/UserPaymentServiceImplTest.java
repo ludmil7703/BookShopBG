@@ -38,33 +38,26 @@ class UserPaymentServiceImplTest {
 
     @Test
     void findById() {
-        UserPayment expextedUserPayment = new UserPayment();
-        expextedUserPayment.setId(1L);
-        expextedUserPayment.setCardName("cardName");
-        expextedUserPayment.setCardNumber("cardNumber");
-
-        mockUserPaymentRepository.save(expextedUserPayment);
-
+        //Arrange
+        UserPayment expextedUserPayment = createTestUserPayment();
         when(mockUserPaymentRepository.findById(1L)).thenReturn(Optional.of(expextedUserPayment));
-
+        //Act
         UserPayment actualUserPaymentResult = userPaymentServiceTest.findById(1L);
-
         UserPayment nullUserPaymentResult = userPaymentServiceTest.findById(2L);
-
+        //Assert
         assertEquals(expextedUserPayment, actualUserPaymentResult);
         assertNull(nullUserPaymentResult);
     }
 
     @Test
     void deleteById() {
+        //Arrange
         UserPayment userPayment = createTestUserPayment();
-
         when(mockUserPaymentRepository.findById(1L)).thenReturn(Optional.of(userPayment));
-
+        //Act
         userPaymentServiceTest.deleteById(1L);
-
+        //Assert
         verify(mockUserPaymentRepository, times(1)).deleteById(1L);
-
     }
 
     public UserPayment createTestUserPayment() {

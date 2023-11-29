@@ -28,18 +28,17 @@ class ShoppingCartServiceImplTest {
     @Mock
     private ShoppingCartRepository mockShoppingCartRepository;
 
+    @Mock
     private ShoppingCartServiceImpl shoppingCartServiceToTest;
 
     @BeforeEach
     void setUp() {
         shoppingCartServiceToTest = new ShoppingCartServiceImpl(mockCartItemRepository, mockShoppingCartRepository);
-
     }
 
     @AfterEach
     void tearDown() {
         shoppingCartServiceToTest = null;
-
     }
 
     @Test
@@ -51,7 +50,6 @@ class ShoppingCartServiceImplTest {
         cartItemList.add(cartItem);
 
         ShoppingCart shoppingCart = createShoppingCart();
-
         shoppingCart.setId(1L);
         shoppingCart.setUser(null);
         shoppingCart.setCartItemList(cartItemList);
@@ -59,10 +57,8 @@ class ShoppingCartServiceImplTest {
         when(mockCartItemRepository.findByShoppingCart(shoppingCart)).thenReturn(cartItemList);
         when(mockCartItemRepository.save(cartItem)).thenReturn(cartItem);
         when(mockShoppingCartRepository.save(shoppingCart)).thenReturn(shoppingCart);
-
         //Act
         ShoppingCart shoppingCartActual = shoppingCartServiceToTest.updateShoppingCart(shoppingCart);
-
         //Assert
         assertEquals(shoppingCart, shoppingCartActual);
         assertEquals(BigDecimal.TEN.setScale(2,BigDecimal.ROUND_HALF_UP), shoppingCart.getGrandTotal());
@@ -73,10 +69,8 @@ class ShoppingCartServiceImplTest {
         //Arrange
         ShoppingCart shoppingCart = createShoppingCart();
         when(mockShoppingCartRepository.save(shoppingCart)).thenReturn(shoppingCart);
-
         //Act
         shoppingCartServiceToTest.save(shoppingCart);
-
         //Assert
         verify(mockShoppingCartRepository, times(1)).save(shoppingCart);
     }
@@ -94,10 +88,8 @@ class ShoppingCartServiceImplTest {
         when(mockCartItemRepository.findByShoppingCart(shoppingCart)).thenReturn(cartItemList);
         when(mockCartItemRepository.save(cartItem)).thenReturn(cartItem);
         when(mockShoppingCartRepository.save(shoppingCart)).thenReturn(shoppingCart);
-
         //Act
         shoppingCartServiceToTest.clearShoppingCart(shoppingCart, null);
-
         //Assert
         verify(mockShoppingCartRepository, times(1)).save(shoppingCart);
     }

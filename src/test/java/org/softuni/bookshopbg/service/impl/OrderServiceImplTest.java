@@ -33,7 +33,7 @@ class OrderServiceImplTest {
     @Mock
     private BookRepository mockBookRepository;
 
-
+    @Mock
     private OrderServiceImpl orderServiceTest;
 
     @BeforeEach

@@ -30,10 +30,8 @@ class ShippingAddressServiceImplTest {
         //Arrange
         ShippingAddress shippingAddress = new ShippingAddress();
         UserShipping userShipping = createUserShipping();
-
         //Act
         shippingAddressServiceToTest.setByUserShipping(userShipping, shippingAddress);
-
         //Assert
         assertEquals(userShipping.getUserShippingName(), shippingAddress.getShippingAddressName());
     }
@@ -41,7 +39,6 @@ class ShippingAddressServiceImplTest {
     private UserShipping createUserShipping(){
         UserShipping userShipping = new UserShipping();
         userShipping.setUserShippingName("Test");
-
         return userShipping;
     }
 }

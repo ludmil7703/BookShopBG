@@ -38,6 +38,7 @@ class BookServiceImplTest {
     @Mock
     private ModelMapper mockModelMapper;
 
+    @Mock
     private BookService bookServiceToTest;
 
     @BeforeEach

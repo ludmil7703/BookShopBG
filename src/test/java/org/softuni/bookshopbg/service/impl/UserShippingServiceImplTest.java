@@ -22,12 +22,12 @@ class UserShippingServiceImplTest {
     @Mock
     private UserShippingRepository mockUserShippingRepository;
 
+    @Mock
     private UserShippingServiceImpl userShippingServiceToTest;
 
     @BeforeEach
     void setUp() {
         userShippingServiceToTest = new UserShippingServiceImpl(mockUserShippingRepository);
-
     }
 
     @AfterEach
@@ -37,24 +37,25 @@ class UserShippingServiceImplTest {
 
     @Test
     void findById() {
-        Optional<UserShipping> userShipping = createUserShipping();
-        when(mockUserShippingRepository.findById(1L)).thenReturn(userShipping);
-
-        assertEquals(userShipping, userShippingServiceToTest.findById(1L));
-
-
+        // Arrange
+        Optional<UserShipping> expectedResult = createUserShipping();
+        when(mockUserShippingRepository.findById(1L)).thenReturn(expectedResult);
+        // Act
+        Optional<UserShipping> actualResult = userShippingServiceToTest.findById(1L);
+        // Assert
+        assertEquals(expectedResult,actualResult);
     }
 
     @Test
     void deleteById() {
+        // Arrange
         Optional<UserShipping> userShippingToDelete = createUserShipping();
         when(mockUserShippingRepository.findById(1L)).thenReturn(userShippingToDelete);
         doNothing().when(mockUserShippingRepository).deleteById(userShippingToDelete.get().getId());
-
+        // Act
         userShippingServiceToTest.deleteById(1L);
-
+        // Assert
         verify(mockUserShippingRepository, times(1)).deleteById(1L);
-
     }
 
     private Optional<UserShipping> createUserShipping(){
