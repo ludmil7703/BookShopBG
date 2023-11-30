@@ -3,12 +3,16 @@
       xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/commons::head}"></head>
 <body>
-<div id="project_container">
+<div id="project_container" class="justify-content-center">
     <nav th:replace="fragments/commons::nav"></nav>
     <header th:replace="fragments/commons::header"></header>
-    <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Login</span></h1>
-    <hr class="hr-3 w-25 bg-white"/>
+
+    <main id="project_content">
+        <section th:replace="fragments/commons::section"></section>
+
     <form class="mx-auto w-25 bg-blur" th:object="${userLoginBindingModel}" th:action="@{/users/login}" th:method="POST" >
+        <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Login</span></h1>
+        <hr class="hr-3 w-25 bg-white"/>
 
         <!--    Example: Render errors messages with fields.errors - you can make it differently. -->
         <!--    <div th:each="error: ${#fields.errors()}" th:text="${error}" class="text-danger">Error messages</div>-->
@@ -46,6 +50,7 @@
 
     </form>
     <footer th:replace="~{fragments/commons::footer}"></footer>
+    </main>
 </div>
 </body>
 </html>

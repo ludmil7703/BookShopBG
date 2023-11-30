@@ -31,7 +31,7 @@
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs" >
 						<li th:classappend="${classActiveEdit}? 'active'"><a
-								href="#tab-1" data-toggle="tab"><span>Edit</span></a></li>
+								href="#tab-1" data-toggle="tab"><span>Edit account</span></a></li>
 						<div class="cleaner_with_width"></div>
 						<li th:classappend="${classActiveOrders}? 'active'"><a
 								href="#tab-2" data-toggle="tab"><span>Orders</span></a></li>
@@ -93,7 +93,7 @@
 											</div>
 
 											<div class="form-group">
-												<label for="userName">UserName</label> <input type="text"
+												<label for="userName">UserName</label> <input type="text" readonly
 																							  class="form-control" id="userName" name="username"
 																							  th:value="${user.username}" />
 											</div>
@@ -106,7 +106,7 @@
 												change the email address or password.</p>
 
 											<div class="form-group">
-												<label for="email">* Email Address</label> <input
+												<label for="email">* Email Address</label> <input readonly
 													type="text" class="form-control" id="email" name="email"
 													th:value="${user.email}" />
 											</div>
@@ -126,7 +126,8 @@
 											<div class="form-group">
 												<label for="txtConfirmPassword">Confirm Password</label> <input
 													type="password" class="form-control"
-													id="txtConfirmPassword" />
+													id="txtConfirmPassword"
+											       name="confirmPassword"/>
 											</div>
 											<p style="color: #828282">To change the current user
 												password, enter the new password in both fields.</p>
@@ -367,7 +368,7 @@
 												<!-- Billing Address -->
 												<hr />
 												<div class="form-group">
-													<h4 class="text-center">Billing Address</h4>
+													<h4 class="text-center" style="color: red">Billing Address</h4>
 												</div>
 												<div class="form-group">
 													<label for="billingName">* Name</label> <input type="text"
@@ -427,7 +428,7 @@
 												<!-- Credit Card Information -->
 												<hr />
 												<div class="form-group">
-													<h4 class="text-center">Credit Card Information</h4>
+													<h4 class="text-center" style="color: red">Credit Card Information</h4>
 												</div>
 												<div class="row justify-content-center">
 													<div class="col-xs-12">
@@ -590,7 +591,7 @@
 												<!-- Shipping Address -->
 												<hr />
 												<div class="form-group">
-													<h4>Shipping Address</h4>
+													<h4 style="color: red">Shipping Address</h4>
 												</div>
 												<div class="form-group">
 													<label for="shippingName">* Name</label> <input

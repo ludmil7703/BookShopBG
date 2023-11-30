@@ -21,7 +21,7 @@ public class BookShopUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository
-                .findByUsername(username)
+                .findUserEntitiesByUsername(username)
                 .map(BookShopUserDetailService::map)
                 .orElseThrow(() -> new UsernameNotFoundException("User "+ username + " not found!"));
     }

@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -58,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserEntity createUser(UserEntity user){
-      Optional<UserEntity> localUser = userRepository.findByUsername(user.getUsername());
+      Optional<UserEntity> localUser = userRepository.findUserEntitiesByUsername(user.getUsername());
 
       if (localUser.isPresent()) {
           LOG.info("User with username {} already exists. Nothing will be done. ", user.getUsername());
@@ -88,6 +90,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PasswordResetToken getPasswordResetToken(final String token) {
+        passwordResetTokenRepository.deleteAllExpiredSince(new Date());
         return passwordResetTokenRepository.findByToken(token);
 
     }
@@ -117,7 +120,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public UserEntity findUserByEmail(String email) {
-        Optional<UserEntity> user = this.userRepository.findByEmail(email);
+        Optional<UserEntity> user = this.userRepository.findUserEntitiesByEmail(email);
 
         if (user.isPresent()) {
             return user.get();
@@ -127,20 +130,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity findUserByUsername(String username) {
-        if (this.userRepository.findByUsername(username).isEmpty()){
+        if (this.userRepository.findUserEntitiesByUsername(username).isEmpty()){
             return null;
         }
-        return this.userRepository.findByUsername(username).get();
+        return this.userRepository.findUserEntitiesByUsername(username).get();
     }
     @Override
-    public void createPasswordResetTokenForUser(final UserEntity user, final String token) {
-        final PasswordResetToken myToken = new PasswordResetToken(token, user);
-        passwordResetTokenRepository.save(myToken);
+    public void createPasswordResetTokenForUser(UserEntity user, String token) {
+        passwordResetTokenRepository.deleteAllExpiredSince(new Date());
+        PasswordResetToken tokenRepositoryByTokenToken = passwordResetTokenRepository.findByUser(user);
+        if (tokenRepositoryByTokenToken == null) {
+            PasswordResetToken myToken = new PasswordResetToken(token, user);
+            passwordResetTokenRepository.save(myToken);
+        }
     }
 
     @Override
     public boolean checkCredentials(String username, String password) {
-        Optional<UserEntity> user = this.userRepository.findByUsername(username);
+        Optional<UserEntity> user = this.userRepository.findUserEntitiesByUsername(username);
 
         return user.isPresent() && passwordEncoder.matches(password, user.get().getPassword());
     }

@@ -3,7 +3,9 @@ package org.softuni.bookshopbg.controlller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
+import org.softuni.bookshopbg.model.dto.UserLoginBindingModel;
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.model.security.PasswordResetToken;
 import org.softuni.bookshopbg.service.*;
@@ -22,7 +24,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -56,7 +61,6 @@ public class UserController {
     private final CategoryService categoryService;
 
 
-
     public UserController(UserService userService,
                           UserDetailsService userSecurityService,
                           BookService bookService,
@@ -76,6 +80,9 @@ public class UserController {
 
 //    @GetMapping("/login")
 //    public ModelAndView login(Model model){
+//        List<Category> categoryList = categoryService.getAllCategories();
+//
+//        model.addAttribute("categoryList", categoryList);
 //
 //        if (!model.containsAttribute("userLoginBindingModel")){
 //            model.addAttribute("userLoginBindingModel", new UserLoginBindingModel());
@@ -85,10 +92,10 @@ public class UserController {
 //    }
 
 
-
     @RequestMapping("/login")
     public String login(Model model) {
         List<Category> categoryList = categoryService.getAllCategories();
+
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("classActiveLogin", true);
         return "myAccount";
@@ -97,7 +104,7 @@ public class UserController {
     @RequestMapping("/bookshelf")
     public String bookshelf(Model model, Principal principal) throws IOException {
 
-        if(principal != null) {
+        if (principal != null) {
             String username = principal.getName();
             UserEntity user = userService.findUserByUsername(username);
             model.addAttribute("user", user);
@@ -107,18 +114,17 @@ public class UserController {
         List<Category> categoryList = categoryService.getAllCategories();
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("bookList", bookList);
-        model.addAttribute("activeAll",true);
+        model.addAttribute("activeAll", true);
 
         return "bookList";
     }
-
 
 
     @RequestMapping("/bookDetail")
     public String bookDetail(
             @PathParam("id") Long id, Model model, Principal principal
     ) {
-        if(principal != null) {
+        if (principal != null) {
             String username = principal.getName();
             UserEntity user = userService.findUserByUsername(username);
             model.addAttribute("user", user);
@@ -128,7 +134,7 @@ public class UserController {
 
         model.addAttribute("book", book);
 
-        List<Integer> qtyList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
+        List<Integer> qtyList = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
         model.addAttribute("qtyList", qtyList);
         model.addAttribute("qty", 1);
@@ -168,7 +174,7 @@ public class UserController {
         String token = UUID.randomUUID().toString();
         userService.createPasswordResetTokenForUser(user, token);
 
-        String appUrl = "http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+        String appUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 
         SimpleMailMessage newEmail = mailConstructor.constructResetTokenEmail(appUrl, request.getLocale(), token, user, password);
 
@@ -251,7 +257,7 @@ public class UserController {
     @RequestMapping("/addNewCreditCard")
     public String addNewCreditCard(
             Model model, Principal principal
-    ){
+    ) {
         UserEntity user = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user);
 
@@ -282,7 +288,7 @@ public class UserController {
     @RequestMapping("/addNewShippingAddress")
     public String addNewShippingAddress(
             Model model, Principal principal
-    ){
+    ) {
         UserEntity user = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user);
 
@@ -307,12 +313,12 @@ public class UserController {
         return "myProfilePage";
     }
 
-    @RequestMapping(value="/addNewCreditCard", method= RequestMethod.POST)
+    @RequestMapping(value = "/addNewCreditCard", method = RequestMethod.POST)
     public String addNewCreditCard(
             @ModelAttribute("userPayment") UserPayment userPayment,
             @ModelAttribute("userBilling") UserBilling userBilling,
             Principal principal, Model model
-    ){
+    ) {
         UserEntity user = userService.findUserByUsername(principal.getName());
         userService.updateUserBilling(userBilling, userPayment, user);
 
@@ -327,11 +333,11 @@ public class UserController {
         return "myProfilePage";
     }
 
-    @RequestMapping(value="/addNewShippingAddress", method=RequestMethod.POST)
+    @RequestMapping(value = "/addNewShippingAddress", method = RequestMethod.POST)
     public String addNewShippingAddressPost(
             @ModelAttribute("userShipping") UserShipping userShipping,
             Principal principal, Model model
-    ){
+    ) {
         UserEntity user = userService.findUserByUsername(principal.getName());
         userService.updateUserShipping(userShipping, user);
 
@@ -354,7 +360,7 @@ public class UserController {
         UserEntity user = userService.findUserByUsername(principal.getName());
         UserPayment userPayment = userPaymentService.findById(creditCardId);
 
-        if(user.getId() != userPayment.getUser().getId()) {
+        if (user.getId() != userPayment.getUser().getId()) {
             return "error";
         } else {
             model.addAttribute("user", user);
@@ -388,7 +394,7 @@ public class UserController {
         UserEntity user = userService.findUserByUsername(principal.getName());
         UserShipping userShipping = userShippingService.findById(shippingAddressId).get();
 
-        if(user.getId() != userShipping.getUser().getId()) {
+        if (user.getId() != userShipping.getUser().getId()) {
             return "error";
         } else {
             model.addAttribute("user", user);
@@ -414,7 +420,7 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value="/setDefaultPayment", method=RequestMethod.POST)
+    @RequestMapping(value = "/setDefaultPayment", method = RequestMethod.POST)
     public String setDefaultPayment(
             @ModelAttribute("defaultUserPaymentId") Long defaultPaymentId, Principal principal, Model model
     ) {
@@ -433,7 +439,7 @@ public class UserController {
         return "myProfilePage";
     }
 
-    @RequestMapping(value="/setDefaultShippingAddress", method=RequestMethod.POST)
+    @RequestMapping(value = "/setDefaultShippingAddress", method = RequestMethod.POST)
     public String setDefaultShippingAddress(
             @ModelAttribute("defaultShippingAddressId") Long defaultShippingId, Principal principal, Model model
     ) {
@@ -455,11 +461,11 @@ public class UserController {
     @RequestMapping("/removeCreditCard")
     public String removeCreditCard(
             @ModelAttribute("id") Long creditCardId, Principal principal, Model model
-    ){
+    ) {
         UserEntity user = userService.findUserByUsername(principal.getName());
         UserPayment userPayment = userPaymentService.findById(creditCardId);
 
-        if(user.getId() != userPayment.getUser().getId()) {
+        if (user.getId() != userPayment.getUser().getId()) {
             return "error";
         } else {
             model.addAttribute("user", user);
@@ -483,7 +489,7 @@ public class UserController {
     @RequestMapping("/removeUserShipping")
     public String removeUserShipping(
             @ModelAttribute("id") Long userShippingId, Principal principal, Model model
-    ){
+    ) {
         UserEntity user = userService.findUserByUsername(principal.getName());
         UserShipping userShipping = userShippingService.findById(userShippingId).get();
 
@@ -508,13 +514,13 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value="/newUser", method=RequestMethod.POST)
+    @RequestMapping(value = "/newUser", method = RequestMethod.POST)
     public String newUserPost(
             HttpServletRequest request,
             @ModelAttribute("email") String userEmail,
             @ModelAttribute("username") String username,
             Model model
-    ){
+    ) {
         model.addAttribute("classActiveNewAccount", true);
         model.addAttribute("email", userEmail);
         model.addAttribute("username", username);
@@ -545,7 +551,7 @@ public class UserController {
         String token = UUID.randomUUID().toString();
         userService.createPasswordResetTokenForUser(user, token);
 
-        String appUrl = "http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+        String appUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 
         SimpleMailMessage email = mailConstructor.constructResetTokenEmail(appUrl, request.getLocale(), token, user, password);
 
@@ -589,17 +595,18 @@ public class UserController {
         return "myProfilePage";
     }
 
-    @RequestMapping(value="/updateUserInfo", method=RequestMethod.POST)
+    @RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST)
     public String updateUserInfo(
             @ModelAttribute("user") UserEntity user,
             @ModelAttribute("newPassword") String newPassword,
+            @ModelAttribute("confirmPassword") String confirmPassword,
             Model model
     ) {
         UserEntity currentUser = userService.findUserByUsername(user.getUsername());
 
         /*check email already exists*/
-        if (userService.findUserByEmail(user.getEmail())!=null) {
-            if(userService.findUserByEmail(user.getEmail()).getId() != currentUser.getId()) {
+        if (userService.findUserByEmail(user.getEmail()) != null) {
+            if (userService.findUserByEmail(user.getEmail()).getId() != currentUser.getId()) {
                 model.addAttribute("emailExists", true);
                 return "myProfilePage";
             }
@@ -607,17 +614,17 @@ public class UserController {
 
         /*check username already exists*/
         if (userService.findUserByUsername(user.getUsername()) != null) {
-            if(!Objects.equals(userService.findUserByUsername(user.getUsername()).getId(), user.getId())) {
+            if (!Objects.equals(userService.findUserByUsername(user.getUsername()).getId(), user.getId())) {
                 model.addAttribute("usernameExists", true);
                 return "myProfilePage";
             }
         }
 
 //		update password
-        if (newPassword != null && !newPassword.isEmpty()){
+        if (newPassword != null && !newPassword.isEmpty()) {
             BCryptPasswordEncoder passwordEncoder = SecurityUtility.passwordEncoder();
             String dbPassword = currentUser.getPassword();
-            if(passwordEncoder.matches(user.getPassword(), dbPassword)){
+            if (passwordEncoder.matches(user.getPassword(), dbPassword) && newPassword.equals(confirmPassword)) {
                 currentUser.setPassword(passwordEncoder.encode(newPassword));
             } else {
                 model.addAttribute("incorrectPassword", true);
@@ -655,11 +662,11 @@ public class UserController {
     public String orderDetail(
             @RequestParam("id") Long orderId,
             Principal principal, Model model
-    ){
+    ) {
         UserEntity user = userService.findUserByUsername(principal.getName());
         Order order = orderService.findById(orderId).get();
 
-        if(order.getUser().getId()!=user.getId()) {
+        if (order.getUser().getId() != user.getId()) {
             return "error";
         } else {
             List<CartItem> cartItemList = cartItemService.findByOrder(order);
@@ -689,31 +696,32 @@ public class UserController {
             return "myProfilePage";
         }
     }
-}
 
-//    @PostMapping("/login-error")
-//    public String login(@Valid @ModelAttribute("userLoginBindingModel") UserLoginBindingModel userLoginBindingModel
-//            , BindingResult bindingResult,
-//                        RedirectAttributes rAtt){
-//
-//        if (bindingResult.hasErrors()){
-//            rAtt.addFlashAttribute("userLoginBindingModel", userLoginBindingModel);
-//            rAtt.addFlashAttribute("org.springframework.validation.BindingResult.userLoginBindingModel", bindingResult);
-//            return "redirect:/users/login";
-//        }
-//
-//        boolean validCredentials = this.userService.checkCredentials(userLoginBindingModel.getUsername(), userLoginBindingModel.getPassword());
-//
-//        if (!validCredentials) {
-//            rAtt
-//                    .addFlashAttribute("userLoginBindingModel", userLoginBindingModel)
-//                    .addFlashAttribute("validCredentials", false);
-//            return "redirect:/users/login";
-//        }
-//
-//        return "redirect:/";
-//
-//    }
+
+    @PostMapping("/login-error")
+    public String login(@Valid @ModelAttribute("userLoginBindingModel") UserLoginBindingModel userLoginBindingModel
+            , BindingResult bindingResult,
+                        RedirectAttributes rAtt) {
+
+        if (bindingResult.hasErrors()) {
+            rAtt.addFlashAttribute("userLoginBindingModel", userLoginBindingModel);
+            rAtt.addFlashAttribute("org.springframework.validation.BindingResult.userLoginBindingModel", bindingResult);
+            return "redirect:/users/login";
+        }
+
+        boolean validCredentials = this.userService.checkCredentials(userLoginBindingModel.getUsername(), userLoginBindingModel.getPassword());
+
+        if (!validCredentials) {
+            rAtt
+                    .addFlashAttribute("userLoginBindingModel", userLoginBindingModel)
+                    .addFlashAttribute("validCredentials", false);
+            return "redirect:/users/login";
+        }
+
+
+        return "redirect:/";
+
+    }
 //
 //    @GetMapping("/register")
 //    public ModelAndView register(Model model){
@@ -757,11 +765,11 @@ public class UserController {
 //        return view;
 //
 //    }
-//
-//    @ModelAttribute
-//    public void addAttribute(Model model) {
-//        model.addAttribute("validCredentials");
-//    }
-//
-//
-//}
+
+    @ModelAttribute
+    public void addAttribute(Model model) {
+        model.addAttribute("validCredentials");
+    }
+
+
+}

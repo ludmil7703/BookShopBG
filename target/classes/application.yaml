@@ -9,19 +9,19 @@ spring:
     open-in-view: 'false'
   sql:
     init:
-      mode: never
+      mode: always
   mvc:
     hidden-method:
       filter:
         enabled: 'true'
   datasource:
      driverClassName: com.mysql.cj.jdbc.Driver
-     url: jdbc:mysql://bookshop.mysql.database.azure.com:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
-     username: 'book'
-     password: 'Ludmil#77'
-#     url: jdbc:mysql://localhost:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
-#     username: 'root'
-#     password: '123456'
+#     url: jdbc:mysql://${MYSQL_HOST}:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+#     username: ${MYSQL_USERNAME:}
+#     password: ${MYSQL_PASSWORD:}
+     url: jdbc:mysql://localhost:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+     username: ${DB_USERNAME:}
+     password: ${DB_PASSWORD:}
 
   thymeleaf: # Thymeleaf properties
     cache: false

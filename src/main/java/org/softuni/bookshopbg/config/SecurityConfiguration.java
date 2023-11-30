@@ -6,6 +6,7 @@ import org.softuni.bookshopbg.service.impl.BookShopUserDetailService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
     private final String[] PUBLIC_MATCHERS = new String[]{
@@ -63,7 +65,7 @@ public class SecurityConfiguration {
               .usernameParameter("username")
               .passwordParameter("password")
               .defaultSuccessUrl("/")
-              .failureForwardUrl("/users/login");
+              .failureForwardUrl("/users/login-error");
         }
     ).logout(
         logout -> {
