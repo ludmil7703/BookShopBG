@@ -10,16 +10,12 @@ import org.softuni.bookshopbg.model.entities.Book;
 import org.softuni.bookshopbg.model.entities.CartItem;
 import org.softuni.bookshopbg.model.entities.ShoppingCart;
 import org.softuni.bookshopbg.model.entities.UserEntity;
-import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.softuni.bookshopbg.service.impl.BookServiceImpl;
 import org.softuni.bookshopbg.service.impl.CartItemServiceImpl;
 import org.softuni.bookshopbg.service.impl.ShoppingCartServiceImpl;
 import org.softuni.bookshopbg.service.impl.UserServiceImpl;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,8 +25,6 @@ import org.springframework.ui.Model;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-
 class ShoppingCartControllerTest {
 
     @Mock

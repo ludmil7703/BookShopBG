@@ -176,7 +176,7 @@ public class UserServiceImpl implements UserService {
                 userPaymentExists.setUserBilling(userBilling);
                 userPaymentExists.setDefaultPayment(true);
                 userBilling.setUserPayment(userPaymentExists);
-                userPaymentRepository.save(userPaymentExists);
+                userRepository.save(user);
 
             } else {
                 userPayment.setUser(user);

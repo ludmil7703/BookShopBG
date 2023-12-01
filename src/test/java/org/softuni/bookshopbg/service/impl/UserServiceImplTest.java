@@ -78,7 +78,7 @@ class UserServiceImplTest {
     @Test
     void createUserWithAdminRoleTest() {
         //Arrange
-        when(mockUserRepository.findByUsername(mockuser.getUsername())).thenReturn(Optional.empty());
+        when(mockUserRepository.findUserEntitiesByUsername(mockuser.getUsername())).thenReturn(Optional.empty());
         when(mockUserRepository.count()).thenReturn(0L);
         when(mockUserRepository.save(any())).thenReturn(mockuser);
         //Act
@@ -90,7 +90,7 @@ class UserServiceImplTest {
     @Test
     void  createUserWithExistingUser(){
         //Arrange
-        when(mockUserRepository.findByUsername(mockuser.getUsername())).thenReturn(Optional.of(mockuser));
+        when(mockUserRepository.findUserEntitiesByUsername(mockuser.getUsername())).thenReturn(Optional.of(mockuser));
         when(mockUserRepository.count()).thenReturn(1L);
         when(mockUserRepository.save(any())).thenReturn(mockuser);
         //Act
@@ -102,7 +102,7 @@ class UserServiceImplTest {
     @Test
     void createUserWIthUserRoleTest(){
         //Arrange
-        when(mockUserRepository.findByUsername(mockuser.getUsername())).thenReturn(Optional.empty());
+        when(mockUserRepository.findUserEntitiesByUsername(mockuser.getUsername())).thenReturn(Optional.empty());
         when(mockUserRepository.count()).thenReturn(1L);
         when(mockUserRepository.save(any())).thenReturn(mockuser);
         //Act
@@ -138,23 +138,22 @@ class UserServiceImplTest {
         UserBilling userBilling = new UserBilling();
         when(mockUserPaymentRepository.findUserPaymentByCardName(any())).thenReturn(user.getUserPaymentList().get(0));
         when(mockUserPaymentRepository.save(any())).thenReturn(user.getUserPaymentList().get(0));
+        when(mockUserRepository.save(any())).thenReturn(user);
         //Act
         userServiceToTest.updateUserBilling(userBilling, user.getUserPaymentList().get(0), user);
         //Assert
-        verify(mockUserPaymentRepository, times(1)).save(any());
+        verify(mockUserRepository, times(1)).save(any());
         assertEquals(user.getUserPaymentList().get(0).getUserBilling(), userBilling);
     }
 
     @Test
     void updateUserBillingTestNull() {
         //Arrange
-        UserEntity user = createUser();
-        user.setUserPaymentList(new ArrayList<>());
+       UserEntity user = createUser();
         UserBilling userBilling = new UserBilling();
-        Payment payment = new Payment();
-        payment.setCardName("Ivan");
         UserPayment userPayment = new UserPayment();
-        when(mockUserPaymentRepository.findUserPaymentByCardName(any())).thenReturn(userPayment);
+        user.setUserPaymentList(new ArrayList<>());
+        when(mockUserPaymentRepository.findUserPaymentByCardName(any())).thenReturn(null);
         when(mockUserRepository.save(user)).thenReturn(user);
         //Act
         userServiceToTest.updateUserBilling(userBilling, userPayment, user);
@@ -306,7 +305,7 @@ class UserServiceImplTest {
         String email = "ivan@mail.com";
         String emailNull = "";
         UserEntity user = createUser();
-        when(mockUserRepository.findByEmail(email)).thenReturn(java.util.Optional.of(user));
+        when(mockUserRepository.findUserEntitiesByEmail(email)).thenReturn(java.util.Optional.of(user));
         // Act
         UserEntity result = userServiceToTest.findUserByEmail(email);
         UserEntity resultNull = userServiceToTest.findUserByEmail(emailNull);
@@ -319,7 +318,7 @@ class UserServiceImplTest {
     void findUserByEmailTestNull() {
         // Arrange
         String email = "";
-        when(mockUserRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(mockUserRepository.findUserEntitiesByEmail(email)).thenReturn(Optional.empty());
         // Act
         UserEntity result = userServiceToTest.findUserByEmail(email);
         // Assert
@@ -331,7 +330,7 @@ class UserServiceImplTest {
         // Arrange
         String username = "ivan";
         UserEntity user = createUser();
-        when(mockUserRepository.findByUsername(username)).thenReturn(java.util.Optional.of(user));
+        when(mockUserRepository.findUserEntitiesByUsername(username)).thenReturn(java.util.Optional.of(user));
         // Act
         UserEntity result = userServiceToTest.findUserByUsername(username);
         // Assert
@@ -346,7 +345,7 @@ class UserServiceImplTest {
         UserEntity user = createUser();
         user.setPassword(mockPasswordEncoder.encode(password));
         mockUserRepository.save(user);
-        when(mockUserRepository.findByUsername(username)).thenReturn(java.util.Optional.of(user));
+        when(mockUserRepository.findUserEntitiesByUsername(username)).thenReturn(java.util.Optional.of(user));
         when(mockPasswordEncoder.matches(password, user.getPassword())).thenReturn(true);
         // Act
         boolean result = userServiceToTest.checkCredentials(username, password);
@@ -362,7 +361,7 @@ class UserServiceImplTest {
         UserEntity user = createUser();
         user.setPassword(mockPasswordEncoder.encode(password));
         mockUserRepository.save(user);
-        when(mockUserRepository.findByUsername(username)).thenReturn(java.util.Optional.of(user));
+        when(mockUserRepository.findUserEntitiesByUsername(username)).thenReturn(java.util.Optional.of(user));
         when(mockPasswordEncoder.matches(password, user.getPassword())).thenReturn(false);
         // Act
         boolean result = userServiceToTest.checkCredentials(username, password);

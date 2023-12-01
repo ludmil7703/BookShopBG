@@ -16,7 +16,6 @@ public interface UserService {
     boolean register(UserRegisterBindingModel userRegisterBindingModel);
 
 
-    String getIpAddress(String ipAddress);
     UserEntity findUserByEmail(String username);
 
     UserEntity findUserByUsername(String username);

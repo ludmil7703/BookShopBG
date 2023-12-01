@@ -23,7 +23,7 @@
         <ul>
             <li><a th:href="@{/}" class="current"><i class="fa fa-home" aria-hidden="true"></i>Home</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a th:href="@{/search}"><i class="fa fa-search" aria-hidden="true"></i>Search</a></li>
-            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="#">Company</a></li>
+<!--            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="#">Company</a></li>-->
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a th:href="@{/contact}"><i class="fa fa-id-badge" aria-hidden="true"></i>Contact</a></li>
             <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/add}"><i class="fa fa-plus" aria-hidden="true"></i>Add Book</a></li>
             <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/bookList}"><i class="fa fa-list-alt" id="btn-fetch" aria-hidden="true"></i>Book List</a></li>
@@ -62,6 +62,8 @@
                 purchase over $80
             </p>
             <a th:href="@{/subpage}" style="margin-left: 50px;">Read more...</a>
+            <h1 th:text="${IP_ADDRESS}"></h1>
+
         </div>
 
 

@@ -78,7 +78,7 @@ class BookShopUserDetailServiceTest {
         userEntity.setActive(true);
         userEntity.setRoles(List.of(new UserRoleEntity().setRole(UserRoleEnum.USER),
                 new UserRoleEntity().setRole(UserRoleEnum.ADMIN)));
-        when(mockUserRepository.findByUsername("pesho"))
+        when(mockUserRepository.findUserEntitiesByUsername("pesho"))
                 .thenReturn(Optional.of(userEntity));
         return userEntity;
     }

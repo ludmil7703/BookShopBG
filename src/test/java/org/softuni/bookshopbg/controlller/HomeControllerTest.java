@@ -91,7 +91,7 @@ class HomeControllerTest {
         RequestBuilder request = get("/");
 
         mockMvc.perform(request)
-                .andExpect(view().name("/index"))
+                .andExpect(view().name("index"))
                 .andExpect(model().attributeExists("bookShelf"))
                 .andExpect(model().attributeExists("categoryList"))
                 .andExpect(status().isOk());
