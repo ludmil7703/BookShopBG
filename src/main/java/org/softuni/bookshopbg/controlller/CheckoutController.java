@@ -112,12 +112,12 @@ public class CheckoutController {
 		model.addAttribute("userShippingList", userShippingList);
 		model.addAttribute("userPaymentList", userPaymentList);
 
-		if (userPaymentList.size() == 0) {
+		if (userPaymentList.isEmpty()) {
 			model.addAttribute("emptyPaymentList", true);
 		} else {
 			model.addAttribute("emptyPaymentList", false);
 		}
-		if (userShippingList.size() == 0) {
+		if (userShippingList.isEmpty()) {
 			model.addAttribute("emptyShippingList", true);
 		} else {
 			model.addAttribute("emptyShippingList", false);

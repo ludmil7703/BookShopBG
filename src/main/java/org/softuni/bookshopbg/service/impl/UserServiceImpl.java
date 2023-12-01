@@ -3,6 +3,7 @@ package org.softuni.bookshopbg.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.softuni.bookshopbg.interceptor.LoggingInterceptor;
 import org.softuni.bookshopbg.model.dto.UserRegisterBindingModel;
 import org.softuni.bookshopbg.model.entities.*;
 import org.softuni.bookshopbg.model.enums.UserRoleEnum;
@@ -51,7 +52,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean register(
             UserRegisterBindingModel userRegisterBindingModel) {
-
         userRepository.save(map(userRegisterBindingModel));
         return true;
     }
@@ -151,6 +151,7 @@ public class UserServiceImpl implements UserService {
 
         return user.isPresent() && passwordEncoder.matches(password, user.get().getPassword());
     }
+
 
     @Override
     public UserEntity save(UserEntity user) {

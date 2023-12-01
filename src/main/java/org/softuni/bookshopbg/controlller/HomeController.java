@@ -43,19 +43,9 @@ public class HomeController {
         List<BookBindingModel> bookShelf = bookService.findAll();
         model.addAttribute("bookShelf", bookShelf);
         model.addAttribute("categoryList", categoryList);
-        return "/index";
+        return "index";
     }
 
-//    @GetMapping("/allBooks")
-//    public String allBooks(Model model, @PageableDefault(size = 2, sort = "id") Pageable pageable) {
-//        List<Category> categoryList = categoryService.getAllCategories();
-//
-//        Page<BookBindingModel> bookShelf = bookService.getAllBooks(pageable);
-//
-//        model.addAttribute("bookShelf", bookShelf);
-//        model.addAttribute("categoryList", categoryList);
-//        return "index";
-//    }
 
     @GetMapping("/contact")
     public String contact(Model model){

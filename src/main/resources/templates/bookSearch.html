@@ -12,11 +12,11 @@
 	<header th:replace="fragments/commons::header"></header>
 	<main id="project_content">
 		<section th:replace="fragments/commons::section"></section>
-		<div id="book_list_right" class="col-sm-9 container">
-			<form class="navbar-form row" th:action="@{/searchBook}" method="post">
+		<div id="book_list_right" class="col-sm-9 container justify-content-center">
+			<form class="navbar-form row " th:action="@{/searchBook}" method="post">
 
 					<input type="text" name="keyword" class="form-control text-left col-sm-9"
-						   placeholder="Book title" />
+						   placeholder="Book title"/>
 
 
 				<button type="submit" class="btn btn-info btn-sm text-right col-sm-3"><span

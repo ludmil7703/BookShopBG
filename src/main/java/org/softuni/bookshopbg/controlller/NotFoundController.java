@@ -15,12 +15,12 @@ public class NotFoundController {
         throw  new IllegalArgumentException(String.format("Object with ID %s not found.", id));
     }
 
-//    @ExceptionHandler({IllegalArgumentException.class})
-//    public ModelAndView handleNotFound(ObjectNotFoundException e) {
-//        ModelAndView modelAndView = new ModelAndView("notfound");
-//        modelAndView.addObject("id", e.getId());
-//        return modelAndView;
-//    }
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ModelAndView handleNotFound(ObjectNotFoundException e) {
+        ModelAndView modelAndView = new ModelAndView("notfound");
+        modelAndView.addObject("id", e.getId());
+        return modelAndView;
+    }
 
 
 
