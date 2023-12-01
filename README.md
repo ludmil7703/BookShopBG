@@ -28,5 +28,5 @@ Online book store website developed by Java, Spring, Thymeleaf, HTML, Javascript
  
  <p align="center"><b>E/R diagram
  <br>
-<img alt="Homepage screenshot" src="https://github.com/ludmil7703/BookShopBG/Screenshots/diagram.png" />
+<img alt="Homepage screenshot" src="https://github.com/ludmil7703/BookShopBG/blob/main/Screenshots/diagram.png" />
 <br>
