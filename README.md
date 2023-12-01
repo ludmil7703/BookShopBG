@@ -1,5 +1,4 @@
 # BookShopBG
-Spring Web Project
 Online book store website developed by Java, Spring, Thymeleaf, HTML, Javascript, CSS and Bootstrap.
 
 ## Features
