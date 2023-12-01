@@ -161,8 +161,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateUserBilling(UserBilling userBilling, UserPayment userPayment, UserEntity user) {
             UserPayment userPaymentExists = userPaymentRepository.findUserPaymentByCardName(userPayment.getCardName());
-            UserBilling userBillingExists = userPaymentExists.getUserBilling();
-            if(userBillingExists != null){
+            if(userPaymentExists != null){
+                UserBilling userBillingExists = userPaymentExists.getUserBilling();
                 userBillingExists.setUserBillingName(userBilling.getUserBillingName());
                 userBillingExists.setUserBillingStreet1(userBilling.getUserBillingStreet1());
                 userBillingExists.setUserBillingStreet2(userBilling.getUserBillingStreet2());

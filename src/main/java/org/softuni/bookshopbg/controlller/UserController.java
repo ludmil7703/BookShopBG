@@ -78,18 +78,6 @@ public class UserController {
         this.categoryService = categoryService;
     }
 
-//    @GetMapping("/login")
-//    public ModelAndView login(Model model){
-//        List<Category> categoryList = categoryService.getAllCategories();
-//
-//        model.addAttribute("categoryList", categoryList);
-//
-//        if (!model.containsAttribute("userLoginBindingModel")){
-//            model.addAttribute("userLoginBindingModel", new UserLoginBindingModel());
-//        }
-//
-//        return new ModelAndView("login");
-//    }
 
 
     @RequestMapping("/login")
@@ -322,6 +310,8 @@ public class UserController {
         UserEntity user = userService.findUserByUsername(principal.getName());
         userService.updateUserBilling(userBilling, userPayment, user);
 
+        List<Category> categoryList = categoryService.getAllCategories();
+        model.addAttribute("categoryList", categoryList);
         model.addAttribute("user", user);
         model.addAttribute("userPaymentList", user.getUserPaymentList());
         model.addAttribute("userShippingList", user.getUserShippingList());
@@ -699,72 +689,12 @@ public class UserController {
 
 
     @PostMapping("/login-error")
-    public String login(@Valid @ModelAttribute("userLoginBindingModel") UserLoginBindingModel userLoginBindingModel
-            , BindingResult bindingResult,
-                        RedirectAttributes rAtt) {
-
-        if (bindingResult.hasErrors()) {
-            rAtt.addFlashAttribute("userLoginBindingModel", userLoginBindingModel);
-            rAtt.addFlashAttribute("org.springframework.validation.BindingResult.userLoginBindingModel", bindingResult);
-            return "redirect:/users/login";
-        }
-
-        boolean validCredentials = this.userService.checkCredentials(userLoginBindingModel.getUsername(), userLoginBindingModel.getPassword());
-
-        if (!validCredentials) {
-            rAtt
-                    .addFlashAttribute("userLoginBindingModel", userLoginBindingModel)
-                    .addFlashAttribute("validCredentials", false);
-            return "redirect:/users/login";
-        }
+    public String onFailure() {
 
 
         return "redirect:/";
 
     }
-//
-//    @GetMapping("/register")
-//    public ModelAndView register(Model model){
-//
-//        if (!model.containsAttribute("userRegisterBindingModel")){
-//            model.addAttribute("userRegisterBindingModel", new UserRegisterBindingModel());
-//        }
-//
-//        return new ModelAndView("register");
-//    }
-//    @PostMapping("/register")
-//    public String register(@Valid @ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel
-//            ,BindingResult bindingResult,
-//                           RedirectAttributes rAtt){
-//
-//        if (!UserRegisterBindingModel.getPassword().equals(userRegisterBindingModel.getConfirmPassword())){
-//            bindingResult.rejectValue("confirmPassword",
-//                    "error.userRegisterBindingModel",
-//                    "Passwords must be the same.");
-//        }
-//
-//        if(userService.findUserByEmail(userRegisterBindingModel.getEmail()) != null){
-//            bindingResult.rejectValue("email",
-//                    "error.userRegisterBindingModel",
-//                    "Email already exists.");
-//        }
-//        if (userService.findUserByUsername(userRegisterBindingModel.getUsername()).isPresent()){
-//            bindingResult.rejectValue("username",
-//                    "error.userRegisterBindingModel",
-//                    "Username already exists.");
-//        }
-//
-//        if (bindingResult.hasErrors()){
-//            rAtt.addFlashAttribute("userRegisterBindingModel", userRegisterBindingModel);
-//            rAtt.addFlashAttribute("org.springframework.validation.BindingResult.userRegisterBindingModel", bindingResult);
-//            return "redirect:/users/register";
-//        }
-//
-//        String view = userService.register(userRegisterBindingModel) ? "redirect:/users/login" : "redirect:/users/register";
-//
-//        return view;
-//
-//    }
 
     @ModelAttribute
     public void addAttribute(Model model) {
