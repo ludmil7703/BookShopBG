@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+
+<body>
+
+<div id="project_container">
+	<nav th:replace="fragments/commons::nav"></nav>
+	<header th:replace="fragments/commons::header"></header>
+	<main id="project_content">
+
+		<section th:replace="fragments/commons::section"></section>
+		<div id="book_list_right" class="col-sm-9 container">
+			<div class="row" style="margin-bottom: -100px;">
+				<div class="col-xs-8">
+					<h2 class="section-headline">
+						<span>User Account</span>
+					</h2>
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 40px;">
+				<div class="col-xs-9 col-xs-offset-3">
+
+					<div class="panel with-nav-tabs panel-primary">
+						<div class="panel-heading">
+
+							<!-- Nav tabs -->
+							<ul class="nav nav-tabs">
+								<li class="active"><a
+										href="#tab-1" data-toggle="tab"><span>Create new
+										account</span></a></li>
+								<div class="cleaner_with_width"></div>
+
+								<li><a
+										href="#tab-2" data-toggle="tab"><span>Log in</span></a></li>
+								<div class="cleaner_with_width"></div>
+
+								<li><a
+										href="#tab-3" data-toggle="tab"><span>Forget Password</span></a></li>
+							</ul>
+						</div>
+
+						<div class="panel-body">
+							<!-- Tab panels -->
+							<div class="tab-content">
+
+								<!-- create new user pane -->
+								<div class="tab-pane active" id="tab-1"
+									 th:classappend="${classActiveNewAccount}? 'in active'">
+									<div class="panel-group">
+										<div class="panel panel-default" style="border: none;">
+											<div class="panel-body"
+												 style="margin-top: 20px;">
+												<div class="alert alert-info" th:if="${emailSent}">An
+													email has been sent to the email address you just
+													registered. Please validate your email address and update
+													your password information.</div>
+												<form th:action="@{/users/newUser}" th:method="post">
+													<div class="form-group">
+														<label for="newUsername">* Username: </label>&nbsp;<span
+															style="color: red;" th:if="${usernameExists}">Username
+														already exists. Choose a different one.</span> <input
+															required="required" type="text" class="form-control"
+															id="newUsername" name="username" />
+														<p style="color: #828282">Enter your username here.</p>
+													</div>
+
+													<div class="form-group">
+														<label for="email">* Email Address: </label><span
+															style="color: red;" th:if="${emailExists}">Email
+														already exists. Choose a different one.</span> <input
+															required="required" type="text" class="form-control"
+															id="email" name="email" />
+														<p style="color: #828282">A valid email address. All
+															emails from the system will be sent to this address. The
+															email address is not made public and will only be used if
+															you wish to receive a new password or wish to receive
+															certain notification.</p>
+													</div>
+
+													<button type="submit" class="btn btn-primary">Create
+														new account</button>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- log in -->
+								<div class="tab-pane" id="tab-2">
+									<div class="panel-group">
+										<div class="panel panel-default" style="border: none;">
+											<div class="panel-body"
+												 style="margin-top: 20px;">
+												<div th:if="${param.error != null}" style="color: red;">Incorrect
+													username or password.</div>
+												<form th:action="@{/users/login}" th:method="post">
+													<div class="form-group">
+														<label for="username">* Username: </label> <input
+															required="required" type="text" class="form-control"
+															id="username" name="username" />
+														<p style="color: #828282">Enter your username here.</p>
+													</div>
+
+													<div class="form-group">
+														<label for="password">* Password: </label> <input
+															required="required" type="password" class="form-control"
+															id="password" name="password" />
+														<p style="color: #828282">Enter the password that
+															accompanies your username</p>
+													</div>
+													<div class="form-group form-check-inline">
+														<input  id="rememberme"
+																name="rememberme"
+																type="checkbox"
+																class="form-check-input"/>
+														<label for="rememberme" class="text-white form-check-label font-weight-bold">Remember me</label>
+
+
+
+													</div>
+													<hr />
+
+													<button type="submit" class="btn btn-primary">Log
+														in</button>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- forget password -->
+								<div class="tab-pane" id="tab-3">
+									<div class="panel-group">
+										<div class="panel panel-default" style="border: none;">
+											<div class="panel-body"
+												 style="margin-top: 20px;">
+												<div th:if="${emailNotExist}" class="alert alert-danger">Email
+													doesn't exist.</div>
+												<div th:if="${forgetPasswordEmailSent}"
+													 class="alert alert-success">Email sent.</div>
+												<form th:action="@{/users/forgetPassword}" th:method="post">
+													<div class="form-group">
+														<label for="recoverEmail">* Your Email: </label> <input
+															required="required" type="text" class="form-control"
+															id="recoverEmail" name="email" />
+														<p style="color: #828282">Enter your registered email
+															address here.</p>
+													</div>
+
+													<button type="submit" class="btn btn-primary">Submit</button>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end of container -->
+
+	</main> <!-- end of content -->
+	<footer th:replace="fragments/commons::footer"></footer>
+</div>
+<script>
+	function checkBillingAddress() {
+		if($("#theSameAsShippingAddress").is(":checked")) {
+			$(".billingAddress").prop("disabled", true);
+		} else {
+			$(".billingAddress").prop("disabled", false);
+		}
+	}
+
+	function checkPasswordMatch() {
+		var password = $("#txtNewPassword").val();
+		var confirmPassword = $("#txtConfirmPassword").val();
+
+		if(password === "" && confirmPassword ==="") {
+			$("#checkPasswordMatch").html("");
+			$("#updateUserInfoButton").prop('disabled', false);
+		} else {
+			if(password !== confirmPassword) {
+				$("#checkPasswordMatch").html("Passwords do not match!");
+				$("#updateUserInfoButton").prop('disabled', true);
+			} else {
+				$("#checkPasswordMatch").html("Passwords match");
+				$("#updateUserInfoButton").prop('disabled', false);
+			}
+		}
+	}
+
+	$(document).ready(function(){
+		$(".cartItemQty").on('change', function(){
+			var id=this.id;
+
+			$('#update-item-'+id).css('display', 'inline-block');
+		});
+		$("#theSameAsShippingAddress").on('click', checkBillingAddress);
+		$("#txtConfirmPassword").keyup(checkPasswordMatch);
+		$("#txtNewPassword").keyup(checkPasswordMatch);
+
+	});
+</script>
+</body>
+</html>

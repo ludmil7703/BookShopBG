@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head">
+	<title>BookShopBG</title>
+</head>
+
+<body>
+
+<div id="project_container">
+	<nav th:replace="fragments/commons::nav"></nav>
+	<header th:replace="fragments/commons::header"></header>
+	<main id="project_content">
+		<section th:replace="fragments/commons::section"></section>
+		<div id="book_list_right" class="col-sm-9 container justify-content-center">
+			<form class="navbar-form row " th:action="@{/searchBook}" method="post">
+
+					<input type="text" name="keyword" class="form-control text-left col-sm-9"
+						   placeholder="Book title"/>
+
+
+				<button type="submit" class="btn btn-info btn-sm text-right col-sm-3"><span
+						class="glyphicon glyphicon-search"></span> Search</button>
+
+			</form>
+			<div th:if="${bookList.isEmpty()}">
+				<h5 style="font-style: italic;">Oops, no result is found. Try
+					something else or try again later.</h5>
+			</div>
+			<div th:unless="${bookList.isEmpty()}" class="col card-body" th:each="book : ${bookList}">
+				<h5 class="row card-title" th:text="${book.title} + '  (by ' + ${book.author} + ')'">Photography<span th:text="">(by Best Author)</span></h5>
+
+				<div class="row">
+					<div class="col-3">
+						<a th:href="@{/bookDetail/{id}(id=${book.id})}">
+							<img th:src="${book.imageUrl}" alt="image" class="image_panel card-img"/>
+						</a>
+					</div>
+					<div class="col-9">
+						<p th:utext="${#strings.abbreviate(book.description,100)}" style="margin-bottom: 20px; color: #34ce57"></p>
+						<a th:href="@{/bookDetail/{id}(id=${book.id})}"><span style="font-size: x-large; color: #db3208;">$<span
+								th:text="${#numbers.formatDecimal(book.ourPrice, 0 , 'COMMA', 2, 'POINT')}"></span></span></a>
+						<span style="text-decoration: line-through;">$<span th:text="${#numbers.formatDecimal(book.listPrice, 0 , 'COMMA', 2, 'POINT')}"></span></span>
+						<!--                    <div class="buy_now_button"><a href="subpageInfo.html">Buy Now</a></div>-->
+						<!--                    <div class="detail_button"><a th:href="@{/bookDetail/{id}(id=${book.id})}">Detail</a></div>-->
+					</div>
+				</div>
+				<div class="cleaner border border-dark" style="margin: 10px">&nbsp;</div>
+			</div>
+		</div>
+		<footer th:replace="fragments/commons::footer"></footer>
+	</main>
+</div>
+</body>
+</html>
