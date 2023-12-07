@@ -1,6 +1,7 @@
 
 
 
+
 .tab-content {
 	color : white;
 	background-color: #428bca;
@@ -138,9 +139,11 @@ img {
 	text-decoration: none;
 	color: #969547;
 }
-#project_menu .nav_right{
-	float: right;
+.nav-ul{
+	display: flex;
+	justify-content: space-around;
 }
+
 
 #project_menu li a:hover, #project_menu li .current{
 	color: #fcf88e;
@@ -351,3 +354,92 @@ img {
 	font-weight: normal;
 }
 /* end of footer */
+@media (max-width: 768px) {
+	#project_container{
+		width: 760px;
+	}
+	#project_container > div{
+		width: 760px;
+	}
+
+	#project_menu{
+		width: 760px;
+	}
+	.nav-ul {
+		width: 760px;
+		display: flex;
+		flex-direction: column;
+	}
+	#project_header{
+		display: none;
+	}
+	section{
+		display: none;
+	}
+	h5{
+		font-size: smaller;
+	}
+	#book_list_right h5{
+		font-size: small;
+	}
+	#project_content {
+		clear: both;
+		width: 760px;
+		padding: 50px;
+	}
+	#project_footer{
+		width: 760px;
+	}
+	.ads-image{
+		display: none;
+	}
+	#project_content > div.row{
+		display: inline;
+	}
+
+
+}
+@media (max-width: 480px) {
+	#project_menu{
+		background: none;
+		height: 150px;
+	}
+	.left-nav {
+		display: flex;
+		flex-direction: column;
+	}
+	.right-nav{
+		display: flex;
+		flex-direction: column;
+	}
+
+	#project_header{
+		display: none;
+	}
+	section{
+		display: none;
+	}
+	#book_list_right h5{
+		font-size: small;
+	}
+	#project_content {
+		clear: both;
+		width: 480px;
+	}
+	#project_footer{
+		display: flex;
+		flex-direction: column;
+		width: 480px;
+	}
+	.ads-image{
+		display: none;
+	}
+	#project_container > div{
+		width: 480px;
+	}
+	#project_container{
+		width: 480px;
+	}
+
+}
+

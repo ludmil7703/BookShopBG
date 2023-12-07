@@ -5,10 +5,10 @@
 
 <body>
 
-	<div id="project_container" class="container">
+	<div id="project_container">
 		<nav th:replace="fragments/commons::nav"></nav>
 		<header th:replace="fragments/commons::header"></header>
-
+		<main id="project_content">
 			<div class="container">
 				<h2 class="section-headline">
 					<h2 class="section-headline">
@@ -103,8 +103,9 @@
 				</div>
 
 
-	<!-- end of container -->
-<footer th:replace="fragments/commons::footer"></footer>
-</div>
+			<!-- end of container -->
+			<footer th:replace="fragments/commons::footer"></footer>
+		</main>
+	</div>
 </body>
 </html>

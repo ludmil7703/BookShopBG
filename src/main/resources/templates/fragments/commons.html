@@ -19,8 +19,9 @@
 </head>
 <body>
 <div id="project_container">
-    <nav id="project_menu">
-        <ul>
+    <nav id="project_menu" class="nav-bar">
+        <ul class="nav-ul">
+            <div class="left-nav">
             <li><a th:href="@{/}" class="current"><i class="fa fa-home" aria-hidden="true"></i>Home</a></li>
             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a th:href="@{/search}"><i class="fa fa-search" aria-hidden="true"></i>Search</a></li>
 <!--            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="#">Company</a></li>-->
@@ -29,29 +30,29 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/books/bookList}"><i class="fa fa-list-alt" id="btn-fetch" aria-hidden="true"></i>Book List</a></li>
 
             <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}"><i class="fa fa-user" aria-hidden="true"></i>Admin</a></li>
+            </div>
 <!--            <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/register}">Register</a></li>-->
 <!--            <li sec:authorize="!isAuthenticated()"><a class="nav_right" th:href="@{/users/login}">-->
 <!--                <span class="glyphicon glyphicon-log-in"></span><i class="fa fa-sign-in" aria-hidden="true"></i>Login</a></li>-->
 
-            <li class="nav_right" sec:authorize="isAuthenticated()">
+            <div class="right-nav">
+                <li><a sec:authorize="isAuthenticated()" class="nav_right" >Welcome, <th:block sec:authentication="name"></th:block></a>
+                </li>
 
-                <a href="javascript: signOut();"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
-                <div style="display: none;">
-                    <form name="formSignout" th:action="@{/users/logout}" method="post">
-                    </form>
-                </div>
-                <script>
-                    function signOut() {
-                        document.formSignout.submit();
-                    }
-                </script>
-            </li>
-            <li sec:authorize="isAuthenticated()" class="nav_right"><a th:href="@{/shoppingCart/cart}"><i class="fa fa-cart-plus" aria-hidden="true"></i>Cart</a></li>
             <li><a sec:authorize="isAuthenticated()" class="nav_right" th:href="@{/users/myProfile}">MY PROFILE</a></li>
-            <li>
-                <a sec:authorize="isAuthenticated()" class="nav_right" >Welcome, <th:block sec:authentication="name"></th:block></a>
-            </li>
+
             <li><a sec:authorize="isAnonymous()" class="nav_right" th:href="@{/users/login}">MY ACCOUNT</a></li>
+                <li sec:authorize="isAuthenticated()" class="nav_right"><a th:href="@{/shoppingCart/cart}"><i class="fa fa-cart-plus" aria-hidden="true"></i>Cart</a></li>
+                <li class="nav_right" sec:authorize="isAuthenticated()">
+
+                    <a href="javascript: signOut();"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
+                    <div style="display: none;">
+                        <form name="formSignout" th:action="@{/users/logout}" method="post">
+                        </form>
+                    </div>
+
+                </li>
+            </div>
         </ul>
 
     </nav> <!-- end of menu -->
