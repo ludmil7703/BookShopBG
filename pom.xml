@@ -12,9 +12,23 @@
     <artifactId>BookShopBG</artifactId>
     <name>BookShopBG</name>
     <description>BookShopBG</description>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>org.softuni.bookshopbg.BookShopBgApplication</mainClass>
+                    <layout>JAR</layout>
+
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <start-class>org.softuni.bookshopbg.BookShopBgApplication</start-class>
         <java.version>17</java.version>
         <deploymentType>RUN_FROM_BLOB</deploymentType>
     </properties>
@@ -148,15 +162,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-
-
-
     </dependencies>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+
+        </plugin>
+    </plugins>
+</build>
 
 </project>
+
