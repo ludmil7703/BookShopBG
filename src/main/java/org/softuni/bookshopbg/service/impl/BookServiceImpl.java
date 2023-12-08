@@ -9,6 +9,7 @@ import org.softuni.bookshopbg.model.entities.Category;
 import org.softuni.bookshopbg.model.enums.CategoryName;
 import org.softuni.bookshopbg.repositories.CategoryRepository;
 import org.softuni.bookshopbg.service.BookService;
+import org.softuni.bookshopbg.service.aop.WarnIfExecutionExceeds;
 import org.softuni.bookshopbg.utils.CloudinaryConfig;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -128,7 +129,10 @@ public class BookServiceImpl implements BookService {
 		return bookBindingModel;
 	}
 
-
+	@WarnIfExecutionExceeds(
+			timeInMillis = 1000L
+	)
+	@Override
 	public List<Book> blurrySearch(String title) {
 		List<Book> bookList = bookRepository.findByTitleContaining(title);
 		List<Book> activeBookList = new ArrayList<>();
@@ -142,6 +146,9 @@ public class BookServiceImpl implements BookService {
 		return activeBookList;
 	}
 
+	@WarnIfExecutionExceeds(
+			timeInMillis = 1000L
+	)
 	@Override
 	public List<Book> findByCategory(CategoryName category) {
 
