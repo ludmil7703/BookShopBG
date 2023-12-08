@@ -121,3 +121,6 @@ $(document).ready(function(){
     $("#txtNewPassword").keyup(checkPasswordMatch);
 
 });
+function signOut() {
+    document.formSignout.submit();
+}
