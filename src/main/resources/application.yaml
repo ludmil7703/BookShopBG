@@ -16,7 +16,7 @@ spring:
         enabled: 'true'
   datasource:
      driverClassName: com.mysql.cj.jdbc.Driver
-     url: jdbc:mysql://bookshop.mysql.database.azure.com:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=true&createDatabaseIfNotExist=true&serverTimezone=UTC
+     url: jdbc:mysql://bookshop.mysql.database.azure.com:3306/book_shop?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
      username: book
      password: Ludmil#77
 
