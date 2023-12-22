@@ -18,7 +18,7 @@ Online book store website developed by Java, Spring, Thymeleaf, HTML, Javascript
   
 - Books
     - Search for books by keyword
-    - Sort books by Author,Price or Title
+    - Sort books
     
 - Admin panel
   - Add books
